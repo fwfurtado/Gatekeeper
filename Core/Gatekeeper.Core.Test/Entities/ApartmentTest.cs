@@ -1,9 +1,14 @@
+using Bogus;
+using FluentAssertions;
 using Gatekeeper.Core.Entities;
+using Gatekeeper.Core.Test.Fakers;
 
 namespace Gatekeeper.Core.Test.Entities;
 
 public class ApartmentTest
 {
+    private readonly Faker _faker = new();
+
     [Test]
     public void IdentifierCannotBeBlank()
     {
@@ -14,10 +19,11 @@ public class ApartmentTest
     [Test]
     public void ShouldCreateApartmentWithAllData()
     {
-        var apartment = new Apartment("1");
+        var identifier = _faker.Address.BuildingNumber();
+        var apartment = new Apartment(identifier);
 
-        Assert.AreEqual("1", apartment.Identifier);
-        CollectionAssert.IsEmpty(apartment.Tenants);
+       apartment.Identifier.Should().Be(identifier);
+       apartment.Tenants.Should().BeEmpty();
         
     }
 
@@ -25,6 +31,13 @@ public class ApartmentTest
     [Test]
     public void ShouldAddTenantsToApartment()
     {
-        Assert.Fail("Not implemented Yet!");
+        var identifier = _faker.Address.BuildingNumber();
+        var apartment = new Apartment(identifier);
+        var tenant = new TenantFaker().Generate();
+
+        apartment.Tenants.Add(tenant);
+        
+        apartment.Tenants.Should().NotBeEmpty()
+            .And.HaveCount(1);
     }
 }

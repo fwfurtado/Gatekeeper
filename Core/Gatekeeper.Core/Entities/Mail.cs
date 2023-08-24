@@ -9,6 +9,15 @@ public class Mail
 
     public Mail(Tenant tenant, string description)
     {
+        if (string.IsNullOrEmpty(description))
+        {
+            throw new ArgumentException("Description cannot be blank");
+        }
+        if (tenant is null)
+        {
+            throw new ArgumentException("Tenant is required");
+        }
+
         Tenant = tenant;
         Description = description;
     }
