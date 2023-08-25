@@ -1,4 +1,6 @@
-﻿namespace Gatekeeper.Core.Services;
+﻿using Gatekeeper.Core.Commands;
+
+namespace Gatekeeper.Core.Services;
 
 public interface ITenantService
 {

@@ -1,6 +1,6 @@
 ﻿using Gatekeeper.Core.Entities;
 
-namespace Gatekeeper.Core.Services;
+namespace Gatekeeper.Core.Repositories;
 
 public interface ITenantRepository
 {

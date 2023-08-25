@@ -1,23 +1,25 @@
-﻿using Gatekeeper.Core.Entities;
+﻿using FluentValidation;
+using Gatekeeper.Core.Commands;
+using Gatekeeper.Core.Entities;
+using Gatekeeper.Core.Repositories;
 
 namespace Gatekeeper.Core.Services;
 
 public class TenantService : ITenantService
 {
     private readonly ITenantRepository _repository;
+    private readonly IValidator<RegisterTenantCommand> _validator;
 
-    public TenantService(ITenantRepository repository)
+    public TenantService(ITenantRepository repository, IValidator<RegisterTenantCommand> validator)
     {
         _repository = repository;
+        _validator = validator;
     }
 
     public async Task RegisterTenantAsync(RegisterTenantCommand command, CancellationToken cancellationToken)
     {
 
-        if (await _repository.ExistsDocumentAsync(command.Document, cancellationToken))              
-        {
-            throw new ArgumentException("Document already exists");
-        }     
+        await _validator.ValidateAndThrowAsync(command, cancellationToken);
 
         var tenant = new Tenant(command.Name, command.Document);
 
