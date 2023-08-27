@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using Gatekeeper.Core.Commands;
 using Gatekeeper.Core.Entities;
 using Gatekeeper.Core.Repositories;
@@ -9,11 +10,13 @@ public class TenantService : ITenantService
 {
     private readonly ITenantRepository _repository;
     private readonly IValidator<RegisterTenantCommand> _validator;
+    private readonly IMapper _mapper;
 
-    public TenantService(ITenantRepository repository, IValidator<RegisterTenantCommand> validator)
+    public TenantService(ITenantRepository repository, IValidator<RegisterTenantCommand> validator, IMapper mapper)
     {
         _repository = repository;
         _validator = validator;
+        _mapper = mapper;
     }
 
     public async Task RegisterTenantAsync(RegisterTenantCommand command, CancellationToken cancellationToken)
@@ -21,7 +24,7 @@ public class TenantService : ITenantService
 
         await _validator.ValidateAndThrowAsync(command, cancellationToken);
 
-        var tenant = new Tenant(command.Name, command.Document);
+        var tenant = _mapper.Map<Tenant>(command);
 
         cancellationToken.ThrowIfCancellationRequested();
 

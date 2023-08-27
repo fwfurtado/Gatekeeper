@@ -1,7 +1,9 @@
-﻿using Bogus;
+﻿using AutoMapper;
+using Bogus;
 using Bogus.Extensions.Brazil;
 using FluentValidation;
 using Gatekeeper.Core.Commands;
+using Gatekeeper.Core.Configurations;
 using Gatekeeper.Core.Entities;
 using Gatekeeper.Core.Policies;
 using Gatekeeper.Core.Repositories;
@@ -17,6 +19,7 @@ public class TenantServiceTest
     private Mock<ITenantRepository> _repositoryMock = null!;
     private CancellationTokenSource _tokenSource = null!;
     private IValidator<RegisterTenantCommand> _validator = null!;
+    private TenantService _service = null!;
 
     private readonly Faker<RegisterTenantCommand> _commandFaker = new Faker<RegisterTenantCommand>()
         .CustomInstantiator(f => new RegisterTenantCommand(f.Person.FullName, f.Person.Cpf(false)));
@@ -26,10 +29,13 @@ public class TenantServiceTest
     {
         _tokenSource = new CancellationTokenSource();
         _repositoryMock = new Mock<ITenantRepository>();
-        
-        
+
         var cpfValidator = new CpfPolicy();
         _validator = new RegisterTenantCommandValidator(_repositoryMock.Object, cpfValidator);
+        var config = new MapperConfiguration(cfg => cfg.AddProfile<GlobalMappingProfile>());
+        var mapper = config.CreateMapper();
+
+        _service = new TenantService(_repositoryMock.Object, _validator, mapper);
     }
 
     [Test]
@@ -38,11 +44,9 @@ public class TenantServiceTest
         _repositoryMock.Setup(r => r.ExistsDocumentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
 
-        var service = new TenantService(_repositoryMock.Object, _validator);
-
         var command = _commandFaker.Generate();
 
-        Assert.ThrowsAsync<ValidationException>(() => service.RegisterTenantAsync(command, _tokenSource.Token));
+        Assert.ThrowsAsync<ValidationException>(() => _service.RegisterTenantAsync(command, _tokenSource.Token));
 
         _repositoryMock.Verify(r => r.ExistsDocumentAsync(command.Document, _tokenSource.Token), Times.Once);
         _repositoryMock.VerifyNoOtherCalls();
@@ -54,14 +58,11 @@ public class TenantServiceTest
         _repositoryMock.Setup(r => r.ExistsDocumentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
-        var service = new TenantService(_repositoryMock.Object, _validator);
-
         var command = _commandFaker.Generate();
-        
-         await service.RegisterTenantAsync(command, _tokenSource.Token);
+
+        await _service.RegisterTenantAsync(command, _tokenSource.Token);
 
         _repositoryMock.Verify(r => r.ExistsDocumentAsync(command.Document, _tokenSource.Token), Times.Once);
         _repositoryMock.Verify(r => r.SaveAsync(It.IsAny<Tenant>(), _tokenSource.Token), Times.Once);
     }
-
 }
