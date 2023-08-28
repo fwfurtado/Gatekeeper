@@ -8,7 +8,7 @@ public class GlobalMappingProfile : Profile
 {
     public GlobalMappingProfile()
     {
-        CreateMap<RegisterTenantCommand, Tenant>();
+        CreateMap<RegisterResidentCommand, Resident>();
         CreateMap<RegisterUnitCommand, Unit>()
             .ConvertUsing(command => new Unit(command.Identifier));
     }

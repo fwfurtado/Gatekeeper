@@ -3,7 +3,7 @@ namespace Gatekeeper.Core.Entities;
 public class Unit
 {
     public string Identifier { get; private set; }
-    public List<Tenant> Tenants { get; }
+    public List<Resident> Residents { get; }
 
     public Unit(string identifier)
     {
@@ -13,12 +13,12 @@ public class Unit
         }
 
         Identifier = identifier;
-        Tenants = new List<Tenant>();
+        Residents = new List<Resident>();
     }
 
-    public void AddTenant(Tenant tenant)
+    public void AssociateResident(Resident resident)
     {
-        Tenants.Add(tenant);
+        Residents.Add(resident);
     }
     
 }

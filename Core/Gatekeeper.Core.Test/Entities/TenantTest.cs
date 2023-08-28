@@ -12,15 +12,15 @@ public class TenantTest
     [Test]
     public void NameCannotBeBlank()
     {
-        Assert.Throws<ArgumentException>(() => new Tenant("", _faker.Person.Cpf()));
-        Assert.Throws<ArgumentException>(() => new Tenant(null, _faker.Person.Cpf()));
+        Assert.Throws<ArgumentException>(() => new Resident("", _faker.Person.Cpf()));
+        Assert.Throws<ArgumentException>(() => new Resident(null, _faker.Person.Cpf()));
     }
 
     [Test]
     public void DocumentCannotBeBlank()
     {
-        Assert.Throws<ArgumentException>(() => new Tenant(_faker.Person.FirstName, ""));
-        Assert.Throws<ArgumentException>(() => new Tenant(_faker.Person.FirstName, null));
+        Assert.Throws<ArgumentException>(() => new Resident(_faker.Person.FirstName, ""));
+        Assert.Throws<ArgumentException>(() => new Resident(_faker.Person.FirstName, null));
     }
 
     [Test]
@@ -28,7 +28,7 @@ public class TenantTest
     {
         var name = _faker.Person.FirstName;
         var document = _faker.Person.Cpf();
-        var tenant = new Tenant(name, document);
+        var tenant = new Resident(name, document);
     
         tenant.Name.Should().Be(name);
         tenant.Document.Should().Be(document);

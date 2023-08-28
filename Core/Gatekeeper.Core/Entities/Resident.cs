@@ -1,11 +1,11 @@
 namespace Gatekeeper.Core.Entities;
 
-public class Tenant
+public class Resident
 {
     public  string Name { get; private set; }
     public string Document { get; private set; }
 
-    public Tenant(string name, string document)
+    public Resident(string name, string document)
     {
         if (string.IsNullOrEmpty(name))
         {

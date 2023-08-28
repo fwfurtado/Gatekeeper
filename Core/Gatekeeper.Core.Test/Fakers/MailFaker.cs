@@ -6,8 +6,8 @@ namespace Gatekeeper.Core.Test.Fakers;
 
 public sealed class MailFaker : Faker<Mail>
 {
-    public MailFaker(Tenant tenant)
+    public MailFaker(Resident resident)
     {
-        CustomInstantiator(f => new Mail(tenant, f.Commerce.ProductDescription()));
+        CustomInstantiator(f => new Mail(resident, f.Commerce.ProductDescription()));
     }
 }

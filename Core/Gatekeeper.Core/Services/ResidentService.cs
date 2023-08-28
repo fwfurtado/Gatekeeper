@@ -6,25 +6,25 @@ using Gatekeeper.Core.Repositories;
 
 namespace Gatekeeper.Core.Services;
 
-public class TenantService : ITenantService
+public class ResidentService : IResidenttService
 {
-    private readonly ITenantRepository _repository;
-    private readonly IValidator<RegisterTenantCommand> _validator;
+    private readonly IResidentRepository _repository;
+    private readonly IValidator<RegisterResidentCommand> _validator;
     private readonly IMapper _mapper;
 
-    public TenantService(ITenantRepository repository, IValidator<RegisterTenantCommand> validator, IMapper mapper)
+    public ResidentService(IResidentRepository repository, IValidator<RegisterResidentCommand> validator, IMapper mapper)
     {
         _repository = repository;
         _validator = validator;
         _mapper = mapper;
     }
 
-    public async Task RegisterTenantAsync(RegisterTenantCommand command, CancellationToken cancellationToken)
+    public async Task RegisterTenantAsync(RegisterResidentCommand command, CancellationToken cancellationToken)
     {
 
         await _validator.ValidateAndThrowAsync(command, cancellationToken);
 
-        var tenant = _mapper.Map<Tenant>(command);
+        var tenant = _mapper.Map<Resident>(command);
 
         cancellationToken.ThrowIfCancellationRequested();
 

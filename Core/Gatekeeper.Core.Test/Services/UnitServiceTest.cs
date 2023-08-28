@@ -88,6 +88,6 @@ public class UnitServiceTest
         
         unit.Should().NotBeNull();
         unit.Identifier.Should().Be(command.Identifier);
-        unit.Tenants.Should().BeEmpty();
+        unit.Residents.Should().BeEmpty();
     }
 }

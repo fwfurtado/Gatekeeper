@@ -2,8 +2,8 @@
 
 namespace Gatekeeper.Core.Repositories;
 
-public interface ITenantRepository
+public interface IResidentRepository
 {
     Task<bool> ExistsDocumentAsync(string document, CancellationToken cancellationToken);
-    Task SaveAsync(Tenant tenant, CancellationToken cancellationToken);
+    Task SaveAsync(Resident resident, CancellationToken cancellationToken);
 }

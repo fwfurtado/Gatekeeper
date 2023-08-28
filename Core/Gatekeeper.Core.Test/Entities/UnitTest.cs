@@ -23,7 +23,7 @@ public class UnitTest
         var apartment = new Unit(identifier);
 
        apartment.Identifier.Should().Be(identifier);
-       apartment.Tenants.Should().BeEmpty();
+       apartment.Residents.Should().BeEmpty();
         
     }
 
@@ -35,9 +35,9 @@ public class UnitTest
         var apartment = new Unit(identifier);
         var tenant = new TenantFaker().Generate();
 
-        apartment.Tenants.Add(tenant);
+        apartment.Residents.Add(tenant);
         
-        apartment.Tenants.Should().NotBeEmpty()
+        apartment.Residents.Should().NotBeEmpty()
             .And.HaveCount(1);
     }
 }

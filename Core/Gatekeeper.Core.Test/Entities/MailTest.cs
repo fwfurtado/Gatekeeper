@@ -32,7 +32,7 @@ public class MailTest
         var tenant = new TenantFaker().Generate();
         var mail = new Mail(tenant, description);
 
-        mail.Tenant.Should().Be(tenant);
+        mail.Resident.Should().Be(tenant);
         mail.Description.Should().Be(description);
         mail.ArrivedAt.Should().BeBefore(DateTime.UtcNow);
         

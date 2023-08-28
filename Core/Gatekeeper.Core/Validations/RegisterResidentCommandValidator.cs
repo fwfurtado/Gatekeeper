@@ -7,10 +7,10 @@ using Gatekeeper.Core.Services;
 
 namespace Gatekeeper.Core.Validations;
 
-public class RegisterTenantCommandValidator: AbstractValidator<RegisterTenantCommand>
+public class RegisterResidentCommandValidator: AbstractValidator<RegisterResidentCommand>
 { 
     
-    public RegisterTenantCommandValidator(ITenantRepository repository, ICpfPolicy policy)
+    public RegisterResidentCommandValidator(IResidentRepository repository, ICpfPolicy policy)
     {
         RuleFor(r => r.Name).Length(1, 100);
         RuleFor(r => r.Document)

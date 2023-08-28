@@ -4,10 +4,10 @@ using Gatekeeper.Core.Entities;
 
 namespace Gatekeeper.Core.Test.Fakers;
 
-public sealed class TenantFaker : Faker<Tenant>
+public sealed class TenantFaker : Faker<Resident>
 {
     public TenantFaker()
     {
-        CustomInstantiator(f => new Tenant(f.Person.FullName, f.Person.Cpf()));
+        CustomInstantiator(f => new Resident(f.Person.FullName, f.Person.Cpf()));
     }
 }
