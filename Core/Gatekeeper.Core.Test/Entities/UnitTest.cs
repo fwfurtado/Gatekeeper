@@ -5,22 +5,22 @@ using Gatekeeper.Core.Test.Fakers;
 
 namespace Gatekeeper.Core.Test.Entities;
 
-public class ApartmentTest
+public class UnitTest
 {
     private readonly Faker _faker = new();
 
     [Test]
     public void IdentifierCannotBeBlank()
     {
-        Assert.Throws<ArgumentException>(() => new Apartment(""));
-        Assert.Throws<ArgumentException>(() => new Apartment(null));
+        Assert.Throws<ArgumentException>(() => new Unit(""));
+        Assert.Throws<ArgumentException>(() => new Unit(null));
     }
 
     [Test]
     public void ShouldCreateApartmentWithAllData()
     {
         var identifier = _faker.Address.BuildingNumber();
-        var apartment = new Apartment(identifier);
+        var apartment = new Unit(identifier);
 
        apartment.Identifier.Should().Be(identifier);
        apartment.Tenants.Should().BeEmpty();
@@ -32,7 +32,7 @@ public class ApartmentTest
     public void ShouldAddTenantsToApartment()
     {
         var identifier = _faker.Address.BuildingNumber();
-        var apartment = new Apartment(identifier);
+        var apartment = new Unit(identifier);
         var tenant = new TenantFaker().Generate();
 
         apartment.Tenants.Add(tenant);

@@ -32,7 +32,7 @@ public class TenantServiceTest
 
         var cpfValidator = new CpfPolicy();
         _validator = new RegisterTenantCommandValidator(_repositoryMock.Object, cpfValidator);
-        var config = new MapperConfiguration(cfg => cfg.AddProfile<GlobalMappingProfile>());
+        var config = AutoMapperConfiguration.Configure();
         var mapper = config.CreateMapper();
 
         _service = new TenantService(_repositoryMock.Object, _validator, mapper);

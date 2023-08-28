@@ -1,11 +1,11 @@
 namespace Gatekeeper.Core.Entities;
 
-public class Apartment
+public class Unit
 {
     public string Identifier { get; private set; }
-    public List<Tenant> Tenants { get; } = new();
-    
-    public Apartment(string identifier)
+    public List<Tenant> Tenants { get; }
+
+    public Unit(string identifier)
     {
         if (string.IsNullOrEmpty(identifier))
         {
@@ -13,6 +13,12 @@ public class Apartment
         }
 
         Identifier = identifier;
+        Tenants = new List<Tenant>();
+    }
+
+    public void AddTenant(Tenant tenant)
+    {
+        Tenants.Add(tenant);
     }
     
 }

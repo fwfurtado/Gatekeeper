@@ -4,7 +4,7 @@ using Gatekeeper.Core.Entities;
 
 namespace Gatekeeper.Core.Test.Fakers;
 
-public class TenantFaker : Faker<Tenant>
+public sealed class TenantFaker : Faker<Tenant>
 {
     public TenantFaker()
     {

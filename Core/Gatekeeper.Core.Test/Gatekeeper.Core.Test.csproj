@@ -23,6 +23,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Gatekeeper.Core\Gatekeeper.Core.csproj" />
+
+
     </ItemGroup>
 
 

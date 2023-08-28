@@ -24,6 +24,6 @@ public class RegisterTenantCommandValidator: AbstractValidator<RegisterTenantCom
                 {
                     context.AddFailure("Document already exists");
                 }
-            });;
+            });
     }
 }
