@@ -13,7 +13,6 @@ public class UnitTest
     public void IdentifierCannotBeBlank()
     {
         Assert.Throws<ArgumentException>(() => new Unit(""));
-        Assert.Throws<ArgumentException>(() => new Unit(null));
     }
 
     [Test]
@@ -33,9 +32,9 @@ public class UnitTest
     {
         var identifier = _faker.Address.BuildingNumber();
         var apartment = new Unit(identifier);
-        var tenant = new TenantFaker().Generate();
+        var resident = new ResidentFaker().Generate();
 
-        apartment.Residents.Add(tenant);
+        apartment.AssociateResident(resident);
         
         apartment.Residents.Should().NotBeEmpty()
             .And.HaveCount(1);

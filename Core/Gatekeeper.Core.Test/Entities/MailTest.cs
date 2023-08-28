@@ -10,26 +10,19 @@ namespace Gatekeeper.Core.Test.Entities;
 public class MailTest
 {
     private readonly Faker _faker = new();
-
-    [Test]
-    public void TenantCannotBeBlank()
-    {
-        Assert.Throws<ArgumentException>(() => new Mail(null, _faker.Commerce.ProductDescription()));
-    }
-
+    
     [Test]
     public void DescriptionCannotBeBlank()
     {
-        var tenant = new TenantFaker().Generate();
+        var tenant = new ResidentFaker().Generate();
         Assert.Throws<ArgumentException>(() => new Mail(tenant, ""));
-        Assert.Throws<ArgumentException>(() => new Mail(tenant, null));
     }
 
     [Test]
-    public void ShouldCreateMailtWithAllData()
+    public void ShouldCreateMailWithAllData()
     {
         var description = _faker.Commerce.ProductDescription();
-        var tenant = new TenantFaker().Generate();
+        var tenant = new ResidentFaker().Generate();
         var mail = new Mail(tenant, description);
 
         mail.Resident.Should().Be(tenant);

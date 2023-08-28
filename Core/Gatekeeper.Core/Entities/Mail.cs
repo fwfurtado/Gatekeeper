@@ -13,10 +13,6 @@ public class Mail
         {
             throw new ArgumentException("Description cannot be blank");
         }
-        if (resident is null)
-        {
-            throw new ArgumentException("Resident is required");
-        }
 
         Resident = resident;
         Description = description;

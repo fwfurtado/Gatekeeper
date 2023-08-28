@@ -2,8 +2,9 @@ namespace Gatekeeper.Core.Entities;
 
 public class Unit
 {
+    private readonly List<Resident> _residents; 
     public string Identifier { get; private set; }
-    public List<Resident> Residents { get; }
+    public IReadOnlyList<Resident> Residents => _residents;
 
     public Unit(string identifier)
     {
@@ -13,12 +14,12 @@ public class Unit
         }
 
         Identifier = identifier;
-        Residents = new List<Resident>();
+        _residents = new List<Resident>();
     }
 
     public void AssociateResident(Resident resident)
     {
-        Residents.Add(resident);
+        _residents.Add(resident);
     }
     
 }

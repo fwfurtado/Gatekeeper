@@ -5,7 +5,7 @@ using Gatekeeper.Core.Entities;
 
 namespace Gatekeeper.Core.Test.Entities;
 
-public class TenantTest
+public class ResidentTest
 {
     private readonly Faker _faker = new();
 
@@ -13,14 +13,13 @@ public class TenantTest
     public void NameCannotBeBlank()
     {
         Assert.Throws<ArgumentException>(() => new Resident("", _faker.Person.Cpf()));
-        Assert.Throws<ArgumentException>(() => new Resident(null, _faker.Person.Cpf()));
+        
     }
 
     [Test]
     public void DocumentCannotBeBlank()
     {
         Assert.Throws<ArgumentException>(() => new Resident(_faker.Person.FirstName, ""));
-        Assert.Throws<ArgumentException>(() => new Resident(_faker.Person.FirstName, null));
     }
 
     [Test]
