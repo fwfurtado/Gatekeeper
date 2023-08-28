@@ -3,6 +3,7 @@ using Bogus.DataSets;
 using FluentAssertions;
 using Gatekeeper.Core.Entities;
 using Gatekeeper.Core.Test.Fakers;
+using static FluentAssertions.FluentActions;
 
 namespace Gatekeeper.Core.Test.Entities;
 
@@ -15,7 +16,7 @@ public class MailTest
     public void DescriptionCannotBeBlank()
     {
         var tenant = new ResidentFaker().Generate();
-        Assert.Throws<ArgumentException>(() => new Mail(tenant, ""));
+        Invoking(() => new Mail(tenant, "")).Should().Throw<ArgumentException>();
     }
 
     [Test]

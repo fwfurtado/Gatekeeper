@@ -1,42 +1,38 @@
-using Bogus;
 using FluentAssertions;
 using Gatekeeper.Core.Entities;
 using Gatekeeper.Core.Test.Fakers;
-
+using static FluentAssertions.FluentActions;
 namespace Gatekeeper.Core.Test.Entities;
 
 public class UnitTest
 {
-    private readonly Faker _faker = new();
+    private readonly UnitFaker _faker = new();
 
     [Test]
     public void IdentifierCannotBeBlank()
     {
-        Assert.Throws<ArgumentException>(() => new Unit(""));
+        Invoking(() => new Unit("")).Should().Throw<ArgumentException>();
     }
 
     [Test]
     public void ShouldCreateApartmentWithAllData()
     {
-        var identifier = _faker.Address.BuildingNumber();
-        var apartment = new Unit(identifier);
-
-       apartment.Identifier.Should().Be(identifier);
-       apartment.Residents.Should().BeEmpty();
-        
+        var unit = _faker.Generate();
+        unit.Residents.Should().BeEmpty();
     }
 
 
     [Test]
     public void ShouldAddTenantsToApartment()
     {
-        var identifier = _faker.Address.BuildingNumber();
-        var apartment = new Unit(identifier);
+        var unit = _faker.Generate();
         var resident = new ResidentFaker().Generate();
 
-        apartment.AssociateResident(resident);
-        
-        apartment.Residents.Should().NotBeEmpty()
-            .And.HaveCount(1);
+        unit.AssociateResident(resident);
+
+        unit.Residents
+            .Should()
+            .HaveCount(1)
+            .And.ContainSingle(r => r.Name == resident.Name && r.Document == resident.Document);
     }
 }

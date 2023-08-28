@@ -8,6 +8,6 @@ public sealed class ResidentFaker : Faker<Resident>
 {
     public ResidentFaker()
     {
-        CustomInstantiator(f => new Resident(f.Person.FullName, f.Person.Cpf(includeFormatSymbols: false)));
+        CustomInstantiator(f => new Resident(f.Person.FullName, new CpfFaker().Generate()));
     }
 }
