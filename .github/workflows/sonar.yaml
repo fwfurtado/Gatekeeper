@@ -35,7 +35,7 @@ jobs:
       - name: Install SonarCloud scanners
         run: dotnet tool install --global dotnet-sonarscanner
       - name: Install dotnet-coverage
-        run: dotnet tool install --global dotnet-coverage
+        run: dotnet tool install --global coverlet.console
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
