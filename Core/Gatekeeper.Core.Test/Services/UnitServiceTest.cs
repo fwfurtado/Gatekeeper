@@ -1,13 +1,15 @@
 using AutoMapper;
+using Bogus;
 using FluentAssertions;
-using FluentValidation;
 using Gatekeeper.Core.Commands;
 using Gatekeeper.Core.Configurations;
+using Gatekeeper.Core.Policies;
 using Gatekeeper.Core.Repositories;
 using Gatekeeper.Core.Services;
 using Gatekeeper.Core.Test.Fakers;
 using Gatekeeper.Core.Validations;
 using Moq;
+using ValidationException = FluentValidation.ValidationException;
 
 namespace Gatekeeper.Core.Test.Services;
 
@@ -15,7 +17,8 @@ public class UnitServiceTest
 {
     private Mock<IUnitRepository> _repositoryMock = null!;
     private IMapper _mapper = null!;
-    private RegisterUnitCommandValidator _validator = null!;
+    private RegisterUnitCommandValidator _unitValidator = null!;
+    private RegisterResidentCommandValidator _residentValidator = null!;
 
     [SetUp]
     public void BeforeEach()
@@ -25,13 +28,14 @@ public class UnitServiceTest
         var configuration = AutoMapperConfiguration.Configure();
         _mapper = configuration.CreateMapper();
 
-        _validator = new RegisterUnitCommandValidator(_repositoryMock.Object);
+        _unitValidator = new RegisterUnitCommandValidator(new UnitIdentifierDuplicatedPolicy(_repositoryMock.Object));
+        _residentValidator = new RegisterResidentCommandValidator(new CpfPolicy());
     }
     
     [Test]
     public void ShouldFailWhenCommandIsInvalid()
     {
-        var service = new UnitService(_repositoryMock.Object, _validator, _mapper);
+        var service = new UnitService(_repositoryMock.Object, _unitValidator, _residentValidator, _mapper);
 
         var command = new RegisterUnitCommand(string.Empty);
         
@@ -41,7 +45,7 @@ public class UnitServiceTest
     [Test]
     public void ShouldFailWhenIdentifierAlreadyExists()
     {
-        var service = new UnitService(_repositoryMock.Object, _validator, _mapper);
+        var service = new UnitService(_repositoryMock.Object, _unitValidator, _residentValidator, _mapper);
 
         var command = new RegisterUnitCommandFaker().Generate();
         
@@ -54,7 +58,7 @@ public class UnitServiceTest
     [Test]
     public void ShouldFailWhenCancellationWasRequired()
     {
-        var service = new UnitService(_repositoryMock.Object, _validator, _mapper);
+        var service = new UnitService(_repositoryMock.Object, _unitValidator, _residentValidator, _mapper);
 
         var command = new RegisterUnitCommandFaker().Generate();
         
@@ -73,7 +77,7 @@ public class UnitServiceTest
     [Test]
     public async Task ShouldCreateAnEmptyUnit()
     {
-        var service = new UnitService(_repositoryMock.Object, _validator, _mapper);
+        var service = new UnitService(_repositoryMock.Object, _unitValidator, _residentValidator, _mapper);
 
         var command = new RegisterUnitCommandFaker().Generate();
         
@@ -89,5 +93,33 @@ public class UnitServiceTest
         unit.Should().NotBeNull();
         unit.Identifier.Should().Be(command.Identifier);
         unit.Residents.Should().BeEmpty();
+    }
+    
+    [Test]
+    public async Task ShouldAddResidentToUnit()
+    {
+        var service = new UnitService(_repositoryMock.Object, _unitValidator, _residentValidator, _mapper);
+        
+        var cancellationTokenSource = new CancellationTokenSource();
+        
+        var token = cancellationTokenSource.Token;
+        
+        var unit = new UnitFaker().Generate();
+        
+        _repositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(unit);
+
+        var unitId = new Faker().Random.Long(min: 1);
+        
+        var residentCommand = new RegisterResidentCommandFaker().Generate();
+        
+        var resident = await service.RegisterResident(unitId, residentCommand, token);
+        
+        resident.Should().NotBeNull();
+        resident.Name.Should().Be(residentCommand.Name);
+        resident.Document.Should().Be(residentCommand.Document);
+        
+        unit.Residents.Should().HaveCount(1);
+        unit.Residents.Should().ContainSingle(r => r.Name == resident.Name && r.Document == resident.Document);
     }
 }

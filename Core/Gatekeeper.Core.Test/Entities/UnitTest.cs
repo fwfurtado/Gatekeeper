@@ -23,7 +23,7 @@ public class UnitTest
 
 
     [Test]
-    public void ShouldAddTenantsToApartment()
+    public void ShouldAddResidentToUnit()
     {
         var unit = _faker.Generate();
         var resident = new ResidentFaker().Generate();

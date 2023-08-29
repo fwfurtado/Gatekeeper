@@ -8,6 +8,6 @@ public sealed class CpfFaker : Faker<Cpf>
 {
     public CpfFaker()
     {
-        CustomInstantiator(f => Cpf.Parse(f.Person.Cpf(includeFormatSymbols: false)));
+        CustomInstantiator(f => f.Person.Cpf(includeFormatSymbols: false));
     }
 }

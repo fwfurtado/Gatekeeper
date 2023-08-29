@@ -1,3 +1,5 @@
-﻿namespace Gatekeeper.Core.Commands;
+﻿using Gatekeeper.Core.ValueObjects;
 
-public record RegisterResidentCommand(string Name, string Document);
+namespace Gatekeeper.Core.Commands;
+
+public record RegisterResidentCommand(string Name, Cpf Document);
