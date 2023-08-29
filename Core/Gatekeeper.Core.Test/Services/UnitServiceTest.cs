@@ -1,6 +1,7 @@
 using AutoMapper;
 using Bogus;
 using FluentAssertions;
+using FluentValidation;
 using Gatekeeper.Core.Commands;
 using Gatekeeper.Core.Configurations;
 using Gatekeeper.Core.Policies;
@@ -10,6 +11,7 @@ using Gatekeeper.Core.Test.Fakers;
 using Gatekeeper.Core.Validations;
 using Moq;
 using ValidationException = FluentValidation.ValidationException;
+using static FluentAssertions.FluentActions;
 
 namespace Gatekeeper.Core.Test.Services;
 
@@ -121,5 +123,64 @@ public class UnitServiceTest
         
         unit.Residents.Should().HaveCount(1);
         unit.Residents.Should().ContainSingle(r => r.Name == resident.Name && r.Document == resident.Document);
+        
+        _repositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Once);
+        _repositoryMock.Verify(r => r.UpdateAsync(unit, It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Test]
+    public void ShouldFailToAddResidentToUnitWhenUnitDoesNotExists()
+    {
+        var service = new UnitService(_repositoryMock.Object, _unitValidator, _residentValidator, _mapper);
+        
+        var cancellationTokenSource = new CancellationTokenSource();
+        
+        var token = cancellationTokenSource.Token;
+        
+        _repositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(() => null);
+
+        var unitId = new Faker().Random.Long(min: 1);
+        
+        var residentCommand = new RegisterResidentCommandFaker().Generate();
+        
+        Invoking(() => service.RegisterResident(unitId, residentCommand, token))
+            .Should().ThrowAsync<ValidationException>();
+        
+        _repositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Test]
+    public void ShouldFailToAddResidentToUnitWhenCommandIsInvalid()
+    {
+        var residentValidator = new InlineValidator<RegisterResidentCommand>();
+
+        residentValidator
+            .RuleFor(c => c.Document)
+            .Must(_ => false);
+        
+        residentValidator
+            .RuleFor(c => c.Document)
+            .Must(_ => false);
+        
+        var service = new UnitService(_repositoryMock.Object, _unitValidator, residentValidator, _mapper);
+        
+        var cancellationTokenSource = new CancellationTokenSource();
+        
+        var token = cancellationTokenSource.Token;
+        
+        var unit = new UnitFaker().Generate();
+        
+        _repositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(unit);
+
+        var unitId = new Faker().Random.Long(min: 1);
+        
+        var residentCommand = new RegisterResidentCommandFaker().Generate();
+        
+        Invoking(() => service.RegisterResident(unitId, residentCommand, token))
+            .Should().ThrowAsync<ValidationException>();
+        
+        _repositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 }
