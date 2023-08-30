@@ -1,7 +1,6 @@
 using FluentValidation;
 using Gatekeeper.Core.Commands;
 using Gatekeeper.Core.Policies;
-using Gatekeeper.Core.Repositories;
 
 namespace Gatekeeper.Core.Validations;
 

@@ -10,6 +10,6 @@ public class GlobalMappingProfile : Profile
     {
         CreateMap<RegisterResidentCommand, Resident>();
         CreateMap<RegisterUnitCommand, Unit>()
-            .ConvertUsing(command => new Unit(command.Identifier));
+            .IgnoreAllPropertiesWithAnInaccessibleSetter();
     }
 }

@@ -30,7 +30,7 @@ public class UnitService : IUnitService
     public async Task<Unit> RegisterUnitAsync(RegisterUnitCommand command, CancellationToken cancellationToken)
     {
         await _registerUnitValidator.ValidateAndThrowAsync(command, cancellationToken);
-
+        
         var unit = _mapper.Map<Unit>(command);
 
         cancellationToken.ThrowIfCancellationRequested();
@@ -40,7 +40,7 @@ public class UnitService : IUnitService
         return unit;
     }
 
-    public async Task<Resident> RegisterResident(long unitId, RegisterResidentCommand command, CancellationToken cancellationToken)
+    public async Task<Resident> RegisterResidentAsync(long unitId, RegisterResidentCommand command, CancellationToken cancellationToken)
     {
 
         var validationResult = await _registerResidentValidator.ValidateAsync(command, cancellationToken);

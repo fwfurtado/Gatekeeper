@@ -30,7 +30,8 @@ public class UnitServiceTest
         var configuration = AutoMapperConfiguration.Configure();
         _mapper = configuration.CreateMapper();
 
-        _unitValidator = new RegisterUnitCommandValidator(new UnitIdentifierDuplicatedPolicy(_repositoryMock.Object));
+        var unitRegisterPolicy = new UnitIdentifierDuplicatedPolicy(_repositoryMock.Object);
+        _unitValidator = new RegisterUnitCommandValidator(unitRegisterPolicy);
         _residentValidator = new RegisterResidentCommandValidator(new CpfPolicy());
     }
     
@@ -115,7 +116,7 @@ public class UnitServiceTest
         
         var residentCommand = new RegisterResidentCommandFaker().Generate();
         
-        var resident = await service.RegisterResident(unitId, residentCommand, token);
+        var resident = await service.RegisterResidentAsync(unitId, residentCommand, token);
         
         resident.Should().NotBeNull();
         resident.Name.Should().Be(residentCommand.Name);
@@ -144,7 +145,7 @@ public class UnitServiceTest
         
         var residentCommand = new RegisterResidentCommandFaker().Generate();
         
-        Invoking(() => service.RegisterResident(unitId, residentCommand, token))
+        Invoking(() => service.RegisterResidentAsync(unitId, residentCommand, token))
             .Should().ThrowAsync<ValidationException>();
         
         _repositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Once);
@@ -178,7 +179,7 @@ public class UnitServiceTest
         
         var residentCommand = new RegisterResidentCommandFaker().Generate();
         
-        Invoking(() => service.RegisterResident(unitId, residentCommand, token))
+        Invoking(() => service.RegisterResidentAsync(unitId, residentCommand, token))
             .Should().ThrowAsync<ValidationException>();
         
         _repositoryMock.Verify(r => r.GetByIdAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Once);
