@@ -40,6 +40,11 @@ public class UnitService : IUnitService
         return unit;
     }
 
+    public Task<Unit?> GetUnitByIdAsync(long unitId, CancellationToken cancellationToken)
+    {
+        return _repository.GetByIdAsync(unitId, cancellationToken);
+    }
+
     public async Task<Resident> RegisterResidentAsync(long unitId, RegisterResidentCommand command, CancellationToken cancellationToken)
     {
 
