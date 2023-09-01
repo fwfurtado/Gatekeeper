@@ -37,7 +37,7 @@ docker compose up -d
 
 3. Run migrations
 ```bash
- dotnet run --project Database/Gatekeeper.Migration $DATABASE_CONNECTION_STRING <absolute path for migrations folder>
+ dotnet run --project Database/Gatekeeper.Migration $DATABASE_CONNECTION_STRING <optinally you can use an absolute path for migrations folder>
 ```
 4. Run the application
     
