@@ -10,6 +10,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rest", "Rest", "{C10FE211-F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gatekeeper.Rest", "Rest\Gatekeeper.Rest\Gatekeeper.Rest.csproj", "{CBE1EF53-FE4C-4931-80DF-6BC1C2C70539}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{BA9A7FDA-4711-43BB-B1D4-AC1DC781AF2E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gatekeeper.Migration", "Database\Gatekeeper.Migration\Gatekeeper.Migration.csproj", "{A7E42B42-FE9D-4DB7-B744-8939B5FE8CEC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +23,7 @@ Global
 		{EC4F63E7-5085-4BB9-A748-6385C352283C} = {780D20F5-41D5-4C90-8106-A24CD8DE6302}
 		{6BD2C014-AA0E-4E66-B0F1-01AFDE8E1488} = {780D20F5-41D5-4C90-8106-A24CD8DE6302}
 		{CBE1EF53-FE4C-4931-80DF-6BC1C2C70539} = {C10FE211-F603-48BD-A37B-5AB338006347}
+		{A7E42B42-FE9D-4DB7-B744-8939B5FE8CEC} = {BA9A7FDA-4711-43BB-B1D4-AC1DC781AF2E}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{EC4F63E7-5085-4BB9-A748-6385C352283C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -33,5 +38,9 @@ Global
 		{CBE1EF53-FE4C-4931-80DF-6BC1C2C70539}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBE1EF53-FE4C-4931-80DF-6BC1C2C70539}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBE1EF53-FE4C-4931-80DF-6BC1C2C70539}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7E42B42-FE9D-4DB7-B744-8939B5FE8CEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7E42B42-FE9D-4DB7-B744-8939B5FE8CEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7E42B42-FE9D-4DB7-B744-8939B5FE8CEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7E42B42-FE9D-4DB7-B744-8939B5FE8CEC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
