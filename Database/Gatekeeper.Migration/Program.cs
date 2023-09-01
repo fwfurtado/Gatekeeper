@@ -4,58 +4,96 @@ using System.Reflection;
 using DbUp;
 using static System.Console;
 
-if (args.Length == 0)
+try
 {
-    ForegroundColor = ConsoleColor.Red;
-    WriteLine("Connection string and Migrations path is required.");
-    ResetColor();
+    if (args.Length == 0)
+    {
+        throw new ArgumentException("Connection string and Migrations path is required.");
+    }
+
+    var connectionString =
+        args[0]
+        ?? throw new ArgumentException("Connection string is required.");
+
+    var migrationPath =
+        args.Length > 1
+            ? args[1]
+            : GetMigrationPathInAssembly();
+
+
+    EnsureMigrationPathIsValid(migrationPath);
+
+
+    EnsureDatabase.For.PostgresqlDatabase(connectionString);
+
+    var engine =
+        DeployChanges.To
+            .PostgresqlDatabase(connectionString)
+            .WithScriptsFromFileSystem(migrationPath)
+            .LogToConsole()
+            .Build();
+
+    var connected = engine.TryConnect(out var error);
+
+    if (!connected)
+    {
+        throw new InvalidOperationException(error);
+    }
+
+    var result = engine.PerformUpgrade();
+
+    if (!result.Successful)
+    {
+        throw result.Error;
+    }
+
+    PrintSuccess("Done");
+
+    return 0;
+}
+catch (Exception ex)
+{
+    PrintError(ex.Message);
     return -1;
 }
 
-
-var connectionString =
-    args[0]
-    ?? throw new ArgumentException("Connection string is required.");
-
-var migrationPath =
-    args[1]
-    ?? throw new ArgumentException("Migration path is required.");
-
-EnsureDatabase.For.PostgresqlDatabase(connectionString);
-
-var engine =
-    DeployChanges.To
-        .PostgresqlDatabase(connectionString)
-        // .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly(), s => s.EndsWith(".sql"))
-        .WithScriptsFromFileSystem(migrationPath)
-        .LogToConsole()
-        .Build();
-
-var connected = engine.TryConnect(out var error);
-
-if (!connected)
+void EnsureMigrationPathIsValid(string s)
 {
-    ForegroundColor = ConsoleColor.Red;
-    WriteLine(error);
-    ResetColor();
-    return -1;
+    if (!Directory.Exists(s))
+    {
+        throw new DirectoryNotFoundException($"Migrations folder {s} not found.");
+    }
+
+    var migrationFiles = Directory.GetFiles(s, "*.sql", SearchOption.TopDirectoryOnly);
+
+    if (migrationFiles.Length == 0)
+    {
+        throw new FileNotFoundException("No migration files found.");
+    }
 }
 
-var result = engine.PerformUpgrade();
-
-if (!result.Successful)
+string GetMigrationPathInAssembly()
 {
-    ForegroundColor = ConsoleColor.Red;
-    WriteLine(result.Error);
-    ResetColor();
-#if DEBUG
-    ReadLine();
-#endif
-    return -1;
+    var assembly = Assembly.GetExecutingAssembly();
+    var migrations = Path.Combine(Path.GetDirectoryName(assembly.Location)!, "Migrations");
+
+    if (!Directory.Exists(migrations)) throw new DirectoryNotFoundException("Migrations folder not found.");
+
+    PrintSuccess("Migrations folder already exists.");
+
+    return migrations;
 }
 
-ForegroundColor = ConsoleColor.Green;
-WriteLine("Success!");
-ResetColor();
+void PrintError(string message)
+{
+    ForegroundColor = ConsoleColor.Red;
+    WriteLine(message);
+    ResetColor();
+}
 
-return 0;
+void PrintSuccess(string message)
+{
+    ForegroundColor = ConsoleColor.Green;
+    WriteLine(message);
+    ResetColor();
+}
