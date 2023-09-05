@@ -8,7 +8,8 @@ public class GlobalMappingProfile : Profile
 {
     public GlobalMappingProfile()
     {
-        CreateMap<RegisterResidentCommand, Resident>();
+        CreateMap<RegisterResidentCommand, Resident>()
+            .IgnoreAllPropertiesWithAnInaccessibleSetter();
         CreateMap<RegisterUnitCommand, Unit>()
             .IgnoreAllPropertiesWithAnInaccessibleSetter();
     }
