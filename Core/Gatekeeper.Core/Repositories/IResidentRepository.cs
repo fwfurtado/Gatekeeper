@@ -4,6 +4,7 @@ namespace Gatekeeper.Core.Repositories;
 
 public interface IResidentRepository
 {
-    Task<bool> ExistsDocumentAsync(string document, CancellationToken cancellationToken);
     Task SaveAsync(Resident resident, CancellationToken cancellationToken);
+    Task<bool> ExistsDocumentAsync(string document, CancellationToken cancellationToken);
+    Task<Resident?> GetByIdAsync(long residentId, CancellationToken cancellationToken);
 }

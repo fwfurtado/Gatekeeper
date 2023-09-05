@@ -31,7 +31,7 @@ public class UnitController : ControllerBase
         return Ok(command);
     }
     
-    [HttpGet("/{unitId}")]
+    [HttpGet("{unitId}")]
     public async Task<IActionResult> Get(long unitId, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Get unit with id {UnitId}", unitId);
