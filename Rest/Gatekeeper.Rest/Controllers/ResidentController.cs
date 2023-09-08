@@ -1,6 +1,7 @@
 ﻿using Gatekeeper.Core.Commands;
 using Gatekeeper.Core.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Gatekeeper.Rest.Controllers;
 
@@ -26,15 +27,15 @@ public class ResidentController : ControllerBase
 
         try
         {
-            await _service.RegisterResidentAsync(command, cancellationToken);
+            var resident = await _service.RegisterResidentAsync(command, cancellationToken);
             _logger.LogInformation("Resident registered with success");
-            return Ok(command);
+            return CreatedAtAction("Post", command);
         }
         catch (InvalidOperationException invEx)
         {
             return Conflict(invEx.Message);
         }
-        catch (Exception ex) 
+        catch (ValidationException ex) 
         {
             return BadRequest(ex.Message);
         }

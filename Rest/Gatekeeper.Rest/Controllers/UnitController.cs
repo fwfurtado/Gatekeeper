@@ -28,7 +28,7 @@ public class UnitController : ControllerBase
         
         _logger.LogInformation("Unit registered with success");
         
-        return Ok(command);
+        return CreatedAtAction("Post", command);
     }
     
     [HttpGet("{unitId}")]
