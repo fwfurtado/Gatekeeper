@@ -29,10 +29,9 @@ public class UnitServiceTest
         
         var configuration = AutoMapperConfiguration.Configure();
         _mapper = configuration.CreateMapper();
-
-        var unitRegisterPolicy = new UnitIdentifierDuplicatedPolicy(_repositoryMock.Object);
-        _unitValidator = new RegisterUnitCommandValidator(unitRegisterPolicy);
-        _residentValidator = new RegisterResidentCommandValidator(new CpfPolicy());
+        
+        _unitValidator = new RegisterUnitCommandValidator();
+        _residentValidator = new RegisterResidentCommandValidator(new CpfSpecification());
     }
     
     [Test]

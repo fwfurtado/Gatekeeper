@@ -13,7 +13,7 @@ public class RegisterResidentCommandValidatorTest
     [Test]
     public void ShouldBeValid()
     {
-        var policyMock = new Mock<ICpfPolicy>();
+        var policyMock = new Mock<ICpfSpecification>();
         
         policyMock.Setup(p => p.IsValid(It.IsAny<string>())).Returns(true);
         
@@ -30,7 +30,7 @@ public class RegisterResidentCommandValidatorTest
     [Test]
     public void ShouldBeInvalidWhenNameIsInvalid()
     {
-        var policyMock = new Mock<ICpfPolicy>();
+        var policyMock = new Mock<ICpfSpecification>();
         
         policyMock.Setup(p => p.IsValid(It.IsAny<string>())).Returns(true);
         
@@ -48,7 +48,7 @@ public class RegisterResidentCommandValidatorTest
     [Test]
     public void ShouldBeInvalidWhenDocumentIsInvalid()
     {
-        var policyMock = new Mock<ICpfPolicy>();
+        var policyMock = new Mock<ICpfSpecification>();
         
         policyMock.Setup(p => p.IsValid(It.IsAny<string>())).Returns(false);
         

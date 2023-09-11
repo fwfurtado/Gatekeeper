@@ -6,12 +6,12 @@ namespace Gatekeeper.Core.Test.Policies;
 
 public class CpfPolicyTest
 {
-    private readonly CpfPolicy _cpfPolicy = new();
+    private readonly CpfSpecification _cpfSpecification = new();
 
     [TestCase("12345678901")]
     public void ShouldReturnFalseWhenCpfIsInvalid(string cpf)
     {
-        var result = _cpfPolicy.IsValid(cpf);
+        var result = _cpfSpecification.IsValid(cpf);
 
         Assert.That(result, Is.False);
     }
@@ -19,7 +19,7 @@ public class CpfPolicyTest
     [TestCaseSource(nameof(ValidCpf), new object[] { 30 })]
     public void ShouldReturnTrueWhenCpfIsValid(string cpf)
     {
-        var result = _cpfPolicy.IsValid(cpf);
+        var result = _cpfSpecification.IsValid(cpf);
 
         Assert.That(result, Is.True);
     }

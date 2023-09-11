@@ -27,8 +27,7 @@ builder.Services.AddAutoMapper(cfg =>
 
 builder.Services.AddScoped<IConnectionFactory, ConnectionFactory>();
 builder.Services.AddScoped<IUnitRepository, UnitRepository>();
-builder.Services.AddScoped<IUnitIdentifierDuplicatedPolicy, UnitIdentifierDuplicatedPolicy>();
-builder.Services.AddScoped<ICpfPolicy, CpfPolicy>();
+builder.Services.AddScoped<ICpfSpecification, CpfSpecification>();
 builder.Services.AddScoped<IValidator<RegisterUnitCommand>, RegisterUnitCommandValidator>();
 builder.Services.AddScoped<IValidator<RegisterResidentCommand>, RegisterResidentCommandValidator>();
 builder.Services.AddScoped<IUnitService, UnitService>();

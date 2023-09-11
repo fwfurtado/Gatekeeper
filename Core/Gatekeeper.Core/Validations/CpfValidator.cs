@@ -6,12 +6,12 @@ namespace Gatekeeper.Core.Validations;
 
 public class CpfValidator: AbstractValidator<Cpf>
 {
-    public CpfValidator(ICpfPolicy policy)
+    public CpfValidator(ICpfSpecification specification)
     {
         RuleFor(c => c.Number)
             .NotEmpty()
             .Length(11)
-            .Must(policy.IsValid)
+            .Must(specification.IsValid)
             .WithMessage("Invalid CPF");
     }
 }

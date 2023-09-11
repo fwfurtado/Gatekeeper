@@ -6,19 +6,19 @@ namespace Gatekeeper.Core.Configurations.Validations;
 
 public class CpfValidation<T> : PropertyValidator<T, string>
 {
-    private readonly IPolicy<string> _policy;
+    private readonly ISpecification<string> _specification;
 
     public override string Name => "CpfValidation";
 
     protected override string GetDefaultMessageTemplate(string errorCode) => "{PropertyName} is not a valid CPF";
 
-    public CpfValidation(IPolicy<string> policy)
+    public CpfValidation(ISpecification<string> specification)
     {
-        _policy = policy;
+        _specification = specification;
     }
 
     public override bool IsValid(ValidationContext<T> context, string value)
     {
-        return _policy.IsValid(value);
+        return _specification.IsValid(value);
     }
 }

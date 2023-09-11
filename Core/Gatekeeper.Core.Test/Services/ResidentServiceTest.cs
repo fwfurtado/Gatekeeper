@@ -29,7 +29,7 @@ public class ResidentServiceTest
         var configuration = AutoMapperConfiguration.Configure();
         _mapper = configuration.CreateMapper();
 
-        _residentValidator = new RegisterResidentCommandValidator(new CpfPolicy());
+        _residentValidator = new RegisterResidentCommandValidator(new CpfSpecification());
     }
 
     [Test]

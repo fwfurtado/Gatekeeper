@@ -1,10 +1,10 @@
 namespace Gatekeeper.Core.Policies;
 
-public interface ICpfPolicy : IPolicy<string>
+public interface ICpfSpecification : ISpecification<string>
 {
 }
 
-public class CpfPolicy : ICpfPolicy
+public class CpfSpecification : ICpfSpecification
 {
     private static readonly int[] FirstMultipliers = { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
     private static readonly int[] SecondMultipliers = { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
