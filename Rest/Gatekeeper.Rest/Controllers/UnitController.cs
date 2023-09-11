@@ -28,10 +28,10 @@ public class UnitController : ControllerBase
         
         _logger.LogInformation("Unit registered with success");
         
-        return Ok(command);
+        return CreatedAtAction("Post", command);
     }
     
-    [HttpGet("/{unitId}")]
+    [HttpGet("{unitId}")]
     public async Task<IActionResult> Get(long unitId, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Get unit with id {UnitId}", unitId);

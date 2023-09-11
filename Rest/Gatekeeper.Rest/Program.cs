@@ -32,6 +32,8 @@ builder.Services.AddScoped<ICpfPolicy, CpfPolicy>();
 builder.Services.AddScoped<IValidator<RegisterUnitCommand>, RegisterUnitCommandValidator>();
 builder.Services.AddScoped<IValidator<RegisterResidentCommand>, RegisterResidentCommandValidator>();
 builder.Services.AddScoped<IUnitService, UnitService>();
+builder.Services.AddScoped<IResidentService, ResidentService>();
+builder.Services.AddScoped<IResidentRepository, ResidentRepository>();
 
 var app = builder.Build();
 
