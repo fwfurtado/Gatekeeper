@@ -21,7 +21,7 @@ public class ResidentController : ControllerBase
 
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] RegisterResidentCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreatResident([FromBody] RegisterResidentCommand command, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Register a new resident with params {Params}", command);
 
@@ -29,7 +29,7 @@ public class ResidentController : ControllerBase
         {
             var resident = await _service.RegisterResidentAsync(command, cancellationToken);
             _logger.LogInformation("Resident registered with success");
-            return CreatedAtAction("Post", command);
+            return CreatedAtAction(nameof(ShowResident), resident.Id);
         }
         catch (InvalidOperationException invEx)
         {
@@ -42,8 +42,8 @@ public class ResidentController : ControllerBase
         
     }
 
-    [HttpGet("{residentId}")]
-    public async Task<IActionResult> Get(long residentId, CancellationToken cancellationToken)
+    [HttpGet("{residentId:long}")]
+    public async Task<IActionResult> ShowResident(long residentId, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Get resident with id {ResidentId}", residentId);
 

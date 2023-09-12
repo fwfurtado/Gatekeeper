@@ -1,4 +1,4 @@
-namespace Gatekeeper.Core.Policies;
+namespace Gatekeeper.Core.Specifications;
 
 public interface ISpecification<in T>
 {

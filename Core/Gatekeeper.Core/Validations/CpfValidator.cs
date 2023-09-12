@@ -1,5 +1,5 @@
 using FluentValidation;
-using Gatekeeper.Core.Policies;
+using Gatekeeper.Core.Specifications;
 using Gatekeeper.Core.ValueObjects;
 
 namespace Gatekeeper.Core.Validations;

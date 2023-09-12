@@ -1,12 +1,12 @@
+using System.Data;
 using FluentValidation;
 using Gatekeeper.Core.Commands;
 using Gatekeeper.Core.Configurations;
-using Gatekeeper.Core.Infra;
-using Gatekeeper.Core.Policies;
 using Gatekeeper.Core.Repositories;
 using Gatekeeper.Core.Services;
+using Gatekeeper.Core.Specifications;
 using Gatekeeper.Core.Validations;
-using Gatekeeper.Rest;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +25,9 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.AddProfile<GlobalMappingProfile>();
 });
 
-builder.Services.AddScoped<IConnectionFactory, ConnectionFactory>();
+
+builder.Services.AddTransient<IDbConnectionFactory, DbConnectionFactory>();
+
 builder.Services.AddScoped<IUnitRepository, UnitRepository>();
 builder.Services.AddScoped<ICpfSpecification, CpfSpecification>();
 builder.Services.AddScoped<IValidator<RegisterUnitCommand>, RegisterUnitCommandValidator>();

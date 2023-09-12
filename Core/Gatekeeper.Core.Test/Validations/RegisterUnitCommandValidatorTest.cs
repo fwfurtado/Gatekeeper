@@ -1,7 +1,6 @@
 using FluentAssertions;
 using FluentValidation.TestHelper;
 using Gatekeeper.Core.Commands;
-using Gatekeeper.Core.Policies;
 using Gatekeeper.Core.Test.Fakers;
 using Gatekeeper.Core.Validations;
 using Moq;

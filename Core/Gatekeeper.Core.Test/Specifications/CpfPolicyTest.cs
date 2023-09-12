@@ -1,14 +1,18 @@
 using Bogus;
 using Bogus.Extensions.Brazil;
-using Gatekeeper.Core.Policies;
+using Gatekeeper.Core.Specifications;
 
-namespace Gatekeeper.Core.Test.Policies;
+namespace Gatekeeper.Core.Test.Specifications;
 
 public class CpfPolicyTest
 {
     private readonly CpfSpecification _cpfSpecification = new();
 
+    [TestCase("")]
+    [TestCase(null)]
     [TestCase("12345678901")]
+    [TestCase("1234")]
+    [TestCase("1A345678901")]
     public void ShouldReturnFalseWhenCpfIsInvalid(string cpf)
     {
         var result = _cpfSpecification.IsValid(cpf);

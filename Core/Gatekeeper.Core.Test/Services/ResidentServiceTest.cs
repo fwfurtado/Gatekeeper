@@ -4,9 +4,10 @@ using FluentAssertions;
 using FluentValidation;
 using Gatekeeper.Core.Commands;
 using Gatekeeper.Core.Configurations;
-using Gatekeeper.Core.Policies;
+using Gatekeeper.Core.Entities;
 using Gatekeeper.Core.Repositories;
 using Gatekeeper.Core.Services;
+using Gatekeeper.Core.Specifications;
 using Gatekeeper.Core.Test.Fakers;
 using Gatekeeper.Core.Validations;
 using Moq;
@@ -93,5 +94,22 @@ public class ResidentServiceTest
         resident.Should().NotBeNull();
         resident.Name.Should().Be(command.Name);
         resident.Document.Should().Be(command.Document);
+    }
+    
+    [Test]
+    public async Task ShouldReturnNullWhenResidentDoesNotExist()
+    {
+        var service = new ResidentService(_repositoryMock.Object, _residentValidator, _mapper);
+
+        var cancellationTokenSource = new CancellationTokenSource();
+        
+        var token = cancellationTokenSource.Token;
+        
+        _repositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((Resident?) null);
+        
+        var unit = await service.GetResidentByIdAsync(1, token);
+        
+        unit.Should().BeNull();
     }
 }
