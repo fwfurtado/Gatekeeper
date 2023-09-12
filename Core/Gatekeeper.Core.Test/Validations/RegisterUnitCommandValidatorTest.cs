@@ -15,17 +15,11 @@ public class RegisterUnitCommandValidatorTest
     {
         var command = new RegisterUnitCommandFaker().Generate();
         
-        var policy = new Mock<IUnitIdentifierDuplicatedPolicy>();
-        
-        policy.Setup(p => p.IsValidAsync(command.Identifier, It.IsAny<CancellationToken>())).ReturnsAsync(true);
-        
-        var validator = new RegisterUnitCommandValidator(policy.Object);
+        var validator = new RegisterUnitCommandValidator();
         
         var result = await validator.TestValidateAsync(command);
         
         result.ShouldNotHaveAnyValidationErrors();
-        
-        policy.Verify(p => p.IsValidAsync(command.Identifier, It.IsAny<CancellationToken>()), Times.Once);
     }
     
     [Test]
@@ -33,34 +27,11 @@ public class RegisterUnitCommandValidatorTest
     {
         var command = new RegisterUnitCommand(string.Empty);
         
-        var policy = new Mock<IUnitIdentifierDuplicatedPolicy>();
         
-        policy.Setup(p => p.IsValidAsync(command.Identifier, It.IsAny<CancellationToken>())).ReturnsAsync(true);
-        
-        var validator = new RegisterUnitCommandValidator(policy.Object);
+        var validator = new RegisterUnitCommandValidator();
         
         var result = await validator.TestValidateAsync(command);
         
         result.ShouldHaveValidationErrorFor(c => c.Identifier);
-        
-        policy.Verify(p => p.IsValidAsync(command.Identifier, It.IsAny<CancellationToken>()), Times.Once);
-    }
-    
-    [Test]
-    public async Task ShouldBeInvalidWhenIdentifierAlreadyExists()
-    {
-        var command = new RegisterUnitCommandFaker().Generate();
-        
-        var policy = new Mock<IUnitIdentifierDuplicatedPolicy>();
-        
-        policy.Setup(p => p.IsValidAsync(command.Identifier, It.IsAny<CancellationToken>())).ReturnsAsync(false);
-        
-        var validator = new RegisterUnitCommandValidator(policy.Object);
-        
-        var result = await validator.TestValidateAsync(command);
-        
-        result.ShouldHaveValidationErrorFor(c => c.Identifier);
-        
-        policy.Verify(p => p.IsValidAsync(command.Identifier, It.IsAny<CancellationToken>()), Times.Once);
     }
 }

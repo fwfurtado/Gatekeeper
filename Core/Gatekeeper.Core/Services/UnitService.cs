@@ -30,6 +30,12 @@ public class UnitService : IUnitService
     public async Task<Unit> RegisterUnitAsync(RegisterUnitCommand command, CancellationToken cancellationToken)
     {
         await _registerUnitValidator.ValidateAndThrowAsync(command, cancellationToken);
+
+        if (await _repository.ExistsIdentifierAsync(command.Identifier, cancellationToken))
+        {
+            var failure = new ValidationFailure("Identifier", "Identifier already exists");
+            throw new ValidationException(new[] { failure });
+        }
         
         var unit = _mapper.Map<Unit>(command);
 

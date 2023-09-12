@@ -6,12 +6,10 @@ namespace Gatekeeper.Core.Validations;
 
 public class RegisterUnitCommandValidator : AbstractValidator<RegisterUnitCommand>
 {
-    public RegisterUnitCommandValidator(IUnitIdentifierDuplicatedPolicy policy)
+    public RegisterUnitCommandValidator()
     {
         RuleFor(command => command.Identifier)
             .NotEmpty()
-            .MaximumLength(100)
-            .MustAsync(policy.IsValidAsync)
-            .WithMessage("Identifier already exists");
+            .MaximumLength(100);
     }
 }

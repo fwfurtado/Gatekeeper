@@ -1,6 +1,6 @@
 namespace Gatekeeper.Core.Policies;
 
-public interface IPolicy<in T>
+public interface ISpecification<in T>
 {
     bool IsValid(T value);
 }

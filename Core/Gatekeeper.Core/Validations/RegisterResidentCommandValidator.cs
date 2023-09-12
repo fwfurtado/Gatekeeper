@@ -7,9 +7,9 @@ namespace Gatekeeper.Core.Validations;
 public sealed class RegisterResidentCommandValidator: AbstractValidator<RegisterResidentCommand>
 { 
     
-    public RegisterResidentCommandValidator(ICpfPolicy policy)
+    public RegisterResidentCommandValidator(ICpfSpecification specification)
     {
         RuleFor(r => r.Name).Length(1, 100);
-        RuleFor(r => r.Document).SetValidator(new CpfValidator(policy));
+        RuleFor(r => r.Document).SetValidator(new CpfValidator(specification));
     }
 }
