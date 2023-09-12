@@ -50,35 +50,4 @@ public class UnitService : IUnitService
     {
         return _repository.GetByIdAsync(unitId, cancellationToken);
     }
-
-    public async Task<Resident> RegisterResidentAsync(long unitId, RegisterResidentCommand command, CancellationToken cancellationToken)
-    {
-
-        var validationResult = await _registerResidentValidator.ValidateAsync(command, cancellationToken);
-        
-        var possibleUnit = await _repository.GetByIdAsync(unitId, cancellationToken) ;
-        
-        
-        if (possibleUnit is null)
-        {
-            validationResult.Errors.Add(new ValidationFailure(nameof(unitId), "Unit not found"));
-        }
-        
-        if (!validationResult.IsValid)
-        {
-            throw new ValidationException(validationResult.Errors);
-        }
-
-        var unit = possibleUnit!;
-        
-        var resident = _mapper.Map<Resident>(command);
-        
-        unit.AssociateResident(resident);
-        
-        cancellationToken.ThrowIfCancellationRequested();
-        
-        await _repository.UpdateAsync(unit, cancellationToken);
-
-        return resident;
-    }
 }

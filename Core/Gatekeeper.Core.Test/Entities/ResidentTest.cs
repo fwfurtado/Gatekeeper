@@ -15,4 +15,12 @@ public class ResidentTest
         
         Invoking(() => new Resident("", faker.Generate())).Should().Throw<ArgumentException>();
     }
+    
+    [Test]
+    public void NameCannotBeBlankInSecondaryConstructor()
+    {
+        var faker = new CpfFaker();
+        
+        Invoking(() => new Resident(1, faker.Generate(), "")).Should().Throw<ArgumentException>();
+    }
 }

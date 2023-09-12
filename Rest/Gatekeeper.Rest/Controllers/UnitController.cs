@@ -20,19 +20,19 @@ public class UnitController : ControllerBase
 
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] RegisterUnitCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateUnit([FromBody] RegisterUnitCommand command, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Register a  new unit with params {Params}", command);
 
-        await _service.RegisterUnitAsync(command, cancellationToken);
+        var unit = await _service.RegisterUnitAsync(command, cancellationToken);
         
         _logger.LogInformation("Unit registered with success");
         
-        return CreatedAtAction("Post", command);
+        return CreatedAtAction(nameof(ShowUnit), unit.Id);
     }
     
-    [HttpGet("{unitId}")]
-    public async Task<IActionResult> Get(long unitId, CancellationToken cancellationToken)
+    [HttpGet("{unitId:long}")]
+    public async Task<IActionResult> ShowUnit(long unitId, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Get unit with id {UnitId}", unitId);
 
