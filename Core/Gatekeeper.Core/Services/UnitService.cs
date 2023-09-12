@@ -11,19 +11,17 @@ public class UnitService : IUnitService
 {
     private readonly IUnitRepository _repository;
     private readonly IValidator<RegisterUnitCommand> _registerUnitValidator;
-    private readonly IValidator<RegisterResidentCommand> _registerResidentValidator;
+    
     private readonly IMapper _mapper;
 
     public UnitService(
         IUnitRepository repository,
         IValidator<RegisterUnitCommand> registerUnitValidator,
-        IValidator<RegisterResidentCommand> registerResidentValidator,
         IMapper mapper
     )
     {
         _repository = repository;
         _registerUnitValidator = registerUnitValidator;
-        _registerResidentValidator = registerResidentValidator;
         _mapper = mapper;
     }
 

@@ -1,5 +1,4 @@
 using AutoMapper;
-using Bogus;
 using FluentAssertions;
 using FluentValidation;
 using Gatekeeper.Core.Commands;
@@ -7,12 +6,9 @@ using Gatekeeper.Core.Configurations;
 using Gatekeeper.Core.Entities;
 using Gatekeeper.Core.Repositories;
 using Gatekeeper.Core.Services;
-using Gatekeeper.Core.Specifications;
 using Gatekeeper.Core.Test.Fakers;
 using Gatekeeper.Core.Validations;
 using Moq;
-using ValidationException = FluentValidation.ValidationException;
-using static FluentAssertions.FluentActions;
 
 namespace Gatekeeper.Core.Test.Services;
 
@@ -21,7 +17,7 @@ public class UnitServiceTest
     private Mock<IUnitRepository> _repositoryMock = null!;
     private IMapper _mapper = null!;
     private RegisterUnitCommandValidator _unitValidator = null!;
-    private RegisterResidentCommandValidator _residentValidator = null!;
+    
 
     [SetUp]
     public void BeforeEach()
@@ -32,13 +28,12 @@ public class UnitServiceTest
         _mapper = configuration.CreateMapper();
         
         _unitValidator = new RegisterUnitCommandValidator();
-        _residentValidator = new RegisterResidentCommandValidator(new CpfSpecification());
     }
     
     [Test]
     public void ShouldFailWhenCommandIsInvalid()
     {
-        var service = new UnitService(_repositoryMock.Object, _unitValidator, _residentValidator, _mapper);
+        var service = new UnitService(_repositoryMock.Object, _unitValidator, _mapper);
 
         var command = new RegisterUnitCommand(string.Empty);
         
@@ -48,7 +43,7 @@ public class UnitServiceTest
     [Test]
     public void ShouldFailWhenIdentifierAlreadyExists()
     {
-        var service = new UnitService(_repositoryMock.Object, _unitValidator, _residentValidator, _mapper);
+        var service = new UnitService(_repositoryMock.Object, _unitValidator, _mapper);
 
         var command = new RegisterUnitCommandFaker().Generate();
         
@@ -61,7 +56,7 @@ public class UnitServiceTest
     [Test]
     public void ShouldFailWhenCancellationWasRequired()
     {
-        var service = new UnitService(_repositoryMock.Object, _unitValidator, _residentValidator, _mapper);
+        var service = new UnitService(_repositoryMock.Object, _unitValidator, _mapper);
 
         var command = new RegisterUnitCommandFaker().Generate();
         
@@ -80,7 +75,7 @@ public class UnitServiceTest
     [Test]
     public async Task ShouldCreateAnEmptyUnit()
     {
-        var service = new UnitService(_repositoryMock.Object, _unitValidator, _residentValidator, _mapper);
+        var service = new UnitService(_repositoryMock.Object, _unitValidator, _mapper);
 
         var command = new RegisterUnitCommandFaker().Generate();
         
@@ -101,7 +96,7 @@ public class UnitServiceTest
     [Test]
     public async Task ShouldReturnNullWhenUnitDoesNotExist()
     {
-        var service = new UnitService(_repositoryMock.Object, _unitValidator, _residentValidator, _mapper);
+        var service = new UnitService(_repositoryMock.Object, _unitValidator, _mapper);
 
         var cancellationTokenSource = new CancellationTokenSource();
         
