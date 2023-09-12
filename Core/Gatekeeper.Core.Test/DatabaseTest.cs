@@ -1,6 +1,7 @@
 using System.Data;
 using Gatekeeper.Core.Configurations;
 using Gatekeeper.Migration;
+using Microsoft.Extensions.Configuration;
 using Npgsql;
 using Respawn;
 using Respawn.Graph;
@@ -64,21 +65,17 @@ public abstract class DatabaseTest
     
     private NpgsqlConnection GetConnection() => new(_databaseContainer.GetConnectionString());
     
-    protected IDbConnectionFactory GetConnectionFactory() => new TestConnectionFactory(GetConnection);
-
-
-    private class TestConnectionFactory : IDbConnectionFactory
+    protected IDbConnectionFactory GetConnectionFactory()
     {
-        private Func<IDbConnection> _factory;
-
-        public TestConnectionFactory(Func<IDbConnection> factory)
+        var dataSource = new Dictionary<string, string>()
         {
-            _factory = factory;
-        }
+            {"DATABASE_CONNECTION_STRING", _databaseContainer.GetConnectionString()}
+        };
+        
+        var configuration = new ConfigurationBuilder().AddInMemoryCollection(dataSource!)
+            .Build();
 
-        public IDbConnection CreateConnection()
-        {
-            return _factory();
-        }
+        return new DbConnectionFactory(configuration);
     }
+
 }
