@@ -67,4 +67,12 @@ public class UnitControllerTest : AcceptanceTest
         unit.Should().NotBeNull();
         unit!.Identifier.Should().Be(request.Identifier);
     }
+    
+    [Test]
+    public async Task ShouldReturnNotFoundWhenUnitDoesNotExist()
+    {
+        var showResponse = await _httpClient.GetAsync("units/1");
+
+        showResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
 }
