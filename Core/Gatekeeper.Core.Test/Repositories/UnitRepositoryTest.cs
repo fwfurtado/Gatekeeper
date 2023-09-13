@@ -1,11 +1,12 @@
 using FluentAssertions;
 using Gatekeeper.Core.Repositories;
+using Gatekeeper.Core.Test.Configurations;
 using Gatekeeper.Core.Test.Fakers;
 
 namespace Gatekeeper.Core.Test.Repositories;
 
 [TestFixture]
-public class UnitRepositoryTest : DatabaseTest
+public class UnitRepositoryTest : DbTest
 {
     private UnitRepository _repository = null!;
     

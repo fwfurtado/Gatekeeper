@@ -1,6 +1,6 @@
 using System.Data;
 
-namespace Gatekeeper.Core.Configurations;
+namespace Gatekeeper.Shared.Database;
 
 public interface IDbConnectionFactory
 {

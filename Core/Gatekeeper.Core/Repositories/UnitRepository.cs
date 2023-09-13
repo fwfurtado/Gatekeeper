@@ -1,8 +1,6 @@
-using System.Data;
 using Dapper;
-using Gatekeeper.Core.Configurations;
 using Gatekeeper.Core.Entities;
-using Microsoft.Extensions.DependencyInjection;
+using Gatekeeper.Shared.Database;
 
 namespace Gatekeeper.Core.Repositories;
 

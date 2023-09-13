@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Gatekeeper.Core.Configurations;
 using Gatekeeper.Core.Entities;
+using Gatekeeper.Shared.Database;
 using Microsoft.VisualBasic.CompilerServices;
 
 namespace Gatekeeper.Core.Repositories;
@@ -47,11 +48,11 @@ public class ResidentRepository : IResidentRepository
     public async Task<Resident?> GetByIdAsync(long residentId, CancellationToken cancellationToken)
     {
         const string sql = "SELECT * FROM residents WHERE id = @residentId;";
-        
+
         using var connection = _connectionFactory.CreateConnection();
         
         var resident = await connection.QuerySingleOrDefaultAsync<Resident?>(sql, new { residentId });
-
+        
         return resident;
     }
 

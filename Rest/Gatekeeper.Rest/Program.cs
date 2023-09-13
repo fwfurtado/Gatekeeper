@@ -1,4 +1,3 @@
-using System.Data;
 using FluentValidation;
 using Gatekeeper.Core.Commands;
 using Gatekeeper.Core.Configurations;
@@ -6,7 +5,8 @@ using Gatekeeper.Core.Repositories;
 using Gatekeeper.Core.Services;
 using Gatekeeper.Core.Specifications;
 using Gatekeeper.Core.Validations;
-using Npgsql;
+using Gatekeeper.Rest.Configuration;
+using Gatekeeper.Shared.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +23,7 @@ builder.Services.AddAutoMapper(cfg =>
 {
     cfg.ShouldUseConstructor = constructor => constructor.IsPublic;
     cfg.AddProfile<GlobalMappingProfile>();
+    cfg.AddProfile<HttpMappingProfile>();
 });
 
 
@@ -52,3 +53,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program
+{
+   protected Program() { }
+}
