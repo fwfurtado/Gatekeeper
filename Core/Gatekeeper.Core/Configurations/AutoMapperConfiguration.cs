@@ -9,7 +9,7 @@ public static class AutoMapperConfiguration
         return new MapperConfiguration(cfg =>
         {
             cfg.ShouldUseConstructor = constructor => constructor.IsPublic;
-            cfg.AddProfile<GlobalMappingProfile>();
+            cfg.AddProfile<CoreMappingProfile>();
         });
     }
 }

@@ -22,7 +22,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.ShouldUseConstructor = constructor => constructor.IsPublic;
-    cfg.AddProfile<GlobalMappingProfile>();
+    cfg.AddProfile<CoreMappingProfile>();
     cfg.AddProfile<HttpMappingProfile>();
 });
 

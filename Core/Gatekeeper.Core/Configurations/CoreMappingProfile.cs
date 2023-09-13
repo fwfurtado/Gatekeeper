@@ -4,13 +4,14 @@ using Gatekeeper.Core.Entities;
 
 namespace Gatekeeper.Core.Configurations;
 
-public class GlobalMappingProfile : Profile
+public class CoreMappingProfile : Profile
 {
-    public GlobalMappingProfile()
+    public CoreMappingProfile()
     {
         CreateMap<RegisterResidentCommand, Resident>()
             .IgnoreAllPropertiesWithAnInaccessibleSetter();
         CreateMap<RegisterUnitCommand, Unit>()
-            .IgnoreAllPropertiesWithAnInaccessibleSetter();
+            .ForMember(u => u.Id, opt => opt.Ignore())
+            .ForMember(u => u.Residents, opt => opt.Ignore());
     }
 }

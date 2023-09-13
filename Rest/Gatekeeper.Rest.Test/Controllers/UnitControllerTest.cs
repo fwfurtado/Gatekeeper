@@ -4,6 +4,7 @@ using System.Text.Json;
 using FluentAssertions;
 using Gatekeeper.Core.Entities;
 using Gatekeeper.Rest.Controllers;
+using Gatekeeper.Rest.Dtos;
 using Gatekeeper.Rest.Test.Configurations;
 using Microsoft.AspNetCore.Mvc.Testing;
 

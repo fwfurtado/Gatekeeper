@@ -1,8 +1,7 @@
-using System.Text.Json.Serialization;
 using AutoMapper;
 using Gatekeeper.Core.Commands;
-using Gatekeeper.Core.Entities;
 using Gatekeeper.Core.Services;
+using Gatekeeper.Rest.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gatekeeper.Rest.Controllers;
@@ -55,11 +54,4 @@ public class UnitController : ControllerBase
         
         return Ok(response);
     }
-}
-
-public class UnitResponse
-{
-    [JsonPropertyName("id")] public long Id { get; set; }
-
-    [JsonPropertyName("identifier")] public string Identifier { get; set; } = null!;
 }

@@ -1,6 +1,7 @@
 using AutoMapper;
 using Gatekeeper.Core.Entities;
 using Gatekeeper.Rest.Controllers;
+using Gatekeeper.Rest.Dtos;
 
 namespace Gatekeeper.Rest.Configuration;
 
