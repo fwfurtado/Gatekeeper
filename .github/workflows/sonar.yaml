@@ -6,8 +6,63 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
-  build:
-    name: Build, analyze and coverage
+  core:
+    name: Coverage for Core
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'zulu' # Alternative distribution options are available.
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Install dotnet-coverage
+        run: dotnet tool install --global dotnet-coverage
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |          
+           dotnet build --no-incremental
+           dotnet-coverage collect 'dotnet test Core/Gatekeeper.Core.Test' -f xml  -o 'coverage.core.xml'    
+      - name: Upload code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-coverage-report-core
+          path: coverage.core.xml          
+  rest:
+    name: Coverage for Rest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'zulu' # Alternative distribution options are available.
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Install dotnet-coverage
+        run: dotnet tool install --global dotnet-coverage
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |          
+           dotnet build --no-incremental
+           dotnet-coverage collect 'dotnet test Rest/Gatekeeper.Rest.Test' -f xml  -o 'coverage.rest.xml'                    
+      - name: Upload code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-coverage-report-rest
+          path: coverage.rest.xml
+  sonar:
+    needs: 
+      - core
+      - rest
+    name: Publish to SonarCloud
     runs-on: ubuntu-latest
     steps:
       - name: Set up JDK 17
@@ -24,7 +79,7 @@ jobs:
           path: ~\sonar\cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
-          
+
       - name: Cache SonarCloud scanner
         id: cache-sonar-scanner
         uses: actions/cache@v3
@@ -36,12 +91,21 @@ jobs:
         run: dotnet tool install --global dotnet-sonarscanner
       - name: Install dotnet-coverage
         run: dotnet tool install --global dotnet-coverage
-      - name: Build and analyze
+      - name: Download core test coverage report
+        uses: actions/download-artifact@v3
+        with:
+          name: code-coverage-report-core       
+      - name: Download rest test coverage report
+        uses: actions/download-artifact@v3
+        with:
+          name: code-coverage-report-rest          
+      - name: Merge coverages
+        run: dotnet-coverage merge coverage.core.xml coverage.rest.xml  -f xml -o coverage.xml          
+      - name: Publish analyze
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           dotnet sonarscanner begin /k:"fwfurtado_Gatekeeper" /o:"mimi" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
-           dotnet build --no-incremental
-           dotnet-coverage collect 'dotnet test Core/Gatekeeper.Core.Test' -f xml  -o 'coverage.xml'          
-          dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+           dotnet build --no-incremental                     
+          dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"     

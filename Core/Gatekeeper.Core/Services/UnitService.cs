@@ -39,8 +39,10 @@ public class UnitService : IUnitService
 
         cancellationToken.ThrowIfCancellationRequested();
 
-        await _repository.SaveAsync(unit, cancellationToken);
+        var id = await _repository.SaveAsync(unit, cancellationToken);
 
+        unit.Id = id;
+        
         return unit;
     }
 

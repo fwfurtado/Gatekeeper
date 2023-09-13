@@ -1,4 +1,5 @@
 using System.Data;
+using Gatekeeper.Shared.Database;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 
