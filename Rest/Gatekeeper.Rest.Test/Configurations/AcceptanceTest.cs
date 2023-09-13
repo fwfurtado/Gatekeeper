@@ -1,3 +1,5 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using Gatekeeper.Core.Configurations;
 using Gatekeeper.Shared.Database;
 using Gatekeeper.Shared.Test;
@@ -12,6 +14,16 @@ public abstract class AcceptanceTest: DatabaseTest
     
     private AcceptanceTestFactory _factory = null!;
     protected AcceptanceTestFactory Factory => _factory;
+    
+    protected string JwtToken => JwtTokenProvider.JwtSecurityTokenHandler.WriteToken(
+        new JwtSecurityToken(
+            JwtTokenProvider.Issuer,
+            JwtTokenProvider.Issuer,
+            new List<Claim> { new(ClaimTypes.Role, "Operator"), new("department", "Security") },
+            expires: DateTime.Now.AddMinutes(30),
+            signingCredentials: JwtTokenProvider.SigningCredentials
+        )
+    ); 
     
     [OneTimeSetUp]
     public void OneTimeSetUp()

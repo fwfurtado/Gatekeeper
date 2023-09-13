@@ -1,13 +1,16 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Security.Claims;
 using System.Text.Json;
 using FluentAssertions;
-using Gatekeeper.Core.Entities;
-using Gatekeeper.Rest.Controllers;
 using Gatekeeper.Rest.Dtos;
 using Gatekeeper.Rest.Test.Configurations;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Testing;
-
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace Gatekeeper.Rest.Test.Controllers;
 
@@ -22,8 +25,13 @@ public class UnitControllerTest : AcceptanceTest
         _httpClient = Factory.CreateClient(
             new WebApplicationFactoryClientOptions
             {
-                BaseAddress = new Uri(BaseUrl)
+                BaseAddress = new Uri(BaseUrl),
             }
+        );
+        
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+            JwtBearerDefaults.AuthenticationScheme,
+            JwtToken
         );
     }
 
@@ -46,18 +54,17 @@ public class UnitControllerTest : AcceptanceTest
 
 
         var path = createdResponse.Headers.Location!.PathAndQuery;
-        
-        
+
+
         var showResponse = await _httpClient.GetAsync(path);
 
         showResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var showBodyResponse = await showResponse.Content.ReadAsStringAsync();
-        
+
         var unit = JsonSerializer.Deserialize<UnitResponse>(showBodyResponse);
-        
+
         unit.Should().NotBeNull();
         unit!.Identifier.Should().Be(request.Identifier);
-        
     }
 }
