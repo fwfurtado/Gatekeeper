@@ -1,6 +1,20 @@
 # Gatekeeper
-
 Gatekeeper is a condo management system that allows residents to book facilities, make payments, and communicate with the management.
+
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=fwfurtado_Gatekeeper)](https://sonarcloud.io/summary/new_code?id=fwfurtado_Gatekeeper)
+
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=fwfurtado_Gatekeeper&metric=coverage)](https://sonarcloud.io/summary/new_code?id=fwfurtado_Gatekeeper)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=fwfurtado_Gatekeeper&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=fwfurtado_Gatekeeper)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=fwfurtado_Gatekeeper&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=fwfurtado_Gatekeeper)
+
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=fwfurtado_Gatekeeper&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=fwfurtado_Gatekeeper)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=fwfurtado_Gatekeeper&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=fwfurtado_Gatekeeper)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=fwfurtado_Gatekeeper&metric=bugs)](https://sonarcloud.io/summary/new_code?id=fwfurtado_Gatekeeper)
+
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=fwfurtado_Gatekeeper&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=fwfurtado_Gatekeeper)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=fwfurtado_Gatekeeper&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=fwfurtado_Gatekeeper)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=fwfurtado_Gatekeeper&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=fwfurtado_Gatekeeper)
+
 
 ## Getting Started
 
