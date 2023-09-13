@@ -53,7 +53,10 @@ docker compose up -d
 ```bash
  dotnet run --project Database/Gatekeeper.Migration $DATABASE_CONNECTION_STRING <optinally you can use an absolute path for migrations folder>
 ```
-4. Run the application
+
+4. Create a user at Keycloak IDP [see more](Docs/Create-Keycloak-User.md)
+
+5. Run the application
     
    * Run the application
       ```bash

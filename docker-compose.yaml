@@ -11,6 +11,17 @@ services:
       - "5432:5432"
     volumes:
       - pg-data:/var/lib/postgresql/data
+  
+  keycloak:
+    image: quay.io/keycloak/keycloak:22.0.3
+    command: start-dev --import-realm
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./Deployments/Local/Keycloak/:/opt/keycloak/data/import
 
 volumes:
   pg-data:

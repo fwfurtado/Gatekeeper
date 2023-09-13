@@ -2,12 +2,14 @@ using AutoMapper;
 using Gatekeeper.Core.Commands;
 using Gatekeeper.Core.Services;
 using Gatekeeper.Rest.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gatekeeper.Rest.Controllers;
 
 [ApiController]
 [Route("units")]
+[Authorize]
 public class UnitController : ControllerBase
 {
     private readonly IUnitService _service;
