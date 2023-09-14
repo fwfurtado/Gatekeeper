@@ -38,7 +38,9 @@ public class ResidentService : IResidentService
         
         cancellationToken.ThrowIfCancellationRequested();
 
-        await _repository.SaveAsync(resident, cancellationToken);
+        var id = await _repository.SaveAsync(resident, cancellationToken);
+
+        resident.Id = id;
         
         return resident;
     }
