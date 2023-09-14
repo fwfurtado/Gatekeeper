@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Gatekeeper.Core.Commands;
 using Gatekeeper.Core.Services;
 using Gatekeeper.Rest.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 
 namespace Gatekeeper.Rest.Controllers;
 
@@ -27,12 +27,13 @@ public class ResidentController : ControllerBase
 
 
     [HttpPost]
-    public async Task<IActionResult> CreatResident([FromBody] RegisterResidentCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreatResident([FromBody] RegisterResidentRequest request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Register a new resident with params {Params}", command);
+        _logger.LogInformation("Register a new resident with params {Params}", request);
 
         try
         {
+            var command = _mapper.Map<RegisterResidentCommand>(request);
             var resident = await _service.RegisterResidentAsync(command, cancellationToken);
             _logger.LogInformation("Resident registered with success");
             return CreatedAtAction(nameof(ShowResident), new { residentId = resident.Id }, null);
@@ -44,8 +45,7 @@ public class ResidentController : ControllerBase
         catch (ValidationException ex) 
         {
             return BadRequest(ex.Message);
-        }
-        
+        }        
     }
 
     [HttpGet("{residentId:long}")]

@@ -9,5 +9,5 @@ public class ResidentResponse
 
     [JsonPropertyName("name")] public string Name { get; set; } = null!;
 
-    [JsonPropertyName("document")] public Cpf Document { get; set; } = default!;
+    [JsonPropertyName("document")] public string Document { get; set; } = default!;
 }

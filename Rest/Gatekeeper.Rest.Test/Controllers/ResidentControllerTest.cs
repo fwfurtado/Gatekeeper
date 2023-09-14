@@ -38,7 +38,7 @@ public class ResidentControllerTest : AcceptanceTest
         var request = new
         {
             Name = "resident-name",
-            Document = new Cpf("41615990054")
+            Document = "41615990054"
         };
 
         var createdResponse = await _httpClient.PostAsJsonAsync("residents", request);
@@ -64,7 +64,7 @@ public class ResidentControllerTest : AcceptanceTest
         var request = new
         {
             Name = "resident-name",
-            Document = new Cpf("41615990054")
+            Document = "41615990054"
         };
 
         await _httpClient.PostAsJsonAsync("residents", request);
@@ -78,7 +78,7 @@ public class ResidentControllerTest : AcceptanceTest
         var request = new
         {
             Name = "resident-name",
-            Document = "12345678901"
+            Document = "123456789"
         };
 
         var createdResponse = await _httpClient.PostAsJsonAsync("residents", request);
