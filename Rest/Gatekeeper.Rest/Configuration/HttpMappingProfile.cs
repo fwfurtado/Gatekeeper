@@ -10,5 +10,6 @@ public class HttpMappingProfile : Profile
     public HttpMappingProfile()
     {
         CreateMap<Unit, UnitResponse>();
+        CreateMap<Resident, ResidentResponse>();
     }
 }

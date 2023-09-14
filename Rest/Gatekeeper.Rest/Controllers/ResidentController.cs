@@ -1,5 +1,8 @@
-﻿using Gatekeeper.Core.Commands;
+﻿using AutoMapper;
+using Gatekeeper.Core.Commands;
 using Gatekeeper.Core.Services;
+using Gatekeeper.Rest.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -7,15 +10,18 @@ namespace Gatekeeper.Rest.Controllers;
 
 [ApiController]
 [Route("residents")]
+[Authorize]
 public class ResidentController : ControllerBase
 {
 
     private readonly IResidentService _service;
+    private readonly IMapper _mapper;
     private readonly ILogger<ResidentController> _logger;
 
-    public ResidentController(IResidentService service, ILogger<ResidentController> logger)
+    public ResidentController(IResidentService service, IMapper mapper, ILogger<ResidentController> logger)
     {
         _service = service;
+        _mapper = mapper;
         _logger = logger;
     }
 
@@ -29,7 +35,7 @@ public class ResidentController : ControllerBase
         {
             var resident = await _service.RegisterResidentAsync(command, cancellationToken);
             _logger.LogInformation("Resident registered with success");
-            return CreatedAtAction(nameof(ShowResident), resident.Id);
+            return CreatedAtAction(nameof(ShowResident), new { residentId = resident.Id }, null);
         }
         catch (InvalidOperationException invEx)
         {
@@ -57,7 +63,9 @@ public class ResidentController : ControllerBase
 
         _logger.LogInformation("Resident with id {ResidentId} found", residentId);
 
-        return Ok(resident);
+        var response = _mapper.Map<ResidentResponse>(resident);
+
+        return Ok(response);
     }
 
 

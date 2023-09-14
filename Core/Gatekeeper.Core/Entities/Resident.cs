@@ -6,7 +6,7 @@ public class Resident
 {
     public string Name { get; private set; }
     public Cpf Document { get; private set; }
-    public long Id { get; private set; }
+    public long Id { get; set; }
 
     public Resident(string name, Cpf document)
     {
