@@ -9,6 +9,6 @@ namespace Gatekeeper.Rest.Dtos;
 
 public class RegisterResidentRequest
 {
-    public string Name { get; set; }
-    public string Document { get; set; }
+    public string Name { get; set; } = null!;
+    public string Document { get; set; } = null!;
 }
