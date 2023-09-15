@@ -53,4 +53,24 @@ public class UnitRepository : IUnitRepository
 
         return unit;
     }
+
+    public async Task UpdateOccupationAsync(Unit unit, CancellationToken cancellationToken)
+    {
+        const string sql = "UPDATE units SET occupation_id = @occupationId WHERE id = @unitId;";
+        
+        using var dbConnection = _connectionFactory.CreateConnection();
+
+        if (unit.Occupation is null)
+        {
+            throw new ArgumentException("Unit must have an occupation");
+        }
+        
+        var arguments = new
+        {
+            occupationId = unit.Occupation.Id,
+            unitId = unit.Id
+        };
+        
+        await dbConnection.ExecuteAsync(sql, arguments);
+    }
 }

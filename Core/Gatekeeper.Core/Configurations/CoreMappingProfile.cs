@@ -12,7 +12,6 @@ public class CoreMappingProfile : Profile
             .IgnoreAllPropertiesWithAnInaccessibleSetter()
             .ForMember(u => u.Id, opt => opt.Ignore());
         CreateMap<RegisterUnitCommand, Unit>()
-            .ForMember(u => u.Id, opt => opt.Ignore())
-            .ForMember(u => u.Residents, opt => opt.Ignore());
+            .ForMember(u => u.Id, opt => opt.Ignore());
     }
 }

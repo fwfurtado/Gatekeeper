@@ -3,10 +3,12 @@ namespace Gatekeeper.Core.Entities;
 public class Unit
 {
     public long Id { get; set; }
-
-    private readonly List<Resident> _residents;
     public string Identifier { get; private set; }
-    public IEnumerable<Resident> Residents => _residents.AsReadOnly();
+
+    public Occupation? Occupation { get; private set; }
+
+    public bool IsEmpty => Occupation is null;
+    public bool IsOccupied => !IsEmpty;
     
     public Unit(string identifier)
     {
@@ -16,7 +18,6 @@ public class Unit
         }
 
         Identifier = identifier;
-        _residents = new List<Resident>();
     }
     
     public Unit(long id, string identifier) : this(identifier)
@@ -24,8 +25,13 @@ public class Unit
         Id = id;
     }
 
-    public void AssociateResident(Resident resident)
+    public void OccupiedBy(Occupation occupation)
     {
-        _residents.Add(resident);
+        if (IsOccupied)
+        {
+            throw new InvalidOperationException("Unit is already occupied");
+        }
+        
+        Occupation = occupation;
     }
 }
