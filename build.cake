@@ -2,18 +2,9 @@
 // ARGUMENTS
 ///////////////////////////////////////////////////////////////////////////////
 
-#addin nuget:?package=Cake.Docker&version=1.2.2
-
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 
-///////////////////////////////////////////////////////////////////////////////
-// SETUP / TEARDOWN
-///////////////////////////////////////////////////////////////////////////////
-
-Setup(ctx =>{});
-
-Teardown(ctx => {});
 
 ///////////////////////////////////////////////////////////////////////////////
 // TASKS
@@ -34,6 +25,14 @@ Task("Build")
        });
 });
 
+Task("Test")
+.IsDependentOn("Clean")
+.Does(() => {
+    DotNetTest("./Gatekeeper.sln", new DotNetTestSettings
+    {
+        Configuration = configuration,
+    });
+});
 
 Task("Default")
     .IsDependentOn("Build");
