@@ -21,6 +21,7 @@ Gatekeeper is a condo management system that allows residents to book facilities
 ### Prerequisites
 * [.Net 7](https://dotnet.microsoft.com/download/dotnet/7.0)
 * [Docker](https://www.docker.com/products/docker-desktop)
+* [Cake](https://cakebuild.net/docs/getting-started/setting-up-a-new-scripting-project)
 
 ### Dev Tools
 
@@ -43,15 +44,7 @@ Before running the application, make sure that you have the following those step
 
 1. Run the database using docker-compose
 ```bash
-docker compose up -d
-```
-
-2. Ensure that you have following environment variables set
-* `DATABASE_CONNECTION_STRING` - The connection string to the database [see more](https://www.npgsql.org/doc/connection-string-parameters.html)
-
-3. Run migrations
-```bash
- dotnet run --project Database/Gatekeeper.Migration $DATABASE_CONNECTION_STRING <optinally you can use an absolute path for migrations folder>
+dotnet cake docker.cake --target=Up
 ```
 
 4. Create a user at Keycloak IDP [see more](Docs/Create-Keycloak-User.md)
