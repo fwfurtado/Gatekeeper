@@ -32,6 +32,12 @@ public abstract class AcceptanceTest: DatabaseTest
         _factory = new AcceptanceTestFactory();
     }
     
+    [OneTimeTearDown]
+    public void OneTimeTearDown()
+    {
+        _factory.Dispose();
+    }
+    
     protected override IDbConnectionFactory GetConnectionFactory()
     {
         var dataSource = new Dictionary<string, string>()
