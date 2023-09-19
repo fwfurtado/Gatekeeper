@@ -34,6 +34,12 @@ public class UnitControllerTest : AcceptanceTest
             JwtToken
         );
     }
+    
+    [TearDown]
+    public void AfterEach()
+    {
+        _httpClient.Dispose();
+    }
 
 
     [Test]

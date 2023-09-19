@@ -31,6 +31,12 @@ public class ResidentControllerTest : AcceptanceTest
             JwtToken
         );
     }
+    
+    [TearDown] 
+    public void AfterEach()
+    {
+        _httpClient.Dispose();
+    }
 
     [Test]
     public async Task ShouldCreateAResident()
