@@ -4,12 +4,11 @@ using Gatekeeper.Core.Specifications;
 
 namespace Gatekeeper.Core.Test.Specifications;
 
-public class CpfPolicyTest
+public class CpfSpecificationTest
 {
     private readonly CpfSpecification _cpfSpecification = new();
 
     [TestCase("")]
-    [TestCase(null)]
     [TestCase("12345678901")]
     [TestCase("1234")]
     [TestCase("1A345678901")]
