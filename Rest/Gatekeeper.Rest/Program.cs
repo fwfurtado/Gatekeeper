@@ -1,6 +1,8 @@
+using Dapper;
 using FluentValidation;
 using Gatekeeper.Core.Commands;
 using Gatekeeper.Core.Configurations;
+using Gatekeeper.Core.Events.Handlers;
 using Gatekeeper.Core.Repositories;
 using Gatekeeper.Core.Services;
 using Gatekeeper.Core.Specifications;
@@ -53,8 +55,8 @@ builder.Services.AddSwaggerGen(options =>
         Type = SecuritySchemeType.OpenIdConnect,
         OpenIdConnectUrl = new Uri($"{authenticationOptions.KeycloakUrlRealm}/.well-known/openid-configuration")
     });
-    
-    
+
+
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -79,9 +81,14 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.AddProfile<HttpMappingProfile>();
 });
 
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssemblyContaining<Program>();
+    cfg.RegisterServicesFromAssemblyContaining<OccupationRequestApprovedHandler>();
+});
 
 
+DapperConfiguration.Configure();
 
 builder.Services.AddTransient<IDbConnectionFactory, DbConnectionFactory>();
 
@@ -124,5 +131,7 @@ app.MapControllers();
 app.Run();
 
 #pragma warning disable S1118
-public partial class Program { }
+public partial class Program
+{
+}
 #pragma warning restore S1118

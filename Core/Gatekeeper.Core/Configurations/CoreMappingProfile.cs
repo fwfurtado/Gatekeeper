@@ -13,7 +13,9 @@ public class CoreMappingProfile : Profile
             .ForMember(u => u.Id, opt => opt.Ignore());
         CreateMap<RegisterUnitCommand, Unit>()
             .ForMember(u => u.Id, opt => opt.Ignore());
-        CreateMap<Unit, TargetUnit>();
+        CreateMap<Unit, TargetUnit>()
+            .ForMember(t => t.UnitId, opt => opt.MapFrom(u => u.Id));
+        CreateMap<PersonalInfo, Resident>();
         CreateMap<NewOccupationCommand, OccupationRequest>();
     }
 }

@@ -1,3 +1,4 @@
+using Gatekeeper.Core.Exceptions;
 using Gatekeeper.Core.Services;
 using Gatekeeper.Rest.Factories;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,6 @@ namespace Gatekeeper.Rest.Controllers;
 [Route("occupations")]
 public class OccupationController : ControllerBase
 {
-    
     private readonly IOccupationService _service;
     private readonly NewOccupationCommandFactory _factory;
 
@@ -24,23 +24,58 @@ public class OccupationController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        
         var command = await _factory.FactoryBy(applicationRequest, cancellationToken);
-        
+
         await _service.RequestOccupationAsync(command, cancellationToken);
-        
+
         return Ok();
     }
-    
+
     [HttpGet("requests/{id}")]
     public async Task<IActionResult> GetRequestById(long id, CancellationToken cancellationToken)
     {
         var request = await _service.GetById(id, cancellationToken);
-        
+
         if (request is null) return NotFound();
-        
+
         return Ok(request);
     }
+
+    [HttpPut("requests/{id}/approve")]
+    public async Task<IActionResult> ApproveRequestById(long id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _service.ApproveRequestAsync(id, cancellationToken);
+
+            return Accepted();
+        }
+        catch (OccupationRequestNotFouncException)
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpPut("requests/{id}/reject")]
+    public async Task<IActionResult> RejectRequestById(long id, RejectOccupationRequest reject,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _service.RejectRequestAsync(id, reject.Reason, cancellationToken);
+
+            return Accepted();
+        }
+        catch (OccupationRequestNotFouncException)
+        {
+            return NotFound();
+        }
+    }
+}
+
+public class RejectOccupationRequest
+{
+    public string Reason { get; set; }
 }
 
 public class UnitOccupationApplicationRequest

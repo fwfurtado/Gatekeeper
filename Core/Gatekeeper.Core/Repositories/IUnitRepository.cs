@@ -1,3 +1,4 @@
+using System.Data;
 using Gatekeeper.Core.Entities;
 
 namespace Gatekeeper.Core.Repositories;

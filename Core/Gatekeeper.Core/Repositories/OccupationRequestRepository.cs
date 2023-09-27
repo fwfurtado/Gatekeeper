@@ -82,7 +82,7 @@ public class OccupationRequestRepository : IOccupationRequestRepository
                     Status = status
                 };
             })
-            .Single();
+            .SingleOrDefault();
     }
 
     public async Task UpdateRequestStatusAsync(OccupationRequest request, CancellationToken cancellationToken)

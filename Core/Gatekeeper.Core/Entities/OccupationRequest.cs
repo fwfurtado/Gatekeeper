@@ -9,7 +9,7 @@ public class OccupationRequest
     public required TargetUnit Unit { get; set; }
     public required List<PersonalInfo> People { get; set; } = new();
     public OccupationRequestStatus Status { get; set; }
-    
+
 
     public bool IsNotApproved => Status != OccupationRequestStatus.Approved;
 
@@ -20,7 +20,7 @@ public class OccupationRequest
     {
         _stateMachine = new OccupationRequestStateMachine(this);
     }
-    
+
     public OccupationRequestApproved Approve()
     {
         _stateMachine.Fire(OccupationRequestTriggers.Approve);
@@ -34,23 +34,26 @@ public class OccupationRequest
     public OccupationRequestRejected Reject(string reason)
     {
         _stateMachine.Fire(OccupationRequestTriggers.Reject);
-        
+
         return new OccupationRequestRejected
         {
             OccupationId = Id,
             Reason = reason
         };
     }
-    private sealed class OccupationRequestStateMachine : StateMachine<OccupationRequestStatus, OccupationRequestTriggers>
+
+    private sealed class
+        OccupationRequestStateMachine : StateMachine<OccupationRequestStatus, OccupationRequestTriggers>
     {
-        public OccupationRequestStateMachine(OccupationRequest request) : base(() => request.Status, newStatus => request.Status = newStatus)
+        public OccupationRequestStateMachine(OccupationRequest request) : base(() => request.Status,
+            newStatus => request.Status = newStatus)
         {
             Configure(OccupationRequestStatus.Pending)
                 .Permit(OccupationRequestTriggers.Approve, OccupationRequestStatus.Approved)
                 .Permit(OccupationRequestTriggers.Reject, OccupationRequestStatus.Rejected);
         }
     }
-    
+
     private enum OccupationRequestTriggers
     {
         Approve,
@@ -58,4 +61,8 @@ public class OccupationRequest
     }
 }
 
-public record TargetUnit(long UnitId, string Identifier);
+public class TargetUnit
+{
+    public string Identifier { get; set; }
+    public long UnitId { get; set; }
+}

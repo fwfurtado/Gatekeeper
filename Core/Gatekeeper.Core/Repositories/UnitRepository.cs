@@ -1,3 +1,4 @@
+using System.Data;
 using Dapper;
 using Gatekeeper.Core.Entities;
 using Gatekeeper.Shared.Database;
@@ -45,7 +46,7 @@ public class UnitRepository : IUnitRepository
 
     public async Task<Unit?> GetByIdAsync(long unitId, CancellationToken cancellationToken)
     {
-        const string sql = "SELECT * FROM units WHERE id = @unitId;";
+        const string sql = "SELECT id, identifier FROM units WHERE id = @unitId;";
 
         using var dbConnection = _connectionFactory.CreateConnection();
 
@@ -58,7 +59,7 @@ public class UnitRepository : IUnitRepository
     {
         const string sql = "UPDATE units SET occupation_id = @occupationId WHERE id = @unitId;";
         
-        using var dbConnection = _connectionFactory.CreateConnection();
+        using var connection = _connectionFactory.CreateConnection();
 
         if (unit.Occupation is null)
         {
@@ -71,12 +72,12 @@ public class UnitRepository : IUnitRepository
             unitId = unit.Id
         };
         
-        await dbConnection.ExecuteAsync(sql, arguments);
+        await connection.ExecuteAsync(sql, arguments);
     }
 
     public async Task<Unit?> GetByIdentifier(string identifier, CancellationToken cancellationToken)
     {
-        const string sql = "SELECT * FROM units WHERE identifier = @identifier;";
+        const string sql = "SELECT id, identifier FROM units WHERE identifier = @identifier;";
 
         using var dbConnection = _connectionFactory.CreateConnection();
 

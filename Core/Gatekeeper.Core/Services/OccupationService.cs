@@ -2,7 +2,9 @@ using System.Transactions;
 using AutoMapper;
 using Gatekeeper.Core.Commands;
 using Gatekeeper.Core.Entities;
+using Gatekeeper.Core.Exceptions;
 using Gatekeeper.Core.Repositories;
+using Gatekeeper.Shared.Database;
 using MediatR;
 using Unit = Gatekeeper.Core.Entities.Unit;
 
@@ -48,7 +50,7 @@ public class OccupationService : IOccupationService
     public async Task ApproveRequestAsync(long requestId, CancellationToken cancellationToken)
     {
         var request = await _requestRepository.GetRequestByIdAsync(requestId, cancellationToken) ??
-                      throw new InvalidOperationException("Request not found");
+                      throw new OccupationRequestNotFouncException("Request not found");
 
         var approved = request.Approve();
 
@@ -60,7 +62,7 @@ public class OccupationService : IOccupationService
     public async Task RejectRequestAsync(long requestId, string reason, CancellationToken cancellationToken)
     {
         var request = await _requestRepository.GetRequestByIdAsync(requestId, cancellationToken) ??
-                      throw new InvalidOperationException("Request not found");
+                      throw new OccupationRequestNotFouncException("Request not found");
 
         var rejected = request.Reject(reason);
 
@@ -72,7 +74,7 @@ public class OccupationService : IOccupationService
     public async Task EffectiveApprovedRequest(long requestId, CancellationToken cancellationToken)
     {
         var request = await _requestRepository.GetRequestByIdAsync(requestId, cancellationToken) ??
-                      throw new InvalidOperationException("Request not found");
+                      throw new OccupationRequestNotFouncException("Request not found");
 
         if (request.IsNotApproved)
         {
@@ -80,71 +82,53 @@ public class OccupationService : IOccupationService
         }
 
 
-        var unit = await _unitRepository.GetByIdAsync(request.Unit.UnitId, cancellationToken) ?? throw new InvalidOperationException("Unit not found");;
+        var unit = await _unitRepository.GetByIdAsync(request.Unit.UnitId, cancellationToken) ??
+                   throw new InvalidOperationException("Unit not found");
 
         var occupation = new Occupation
         {
             Unit = request.Unit,
-            Residents = request.People.Select(personalInfo => _mapper.Map<Resident>(personalInfo)).ToList()
+            Residents = request.People.Select(personalInfo => _mapper.Map<Resident>(personalInfo)).ToList(),
+            Start = DateOnly.FromDateTime(DateTime.UtcNow),
+            End = DateOnly.FromDateTime(DateTime.UtcNow).AddYears(2)
         };
 
         unit.OccupiedBy(occupation);
 
-        using var work = _unitOfWork;
-
-        await work.SaveUnitAsync(unit, cancellationToken);
-        await work.SaveOccupationAsync(occupation, cancellationToken);
-
-        work.Commit();
+        await _unitOfWork.CreateOccupationAndAssociateWithUnit(occupation, unit, cancellationToken);
     }
 }
 
-public interface IOccupationRequestEffectiveUnitOfWork : IDisposable
+public interface IOccupationRequestEffectiveUnitOfWork
 {
-    public Task SaveOccupationAsync(Occupation occupation, CancellationToken cancellationToken);
-    public Task SaveUnitAsync(Unit unit, CancellationToken cancellationToken);
-    void Commit();
+    public Task CreateOccupationAndAssociateWithUnit(Occupation occupation, Unit unit,
+        CancellationToken cancellationToken);
 }
 
 public class OccupationRequestEffectiveUnitOfWork : IOccupationRequestEffectiveUnitOfWork
 {
     private readonly IUnitRepository _unitRepository;
     private readonly IOccupationRepository _occupationRepository;
-    private readonly TransactionScope _scope = new(TransactionScopeAsyncFlowOption.Enabled);
+    private readonly IDbConnectionFactory _connectionFactory;
 
     public OccupationRequestEffectiveUnitOfWork(IOccupationRepository occupationRepository,
-        IUnitRepository unitRepository)
+        IUnitRepository unitRepository, IDbConnectionFactory connectionFactory)
     {
         _occupationRepository = occupationRepository;
         _unitRepository = unitRepository;
+        _connectionFactory = connectionFactory;
     }
 
-    public async Task SaveOccupationAsync(Occupation occupation, CancellationToken cancellationToken)
+    public async Task CreateOccupationAndAssociateWithUnit(Occupation occupation, Unit unit,
+        CancellationToken cancellationToken)
     {
+        using var tx = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
+        using var conn = _connectionFactory.CreateConnection();
+
         await _occupationRepository.SaveOccupationAsync(occupation, cancellationToken);
-    }
-
-    public async Task SaveUnitAsync(Unit unit, CancellationToken cancellationToken)
-    {
         await _unitRepository.UpdateOccupationAsync(unit, cancellationToken);
-    }
 
-    public void Commit()
-    {
-        _scope.Complete();
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            _scope.Dispose();
-        }
+        tx.Complete();
     }
 }
