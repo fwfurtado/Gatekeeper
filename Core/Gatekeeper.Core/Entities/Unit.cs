@@ -20,9 +20,9 @@ public class Unit
         Identifier = identifier;
     }
     
-    public Unit(long unitId, string identifier) : this(identifier)
+    public Unit(long id, string identifier) : this(identifier)
     {
-        Id = unitId;
+        Id = id;
     }
 
     public void OccupiedBy(Occupation occupation)

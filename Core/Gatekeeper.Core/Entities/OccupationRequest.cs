@@ -1,4 +1,3 @@
-using Gatekeeper.Core.Configurations;
 using Gatekeeper.Core.Events;
 using Stateless;
 
@@ -7,7 +6,7 @@ namespace Gatekeeper.Core.Entities;
 public class OccupationRequest
 {
     public long Id { get; set; }
-    public required Unit Unit { get; set; }
+    public required TargetUnit Unit { get; set; }
     public required List<PersonalInfo> People { get; set; } = new();
     public OccupationRequestStatus Status { get; set; }
     
@@ -58,3 +57,5 @@ public class OccupationRequest
         Reject,
     }
 }
+
+public record TargetUnit(long UnitId, string Identifier);

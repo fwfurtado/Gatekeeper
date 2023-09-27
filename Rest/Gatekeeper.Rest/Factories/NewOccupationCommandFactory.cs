@@ -24,6 +24,8 @@ public class NewOccupationCommandFactory {
         
         var people = request.People.Select(p => _mapper.Map<PersonalInfo>(p)).ToList();
         
-        return new NewOccupationCommand(unit, people);
+        var target = _mapper.Map<TargetUnit>(unit);
+
+        return new NewOccupationCommand(target, people);
     }
 }

@@ -79,7 +79,8 @@ public class OccupationService : IOccupationService
             throw new InvalidOperationException("Request is not approved");
         }
 
-        var unit = request.Unit;
+
+        var unit = await _unitRepository.GetByIdAsync(request.Unit.UnitId, cancellationToken) ?? throw new InvalidOperationException("Unit not found");;
 
         var occupation = new Occupation
         {
@@ -109,7 +110,7 @@ public class OccupationRequestEffectiveUnitOfWork : IOccupationRequestEffectiveU
 {
     private readonly IUnitRepository _unitRepository;
     private readonly IOccupationRepository _occupationRepository;
-    private readonly TransactionScope _scope = new();
+    private readonly TransactionScope _scope = new(TransactionScopeAsyncFlowOption.Enabled);
 
     public OccupationRequestEffectiveUnitOfWork(IOccupationRepository occupationRepository,
         IUnitRepository unitRepository)

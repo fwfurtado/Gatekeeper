@@ -42,7 +42,7 @@ public class OccupationRequestRepository : IOccupationRequestRepository
             id
         };
 
-        var result = await dbConnection.QueryAsync<OccupationRequest, PersonalInfo, Unit, OccupationRequest>(sql,
+        var result = await dbConnection.QueryAsync<OccupationRequest, PersonalInfo, TargetUnit, OccupationRequest>(sql,
             (request, person, unit) =>
             {
                 request.People.Add(person);
@@ -111,7 +111,7 @@ public class OccupationRequestRepository : IOccupationRequestRepository
 
         var occupationSqlArgs = new
         {
-            unitId = request.Unit.Id,
+            unitId = request.Unit.UnitId,
             status = Enum.GetName(request.Status),
             requestedAt = DateTime.UtcNow
         };
