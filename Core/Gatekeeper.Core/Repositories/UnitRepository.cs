@@ -73,4 +73,15 @@ public class UnitRepository : IUnitRepository
         
         await dbConnection.ExecuteAsync(sql, arguments);
     }
+
+    public async Task<Unit?> GetByIdentifier(string identifier, CancellationToken cancellationToken)
+    {
+        const string sql = "SELECT * FROM units WHERE identifier = @identifier;";
+
+        using var dbConnection = _connectionFactory.CreateConnection();
+
+        var unit = await dbConnection.QuerySingleOrDefaultAsync<Unit?>(sql, new { identifier });
+
+        return unit;
+    }
 }

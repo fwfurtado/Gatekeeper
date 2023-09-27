@@ -21,5 +21,6 @@ public class HttpMappingProfile : Profile
             Name = resident.Name
         });
         CreateMap<RegisterResidentRequest, RegisterResidentCommand>();
+        CreateMap<PersonInfoRequest, PersonalInfo>();
     }
 }

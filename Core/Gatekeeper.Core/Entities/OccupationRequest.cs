@@ -7,20 +7,18 @@ namespace Gatekeeper.Core.Entities;
 public class OccupationRequest
 {
     public long Id { get; set; }
-    public required Unit Unit { get; init; }
-    public required List<PersonalInfo> People { get; init; }
-    public OccupationRequestStatus Status { get; private set; }
+    public required Unit Unit { get; set; }
+    public required List<PersonalInfo> People { get; set; } = new();
+    public OccupationRequestStatus Status { get; set; }
     
-    public string? RejectReason { get; private set; }
+
     public bool IsNotApproved => Status != OccupationRequestStatus.Approved;
 
     private readonly OccupationRequestStateMachine _stateMachine;
 
 
-    public OccupationRequest(Unit unit, List<PersonalInfo> people)
+    public OccupationRequest()
     {
-        People = people;
-        Unit = unit;
         _stateMachine = new OccupationRequestStateMachine(this);
     }
     
@@ -37,8 +35,6 @@ public class OccupationRequest
     public OccupationRequestRejected Reject(string reason)
     {
         _stateMachine.Fire(OccupationRequestTriggers.Reject);
-        
-        RejectReason = reason;
         
         return new OccupationRequestRejected
         {

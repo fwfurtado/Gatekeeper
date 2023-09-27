@@ -1,5 +1,6 @@
 using System.Transactions;
 using AutoMapper;
+using Gatekeeper.Core.Commands;
 using Gatekeeper.Core.Entities;
 using Gatekeeper.Core.Repositories;
 using MediatR;
@@ -10,22 +11,38 @@ namespace Gatekeeper.Core.Services;
 public class OccupationService : IOccupationService
 {
     private readonly IOccupationRequestRepository _requestRepository;
+    private readonly IUnitRepository _unitRepository;
     private readonly IOccupationRequestEffectiveUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IPublisher _publisher;
 
     public OccupationService(
         IOccupationRequestEffectiveUnitOfWork unitOfWork,
+        IUnitRepository unitRepository,
         IOccupationRequestRepository requestRepository,
         IMapper mapper,
         IPublisher publisher
     )
     {
         _unitOfWork = unitOfWork;
+        _unitRepository = unitRepository;
         _requestRepository = requestRepository;
         _mapper = mapper;
         _publisher = publisher;
         _unitOfWork = unitOfWork;
+    }
+
+    public async Task RequestOccupationAsync(NewOccupationCommand command, CancellationToken cancellationToken)
+    {
+        var request = _mapper.Map<OccupationRequest>(command);
+
+        await _requestRepository.SaveAsync(request, cancellationToken);
+    }
+
+
+    public async Task<OccupationRequest?> GetById(long id, CancellationToken cancellationToken)
+    {
+        return await _requestRepository.GetRequestByIdAsync(id, cancellationToken);
     }
 
     public async Task ApproveRequestAsync(long requestId, CancellationToken cancellationToken)
@@ -73,10 +90,10 @@ public class OccupationService : IOccupationService
         unit.OccupiedBy(occupation);
 
         using var work = _unitOfWork;
-        
+
         await work.SaveUnitAsync(unit, cancellationToken);
         await work.SaveOccupationAsync(occupation, cancellationToken);
-            
+
         work.Commit();
     }
 }

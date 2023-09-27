@@ -6,6 +6,7 @@ using Gatekeeper.Core.Services;
 using Gatekeeper.Core.Specifications;
 using Gatekeeper.Core.Validations;
 using Gatekeeper.Rest.Configuration;
+using Gatekeeper.Rest.Factories;
 using Gatekeeper.Shared.Database;
 using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Authorization;
@@ -78,6 +79,9 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.AddProfile<HttpMappingProfile>();
 });
 
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
+
+
 
 builder.Services.AddTransient<IDbConnectionFactory, DbConnectionFactory>();
 
@@ -88,6 +92,12 @@ builder.Services.AddScoped<IValidator<RegisterResidentCommand>, RegisterResident
 builder.Services.AddScoped<IUnitService, UnitService>();
 builder.Services.AddScoped<IResidentService, ResidentService>();
 builder.Services.AddScoped<IResidentRepository, ResidentRepository>();
+builder.Services.AddScoped<IOccupationRequestRepository, OccupationRequestRepository>();
+builder.Services.AddScoped<IOccupationRepository, OccupationRepository>();
+builder.Services.AddScoped<IOccupationRequestEffectiveUnitOfWork, OccupationRequestEffectiveUnitOfWork>();
+builder.Services.AddScoped<IOccupationService, OccupationService>();
+builder.Services.AddScoped<NewOccupationCommandFactory>();
+
 
 var app = builder.Build();
 

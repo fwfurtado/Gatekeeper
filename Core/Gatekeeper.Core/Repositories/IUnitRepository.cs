@@ -9,4 +9,5 @@ public interface IUnitRepository
     Task<Unit?> GetByIdAsync(long unitId, CancellationToken cancellationToken);
     
     Task UpdateOccupationAsync(Unit unit, CancellationToken cancellationToken);
+    Task<Unit?> GetByIdentifier(string identifier, CancellationToken cancellationToken);
 }
