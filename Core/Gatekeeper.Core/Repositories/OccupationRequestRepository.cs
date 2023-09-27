@@ -104,7 +104,7 @@ public class OccupationRequestRepository : IOccupationRequestRepository
     {
         using var scoped = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
-        const string ocuppationSql =
+        const string occupationSql =
             "INSERT INTO occupation_requests(target_unit_id, status, requested_at) VALUES(@unitId, @status, @requestedAt) RETURNING id;";
 
         using var dbConnection = _connectionFactory.CreateConnection();
@@ -116,7 +116,7 @@ public class OccupationRequestRepository : IOccupationRequestRepository
             requestedAt = DateTime.UtcNow
         };
 
-        var id = await dbConnection.ExecuteScalarAsync<long>(ocuppationSql, occupationSqlArgs);
+        var id = await dbConnection.ExecuteScalarAsync<long>(occupationSql, occupationSqlArgs);
 
         const string basePeopleSql =
             "INSERT INTO occupation_request_people(occupation_id, name, document, email, phone) VALUES (@occupationId, @name, @document, @email, @phone);";

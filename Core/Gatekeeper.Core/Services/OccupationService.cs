@@ -1,12 +1,9 @@
-using System.Transactions;
 using AutoMapper;
 using Gatekeeper.Core.Commands;
 using Gatekeeper.Core.Entities;
 using Gatekeeper.Core.Exceptions;
 using Gatekeeper.Core.Repositories;
-using Gatekeeper.Shared.Database;
 using MediatR;
-using Unit = Gatekeeper.Core.Entities.Unit;
 
 namespace Gatekeeper.Core.Services;
 
@@ -96,39 +93,5 @@ public class OccupationService : IOccupationService
         unit.OccupiedBy(occupation);
 
         await _unitOfWork.CreateOccupationAndAssociateWithUnit(occupation, unit, cancellationToken);
-    }
-}
-
-public interface IOccupationRequestEffectiveUnitOfWork
-{
-    public Task CreateOccupationAndAssociateWithUnit(Occupation occupation, Unit unit,
-        CancellationToken cancellationToken);
-}
-
-public class OccupationRequestEffectiveUnitOfWork : IOccupationRequestEffectiveUnitOfWork
-{
-    private readonly IUnitRepository _unitRepository;
-    private readonly IOccupationRepository _occupationRepository;
-    private readonly IDbConnectionFactory _connectionFactory;
-
-    public OccupationRequestEffectiveUnitOfWork(IOccupationRepository occupationRepository,
-        IUnitRepository unitRepository, IDbConnectionFactory connectionFactory)
-    {
-        _occupationRepository = occupationRepository;
-        _unitRepository = unitRepository;
-        _connectionFactory = connectionFactory;
-    }
-
-    public async Task CreateOccupationAndAssociateWithUnit(Occupation occupation, Unit unit,
-        CancellationToken cancellationToken)
-    {
-        using var tx = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-
-        using var conn = _connectionFactory.CreateConnection();
-
-        await _occupationRepository.SaveOccupationAsync(occupation, cancellationToken);
-        await _unitRepository.UpdateOccupationAsync(unit, cancellationToken);
-
-        tx.Complete();
     }
 }
