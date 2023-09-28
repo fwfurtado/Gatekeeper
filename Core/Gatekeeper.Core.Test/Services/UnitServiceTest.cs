@@ -73,7 +73,7 @@ public class UnitServiceTest
     }
 
     [Test]
-    public async Task ShouldCreateAnEmptyUnit()
+    public async Task ShouldCreateAnUnit()
     {
         var service = new UnitService(_repositoryMock.Object, _unitValidator, _mapper);
 
@@ -90,7 +90,6 @@ public class UnitServiceTest
         
         unit.Should().NotBeNull();
         unit.Identifier.Should().Be(command.Identifier);
-        unit.Residents.Should().BeEmpty();
     }
     
     [Test]

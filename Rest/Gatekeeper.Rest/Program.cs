@@ -1,11 +1,14 @@
+using Dapper;
 using FluentValidation;
 using Gatekeeper.Core.Commands;
 using Gatekeeper.Core.Configurations;
+using Gatekeeper.Core.Events.Handlers;
 using Gatekeeper.Core.Repositories;
 using Gatekeeper.Core.Services;
 using Gatekeeper.Core.Specifications;
 using Gatekeeper.Core.Validations;
 using Gatekeeper.Rest.Configuration;
+using Gatekeeper.Rest.Factories;
 using Gatekeeper.Shared.Database;
 using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Authorization;
@@ -52,8 +55,8 @@ builder.Services.AddSwaggerGen(options =>
         Type = SecuritySchemeType.OpenIdConnect,
         OpenIdConnectUrl = new Uri($"{authenticationOptions.KeycloakUrlRealm}/.well-known/openid-configuration")
     });
-    
-    
+
+
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -78,6 +81,14 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.AddProfile<HttpMappingProfile>();
 });
 
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssemblyContaining<Program>();
+    cfg.RegisterServicesFromAssemblyContaining<OccupationRequestApprovedHandler>();
+});
+
+
+DapperConfiguration.Configure();
 
 builder.Services.AddTransient<IDbConnectionFactory, DbConnectionFactory>();
 
@@ -88,6 +99,12 @@ builder.Services.AddScoped<IValidator<RegisterResidentCommand>, RegisterResident
 builder.Services.AddScoped<IUnitService, UnitService>();
 builder.Services.AddScoped<IResidentService, ResidentService>();
 builder.Services.AddScoped<IResidentRepository, ResidentRepository>();
+builder.Services.AddScoped<IOccupationRequestRepository, OccupationRequestRepository>();
+builder.Services.AddScoped<IOccupationRepository, OccupationRepository>();
+builder.Services.AddScoped<IOccupationRequestEffectiveUnitOfWork, OccupationRequestEffectiveUnitOfWork>();
+builder.Services.AddScoped<IOccupationService, OccupationService>();
+builder.Services.AddScoped<NewOccupationCommandFactory>();
+
 
 var app = builder.Build();
 
@@ -114,5 +131,7 @@ app.MapControllers();
 app.Run();
 
 #pragma warning disable S1118
-public partial class Program { }
+public partial class Program
+{
+}
 #pragma warning restore S1118

@@ -53,7 +53,8 @@ public class UnitController : ControllerBase
         _logger.LogInformation("Unit with id {UnitId} found", unitId);
 
         var response = _mapper.Map<UnitResponse>(unit);
-        
+
         return Ok(response);
     }
+    
 }

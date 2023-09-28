@@ -14,7 +14,13 @@ public class HttpMappingProfile : Profile
     {
         CreateMap<Unit, UnitResponse>();
         CreateMap<Resident, ResidentResponse>()
-        .ConvertUsing(resident => new ResidentResponse { Document = resident.Document.Number, Name = resident.Name });
+        .ConvertUsing(resident => new ResidentResponse
+        {
+            Id = resident.Id,
+            Document = resident.Document.Number, 
+            Name = resident.Name
+        });
         CreateMap<RegisterResidentRequest, RegisterResidentCommand>();
+        CreateMap<PersonInfoRequest, PersonalInfo>();
     }
 }

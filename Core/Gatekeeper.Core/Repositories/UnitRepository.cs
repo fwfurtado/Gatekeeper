@@ -1,3 +1,4 @@
+using System.Data;
 using Dapper;
 using Gatekeeper.Core.Entities;
 using Gatekeeper.Shared.Database;
@@ -45,11 +46,42 @@ public class UnitRepository : IUnitRepository
 
     public async Task<Unit?> GetByIdAsync(long unitId, CancellationToken cancellationToken)
     {
-        const string sql = "SELECT * FROM units WHERE id = @unitId;";
+        const string sql = "SELECT id, identifier FROM units WHERE id = @unitId;";
 
         using var dbConnection = _connectionFactory.CreateConnection();
 
         var unit = await dbConnection.QuerySingleOrDefaultAsync<Unit?>(sql, new { unitId });
+
+        return unit;
+    }
+
+    public async Task UpdateOccupationAsync(Unit unit, CancellationToken cancellationToken)
+    {
+        const string sql = "UPDATE units SET occupation_id = @occupationId WHERE id = @unitId;";
+        
+        using var connection = _connectionFactory.CreateConnection();
+
+        if (unit.Occupation is null)
+        {
+            throw new ArgumentException("Unit must have an occupation");
+        }
+        
+        var arguments = new
+        {
+            occupationId = unit.Occupation.Id,
+            unitId = unit.Id
+        };
+        
+        await connection.ExecuteAsync(sql, arguments);
+    }
+
+    public async Task<Unit?> GetByIdentifier(string identifier, CancellationToken cancellationToken)
+    {
+        const string sql = "SELECT id, identifier FROM units WHERE identifier = @identifier;";
+
+        using var dbConnection = _connectionFactory.CreateConnection();
+
+        var unit = await dbConnection.QuerySingleOrDefaultAsync<Unit?>(sql, new { identifier });
 
         return unit;
     }
