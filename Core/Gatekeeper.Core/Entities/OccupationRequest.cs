@@ -8,7 +8,7 @@ public class OccupationRequest
     public long Id { get; set; }
     public required TargetUnit Unit { get; set; }
     public required List<PersonalInfo> People { get; set; } = new();
-    public OccupationRequestStatus Status { get; set; }
+    public OccupationRequestStatus Status { get; set; } = OccupationRequestStatus.Pending;
 
 
     public bool IsNotApproved => Status != OccupationRequestStatus.Approved;

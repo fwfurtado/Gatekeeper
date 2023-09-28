@@ -12,10 +12,14 @@ public class CoreMappingProfile : Profile
             .IgnoreAllPropertiesWithAnInaccessibleSetter()
             .ForMember(u => u.Id, opt => opt.Ignore());
         CreateMap<RegisterUnitCommand, Unit>()
-            .ForMember(u => u.Id, opt => opt.Ignore());
+            .ForMember(t => t.Id, opt => opt.Ignore())
+            .ForMember(t => t.Occupation, opt => opt.Ignore());
         CreateMap<Unit, TargetUnit>()
             .ForMember(t => t.UnitId, opt => opt.MapFrom(u => u.Id));
-        CreateMap<PersonalInfo, Resident>();
-        CreateMap<NewOccupationCommand, OccupationRequest>();
+        CreateMap<PersonalInfo, Resident>()
+            .ForMember(t => t.Id, opt => opt.Ignore());
+        CreateMap<NewOccupationCommand, OccupationRequest>()
+            .ForMember(t => t.Id, opt => opt.Ignore())
+            .ForMember(t => t.Status, opt => opt.Ignore());
     }
 }
