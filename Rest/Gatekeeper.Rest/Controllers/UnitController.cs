@@ -9,7 +9,7 @@ namespace Gatekeeper.Rest.Controllers;
 
 [ApiController]
 [Route("units")]
-[Authorize]
+// [Authorize] //TODO: Uncomment this line when authentication is implemented in Frontend.Gatekeeper.Admin
 public class UnitController : ControllerBase
 {
     private readonly IUnitService _service;
@@ -35,6 +35,20 @@ public class UnitController : ControllerBase
         _logger.LogInformation("Unit registered with success");
 
         return CreatedAtAction(nameof(ShowUnit), new { unitId = unit.Id }, null);
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> ListUnits(CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Get all units");
+
+        var units = await _service.GetAllUnits(cancellationToken);
+
+        _logger.LogInformation("Units found");
+
+        var response = units.Select(u => _mapper.Map<UnitResponse>(u));
+
+        return Ok(response);
     }
 
     [HttpGet("{unitId:long}")]

@@ -10,7 +10,7 @@ namespace Gatekeeper.Rest.Controllers;
 
 [ApiController]
 [Route("residents")]
-[Authorize]
+// [Authorize] //TODO: Uncomment this line when authentication is implemented in Frontend.Gatekeeper.Admin
 public class ResidentController : ControllerBase
 {
 

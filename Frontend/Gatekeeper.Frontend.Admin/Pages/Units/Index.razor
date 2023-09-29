@@ -1,0 +1,45 @@
+@page "/units/"
+@using Gatekeeper.Frontend.Admin.Dtos
+
+@inject HttpClient Http
+
+<PageTitle>Unit</PageTitle>
+
+@if (_unit == null)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
+}
+else
+{
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mb-4" Link="true" Href="/units/new">Create</MudButton>
+    <MudTable Items="_unit" Hover="true" SortLabel="Sort By" Elevation="0">
+        <HeaderContent>
+            <MudTh>
+                <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<UnitResponse, object>(x => x.Id)">#</MudTableSortLabel>
+            </MudTh>
+            <MudTh>
+                <MudTableSortLabel SortBy="new Func<UnitResponse, object>(x => x.Identifier)">Identifier</MudTableSortLabel>
+            </MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Id">@context.Id</MudTd>
+            <MudTd DataLabel="Identifier">@context.Identifier</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[] { 10, 50 }"/>
+        </PagerContent>
+    </MudTable>
+}
+
+@code {
+
+    private UnitResponse[]? _unit;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _unit = await Http.GetFromJsonAsync<UnitResponse[]>("units");
+    }
+
+}
+
