@@ -48,5 +48,10 @@ public class ResidentService : IResidentService
     public Task<Resident?> GetResidentByIdAsync(long residentId, CancellationToken cancellationToken)
     {
         return _repository.GetByIdAsync(residentId, cancellationToken);
-    }    
+    }
+
+    public async Task<IEnumerable<Resident>> GetAllResidents(CancellationToken cancellationToken)
+    {
+        return await _repository.GetAll(cancellationToken);
+    }
 }

@@ -7,4 +7,5 @@ public interface IResidentRepository
     Task<long> SaveAsync(Resident resident, CancellationToken cancellationToken);
     Task<bool> ExistsDocumentAsync(string document, CancellationToken cancellationToken);
     Task<Resident?> GetByIdAsync(long residentId, CancellationToken cancellationToken);
+    Task<IEnumerable<Resident>> GetAll(CancellationToken cancellationToken);
 }

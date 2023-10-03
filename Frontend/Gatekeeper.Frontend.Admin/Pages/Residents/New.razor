@@ -1,0 +1,45 @@
+﻿@page "/residents/new"
+@using Gatekeeper.Frontend.Admin.Dtos
+
+@inject HttpClient Http
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+
+
+<PageTitle>Resident</PageTitle>
+
+
+<MudText Typo="Typo.h2">New Resident</MudText>
+<MudPaper Class="pa-4">
+    <MudForm>
+        <MudTextField T="string" @bind-value="Name" Text="@Name" Label="Name" Required="true" RequiredError="Name is required!"/>
+        <MudTextField T="string" @bind-value="Document" Text="@Document" Label="Document" Required="true" RequiredError="Document is required!"/>
+        <MudButton Color="Color.Primary" OnClick="async () => await SaveResident()">Save</MudButton>
+    </MudForm>
+</MudPaper>
+
+
+@code {
+
+
+    public string Name { get; set; } = string.Empty;
+    public string Document { get; set; } = string.Empty;
+
+
+    private async Task SaveResident()
+    {
+        var response = await Http.PostAsJsonAsync("/residents", new ResidentRequest() { Name = Name, Document = Document });
+
+        if (response.IsSuccessStatusCode)
+        {
+            Snackbar.Add("Resident saved", Severity.Success);
+            NavigationManager.NavigateTo("/residents");
+        }
+        else
+        {
+            Snackbar.Add("Error saving resident", Severity.Error);
+        }
+        
+    }
+
+}

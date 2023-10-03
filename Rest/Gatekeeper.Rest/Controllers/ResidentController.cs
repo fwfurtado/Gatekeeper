@@ -48,6 +48,20 @@ public class ResidentController : ControllerBase
         }        
     }
 
+    [HttpGet]
+    public async Task<IActionResult> ListResidents(CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Get all residents");
+
+        var residents = await _service.GetAllResidents(cancellationToken);
+
+        _logger.LogInformation("Residents found");
+
+        var response = residents.Select(u => _mapper.Map<ResidentResponse>(u));
+
+        return Ok(response);
+    }
+
     [HttpGet("{residentId:long}")]
     public async Task<IActionResult> ShowResident(long residentId, CancellationToken cancellationToken)
     {
