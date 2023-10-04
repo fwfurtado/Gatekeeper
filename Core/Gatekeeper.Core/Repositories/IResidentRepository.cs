@@ -8,4 +8,5 @@ public interface IResidentRepository
     Task<bool> ExistsDocumentAsync(string document, CancellationToken cancellationToken);
     Task<Resident?> GetByIdAsync(long residentId, CancellationToken cancellationToken);
     Task<IEnumerable<Resident>> GetAll(CancellationToken cancellationToken);
+    Task DeleteByIdAsync(long residentId, CancellationToken cancellationToken);
 }

@@ -4,6 +4,7 @@
 @inject HttpClient Http
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
+@inject ILogger<New> Logger
 
 
 <PageTitle>Resident</PageTitle>
@@ -11,24 +12,20 @@
 
 <MudText Typo="Typo.h2">New Resident</MudText>
 <MudPaper Class="pa-4">
-    <MudForm>
-        <MudTextField T="string" @bind-value="Name" Text="@Name" Label="Name" Required="true" RequiredError="Name is required!"/>
-        <MudTextField T="string" @bind-value="Document" Text="@Document" Label="Document" Required="true" RequiredError="Document is required!"/>
+    <MudForm Model="@Form">
+        <MudTextField T="string" @bind-value="Form.Name" Label="Name" Required="true" RequiredError="Name is required!"/>
+        <MudTextField T="string" @bind-value="Form.Document" Label="Document" Required="true" RequiredError="Document is required!"/>
         <MudButton Color="Color.Primary" OnClick="async () => await SaveResident()">Save</MudButton>
     </MudForm>
 </MudPaper>
 
 
 @code {
-
-
-    public string Name { get; set; } = string.Empty;
-    public string Document { get; set; } = string.Empty;
-
+    public ResidentForm Form = new();
 
     private async Task SaveResident()
     {
-        var response = await Http.PostAsJsonAsync("/residents", new ResidentRequest() { Name = Name, Document = Document });
+        var response = await Http.PostAsJsonAsync("/residents", new ResidentRequest() { Name = Form.Name, Document = Form.Document });
 
         if (response.IsSuccessStatusCode)
         {
@@ -37,9 +34,9 @@
         }
         else
         {
+            var log = $"reponse received from REST {response}";
+            Logger.LogInformation(log);
             Snackbar.Add("Error saving resident", Severity.Error);
         }
-        
     }
-
 }

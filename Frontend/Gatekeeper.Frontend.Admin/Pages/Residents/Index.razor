@@ -2,6 +2,7 @@
 @using Gatekeeper.Frontend.Admin.Dtos
 
 @inject HttpClient Http
+@inject ISnackbar Snackbar
 
 <PageTitle>Resident</PageTitle>
 
@@ -23,11 +24,15 @@ else
             <MudTh>
                 <MudTableSortLabel SortBy="new Func<ResidentResponse, object>(x => x.Document)">Document</MudTableSortLabel>
             </MudTh>
+            <MudTh>Actions</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="Id">@context.Id</MudTd>
             <MudTd DataLabel="Name">@context.Name</MudTd>
             <MudTd DataLabel="Document">@context.Document</MudTd>
+            <MudTd>
+                <MudIconButton OnClick="async () => await Delete(context)" Icon="@Icons.Material.Filled.Delete" aria-label="delete" Color="Color.Error"/>
+            </MudTd>
         </RowTemplate>
         <PagerContent>
             <MudTablePager PageSizeOptions="new int[] { 10, 50 }"/>
@@ -39,11 +44,27 @@ else
 
     private ResidentResponse[]? _resident;
 
-
     protected override async Task OnInitializedAsync()
+    {
+        await LoadResidents();
+    }
+
+    private async Task Delete(ResidentResponse resident)
+    {
+        var response = await Http.DeleteAsync($"residents/{resident.Id}");
+        if (response.IsSuccessStatusCode)
+        {
+            await LoadResidents();
+        }
+        else
+        {
+            Snackbar.Add($"Error deleting resident {resident.Name}", Severity.Error);
+        }
+    }
+
+    private async Task LoadResidents()
     {
         _resident = await Http.GetFromJsonAsync<ResidentResponse[]>("residents");
     }
-
 }
 

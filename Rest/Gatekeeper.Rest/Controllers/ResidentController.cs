@@ -82,5 +82,15 @@ public class ResidentController : ControllerBase
         return Ok(response);
     }
 
+    [HttpDelete("{residentId:long}")]
+    public async Task<IActionResult> DeleteResident(long residentId, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Delete resident with id {ResidentId}", residentId);
 
+        await _service.DeleteResident(residentId, cancellationToken);
+                
+        _logger.LogInformation("Resident with id {ResidentId} was deleted", residentId);
+
+        return NoContent();
+    }
 }

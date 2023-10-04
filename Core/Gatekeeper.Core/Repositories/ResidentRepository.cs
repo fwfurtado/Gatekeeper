@@ -66,4 +66,13 @@ public class ResidentRepository : IResidentRepository
 
         return residents;
     }
+
+    public async Task DeleteByIdAsync(long residentId, CancellationToken cancellationToken)
+    {
+        const string sql = "DELETE FROM residents WHERE id = @residentId;";
+
+        using var connection = _connectionFactory.CreateConnection();
+
+        await connection.ExecuteAsync(sql, new { residentId });
+    }
 }

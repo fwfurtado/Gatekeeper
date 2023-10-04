@@ -54,4 +54,10 @@ public class ResidentService : IResidentService
     {
         return await _repository.GetAll(cancellationToken);
     }
+
+    public async Task DeleteResident(long residentId, CancellationToken cancellationToken)
+    {
+        await _repository.DeleteByIdAsync(residentId, cancellationToken);
+    }
+
 }
