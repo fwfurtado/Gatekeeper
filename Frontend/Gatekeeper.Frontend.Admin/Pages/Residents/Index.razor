@@ -1,8 +1,12 @@
 ﻿@page "/residents/"
 @using Gatekeeper.Frontend.Admin.Dtos
+@using Gatekeeper.Frontend.Admin.Dialogs.Residents
+@using MudBlazor.Extensions
 
 @inject HttpClient Http
 @inject ISnackbar Snackbar
+@inject IDialogService DialogService
+@inject ILogger<Index> Logger
 
 <PageTitle>Resident</PageTitle>
 
@@ -51,14 +55,37 @@ else
 
     private async Task Delete(ResidentResponse resident)
     {
-        var response = await Http.DeleteAsync($"residents/{resident.Id}");
-        if (response.IsSuccessStatusCode)
+        // var response = await Http.DeleteAsync($"residents/{resident.Id}");
+        // if (response.IsSuccessStatusCode)
+        // {
+        //     await LoadResidents();
+        // }
+        // else
+        // {
+        //     Snackbar.Add($"Error deleting resident {resident.Name}", Severity.Error);
+        // }
+        
+        
+        var parameters = new DialogParameters<DeleteDialog>();
+        parameters.Add("Resident", resident);
+
+        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete Server", parameters);
+        var result = await dialog.Result;
+        
+        if (!result.Canceled)
         {
-            await LoadResidents();
-        }
-        else
-        {
-            Snackbar.Add($"Error deleting resident {resident.Name}", Severity.Error);
+            var isSuccessful = result.Data as bool? ?? false;
+            
+            if (isSuccessful)
+            {
+                Snackbar.Add($"Resident {resident.Name} deleted", Severity.Success);    
+                await LoadResidents();
+            }
+            else
+            {
+                Snackbar.Add($"Error deleting resident {resident.Name}", Severity.Error);
+            }
+            
         }
     }
 
