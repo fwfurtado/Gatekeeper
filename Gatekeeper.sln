@@ -1,45 +1,38 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34018.315
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{780D20F5-41D5-4C90-8106-A24CD8DE6302}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gatekeeper.Core", "Core\Gatekeeper.Core\Gatekeeper.Core.csproj", "{EC4F63E7-5085-4BB9-A748-6385C352283C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gatekeeper.Core", "Core\Gatekeeper.Core\Gatekeeper.Core.csproj", "{EC4F63E7-5085-4BB9-A748-6385C352283C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gatekeeper.Core.Test", "Core\Gatekeeper.Core.Test\Gatekeeper.Core.Test.csproj", "{6BD2C014-AA0E-4E66-B0F1-01AFDE8E1488}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gatekeeper.Core.Test", "Core\Gatekeeper.Core.Test\Gatekeeper.Core.Test.csproj", "{6BD2C014-AA0E-4E66-B0F1-01AFDE8E1488}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rest", "Rest", "{C10FE211-F603-48BD-A37B-5AB338006347}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gatekeeper.Rest", "Rest\Gatekeeper.Rest\Gatekeeper.Rest.csproj", "{CBE1EF53-FE4C-4931-80DF-6BC1C2C70539}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gatekeeper.Rest", "Rest\Gatekeeper.Rest\Gatekeeper.Rest.csproj", "{CBE1EF53-FE4C-4931-80DF-6BC1C2C70539}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{BA9A7FDA-4711-43BB-B1D4-AC1DC781AF2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gatekeeper.Migration", "Database\Gatekeeper.Migration\Gatekeeper.Migration.csproj", "{A7E42B42-FE9D-4DB7-B744-8939B5FE8CEC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gatekeeper.Migration", "Database\Gatekeeper.Migration\Gatekeeper.Migration.csproj", "{A7E42B42-FE9D-4DB7-B744-8939B5FE8CEC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gatekeeper.Rest.Test", "Rest\Gatekeeper.Rest.Test\Gatekeeper.Rest.Test.csproj", "{54364563-2ABC-434F-AC3B-7F892FC1BA44}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gatekeeper.Rest.Test", "Rest\Gatekeeper.Rest.Test\Gatekeeper.Rest.Test.csproj", "{54364563-2ABC-434F-AC3B-7F892FC1BA44}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{64CCE1A2-66AD-4778-8801-06DF55D4528A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gatekeeper.Shared.Test", "Shared\Gatekeeper.Shared.Test\Gatekeeper.Shared.Test.csproj", "{B673A0DC-D0AA-436D-81A5-8822B7BD26B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gatekeeper.Shared.Test", "Shared\Gatekeeper.Shared.Test\Gatekeeper.Shared.Test.csproj", "{B673A0DC-D0AA-436D-81A5-8822B7BD26B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gatekeeper.Shared.Database", "Shared\Gatekeeper.Shared.Database\Gatekeeper.Shared.Database.csproj", "{5AC26E56-D551-48CE-A686-024460B76920}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gatekeeper.Shared.Database", "Shared\Gatekeeper.Shared.Database\Gatekeeper.Shared.Database.csproj", "{5AC26E56-D551-48CE-A686-024460B76920}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{257785B1-1090-4B18-9AAE-BCC5133576C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gatekeeper.Frontend.Admin", "Frontend\Gatekeeper.Frontend.Admin\Gatekeeper.Frontend.Admin.csproj", "{9A9C5325-1A13-4892-A8D9-E0A1563CA3A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gatekeeper.Frontend.Admin", "Frontend\Gatekeeper.Frontend.Admin\Gatekeeper.Frontend.Admin.csproj", "{9A9C5325-1A13-4892-A8D9-E0A1563CA3A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{EC4F63E7-5085-4BB9-A748-6385C352283C} = {780D20F5-41D5-4C90-8106-A24CD8DE6302}
-		{6BD2C014-AA0E-4E66-B0F1-01AFDE8E1488} = {780D20F5-41D5-4C90-8106-A24CD8DE6302}
-		{CBE1EF53-FE4C-4931-80DF-6BC1C2C70539} = {C10FE211-F603-48BD-A37B-5AB338006347}
-		{A7E42B42-FE9D-4DB7-B744-8939B5FE8CEC} = {BA9A7FDA-4711-43BB-B1D4-AC1DC781AF2E}
-		{54364563-2ABC-434F-AC3B-7F892FC1BA44} = {C10FE211-F603-48BD-A37B-5AB338006347}
-		{B673A0DC-D0AA-436D-81A5-8822B7BD26B7} = {64CCE1A2-66AD-4778-8801-06DF55D4528A}
-		{5AC26E56-D551-48CE-A686-024460B76920} = {64CCE1A2-66AD-4778-8801-06DF55D4528A}
-		{9A9C5325-1A13-4892-A8D9-E0A1563CA3A8} = {257785B1-1090-4B18-9AAE-BCC5133576C5}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{EC4F63E7-5085-4BB9-A748-6385C352283C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -74,5 +67,21 @@ Global
 		{9A9C5325-1A13-4892-A8D9-E0A1563CA3A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A9C5325-1A13-4892-A8D9-E0A1563CA3A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A9C5325-1A13-4892-A8D9-E0A1563CA3A8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EC4F63E7-5085-4BB9-A748-6385C352283C} = {780D20F5-41D5-4C90-8106-A24CD8DE6302}
+		{6BD2C014-AA0E-4E66-B0F1-01AFDE8E1488} = {780D20F5-41D5-4C90-8106-A24CD8DE6302}
+		{CBE1EF53-FE4C-4931-80DF-6BC1C2C70539} = {C10FE211-F603-48BD-A37B-5AB338006347}
+		{A7E42B42-FE9D-4DB7-B744-8939B5FE8CEC} = {BA9A7FDA-4711-43BB-B1D4-AC1DC781AF2E}
+		{54364563-2ABC-434F-AC3B-7F892FC1BA44} = {C10FE211-F603-48BD-A37B-5AB338006347}
+		{B673A0DC-D0AA-436D-81A5-8822B7BD26B7} = {64CCE1A2-66AD-4778-8801-06DF55D4528A}
+		{5AC26E56-D551-48CE-A686-024460B76920} = {64CCE1A2-66AD-4778-8801-06DF55D4528A}
+		{9A9C5325-1A13-4892-A8D9-E0A1563CA3A8} = {257785B1-1090-4B18-9AAE-BCC5133576C5}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4082C190-E28C-4F73-806C-17E969859A39}
 	EndGlobalSection
 EndGlobal

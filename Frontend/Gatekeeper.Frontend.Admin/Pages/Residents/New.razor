@@ -1,10 +1,12 @@
 ﻿@page "/residents/new"
 @using Gatekeeper.Frontend.Admin.Dtos
+@using Gatekeeper.Core.Validations
 
 @inject HttpClient Http
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
 @inject ILogger<New> Logger
+@inject CpfValidator CpfValidator
 
 
 <PageTitle>Resident</PageTitle>
