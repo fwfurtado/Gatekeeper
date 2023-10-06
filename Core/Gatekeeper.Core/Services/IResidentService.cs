@@ -8,4 +8,6 @@ public interface IResidentService
     Task<Resident> RegisterResidentAsync(RegisterResidentCommand command, CancellationToken cancellationToken);
 
     Task<Resident?> GetResidentByIdAsync(long residentId, CancellationToken cancellationToken);
+    Task<IEnumerable<Resident>> GetAllResidents(CancellationToken cancellationToken);
+    Task DeleteResident(long residentId, CancellationToken cancellationToken);
 }

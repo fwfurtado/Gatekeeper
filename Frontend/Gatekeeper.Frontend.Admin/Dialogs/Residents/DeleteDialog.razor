@@ -1,0 +1,46 @@
+@using Gatekeeper.Frontend.Admin.Dtos
+
+@inject HttpClient Http
+
+<MudDialog>
+    <DialogContent>
+        Deleting Resident @Resident.Name
+        
+        @if(IsLoading)
+        {
+            <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+        }
+        else
+        {
+            <MudText Typo="Typo.body2">Are you sure you want to delete this resident?</MudText>
+        }
+        
+    </DialogContent>
+    <DialogActions>
+        <MudButton Disabled="IsLoading" OnClick="Cancel">Cancel</MudButton>
+        <MudButton Disabled="IsLoading" Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    public bool IsLoading { get; set; } = false;
+    
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public ResidentResponse Resident { get; set; } = new();
+    
+
+    async Task Submit()
+    {
+        IsLoading = true;
+
+        var response = await Http.DeleteAsync($"residents/{Resident.Id}");
+        
+        IsLoading = false;
+        
+        MudDialog.Close(DialogResult.Ok(response.IsSuccessStatusCode));
+    }
+
+    void Cancel() => MudDialog.Cancel();
+}

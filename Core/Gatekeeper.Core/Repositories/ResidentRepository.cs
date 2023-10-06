@@ -56,5 +56,23 @@ public class ResidentRepository : IResidentRepository
         return resident;
     }
 
+    public async Task<IEnumerable<Resident>> GetAll(CancellationToken cancellationToken)
+    {
+        const string sql = "SELECT * FROM residents";
 
+        using var dbConnection = _connectionFactory.CreateConnection();
+
+        var residents = await dbConnection.QueryAsync<Resident>(sql);
+
+        return residents;
+    }
+
+    public async Task DeleteByIdAsync(long residentId, CancellationToken cancellationToken)
+    {
+        const string sql = "DELETE FROM residents WHERE id = @residentId;";
+
+        using var connection = _connectionFactory.CreateConnection();
+
+        await connection.ExecuteAsync(sql, new { residentId });
+    }
 }

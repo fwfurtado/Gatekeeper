@@ -1,0 +1,86 @@
+﻿@page "/residents/"
+@using Gatekeeper.Frontend.Admin.Dtos
+@using Gatekeeper.Frontend.Admin.Dialogs.Residents
+@using MudBlazor.Extensions
+
+@inject HttpClient Http
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
+<PageTitle>Resident</PageTitle>
+
+@if (_resident == null)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
+}
+else
+{
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mb-4" Link="true" Href="/residents/new">Create</MudButton>
+    <MudTable Items="_resident" Hover="true" SortLabel="Sort By" Elevation="0">
+        <HeaderContent>
+            <MudTh>
+                <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<ResidentResponse, object>(x => x.Id)">#</MudTableSortLabel>
+            </MudTh>
+            <MudTh>
+                <MudTableSortLabel SortBy="new Func<ResidentResponse, object>(x => x.Name)">Name</MudTableSortLabel>
+            </MudTh>
+            <MudTh>
+                <MudTableSortLabel SortBy="new Func<ResidentResponse, object>(x => x.Document)">Document</MudTableSortLabel>
+            </MudTh>
+            <MudTh>Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Id">@context.Id</MudTd>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Document">@context.Document</MudTd>
+            <MudTd>
+                <MudIconButton OnClick="async () => await Delete(context)" Icon="@Icons.Material.Filled.Delete" aria-label="delete" Color="Color.Error"/>
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[] { 10, 50 }"/>
+        </PagerContent>
+    </MudTable>
+}
+
+@code {
+
+    private ResidentResponse[]? _resident;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadResidents();
+    }
+
+    private async Task Delete(ResidentResponse resident)
+    {
+        
+        var parameters = new DialogParameters<DeleteDialog>();
+        parameters.Add("Resident", resident);
+
+        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete Server", parameters);
+        var result = await dialog.Result;
+        
+        if (!result.Canceled)
+        {
+            var isSuccessful = result.Data as bool? ?? false;
+            
+            if (isSuccessful)
+            {
+                Snackbar.Add($"Resident {resident.Name} deleted", Severity.Success);    
+                await LoadResidents();
+            }
+            else
+            {
+                Snackbar.Add($"Error deleting resident {resident.Name}", Severity.Error);
+            }
+            
+        }
+    }
+
+    private async Task LoadResidents()
+    {
+        _resident = await Http.GetFromJsonAsync<ResidentResponse[]>("residents");
+    }
+}
+

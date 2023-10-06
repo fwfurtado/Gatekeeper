@@ -85,4 +85,15 @@ public class UnitRepository : IUnitRepository
 
         return unit;
     }
+
+    public async Task<IEnumerable<Unit>> GetAll(CancellationToken cancellationToken)
+    {
+        const string sql = "SELECT id, identifier FROM units";
+        
+        using var dbConnection = _connectionFactory.CreateConnection();
+        
+        var units = await dbConnection.QueryAsync<Unit>(sql);
+        
+        return units;
+    }
 }

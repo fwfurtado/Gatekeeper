@@ -10,7 +10,7 @@ namespace Gatekeeper.Rest.Controllers;
 
 [ApiController]
 [Route("residents")]
-[Authorize]
+// [Authorize] //TODO: Uncomment this line when authentication is implemented in Frontend.Gatekeeper.Admin
 public class ResidentController : ControllerBase
 {
 
@@ -48,6 +48,20 @@ public class ResidentController : ControllerBase
         }        
     }
 
+    [HttpGet]
+    public async Task<IActionResult> ListResidents(CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Get all residents");
+
+        var residents = await _service.GetAllResidents(cancellationToken);
+
+        _logger.LogInformation("Residents found");
+
+        var response = residents.Select(u => _mapper.Map<ResidentResponse>(u));
+
+        return Ok(response);
+    }
+
     [HttpGet("{residentId:long}")]
     public async Task<IActionResult> ShowResident(long residentId, CancellationToken cancellationToken)
     {
@@ -68,5 +82,15 @@ public class ResidentController : ControllerBase
         return Ok(response);
     }
 
+    [HttpDelete("{residentId:long}")]
+    public async Task<IActionResult> DeleteResident(long residentId, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Delete resident with id {ResidentId}", residentId);
 
+        await _service.DeleteResident(residentId, cancellationToken);
+                
+        _logger.LogInformation("Resident with id {ResidentId} was deleted", residentId);
+
+        return NoContent();
+    }
 }

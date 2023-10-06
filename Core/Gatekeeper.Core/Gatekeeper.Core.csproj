@@ -20,6 +20,7 @@
     
     <ItemGroup>
       <ProjectReference Include="..\..\Shared\Gatekeeper.Shared.Database\Gatekeeper.Shared.Database.csproj" />
+      <ProjectReference Include="..\..\Shared\Gatekeeper.Shared.Validations\Gatekeeper.Shared.Validations.csproj" />
     </ItemGroup>
 
 

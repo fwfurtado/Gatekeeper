@@ -50,4 +50,9 @@ public class UnitService : IUnitService
     {
         return _repository.GetByIdAsync(unitId, cancellationToken);
     }
+
+    public async Task<IEnumerable<Unit>> GetAllUnits(CancellationToken cancellationToken)
+    {
+        return await _repository.GetAll(cancellationToken);
+    }
 }
