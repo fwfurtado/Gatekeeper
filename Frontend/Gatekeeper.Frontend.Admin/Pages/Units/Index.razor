@@ -1,18 +1,19 @@
 @page "/units/"
 @using Gatekeeper.Frontend.Admin.Dtos
+@using Gatekeeper.Frontend.Admin.Services
 
-@inject HttpClient Http
+@inject UnitService UnitService
 
 <PageTitle>Unit</PageTitle>
 
-@if (_unit == null)
+@if (_units == null)
 {
     <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
 }
 else
 {
     <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mb-4" Link="true" Href="/units/new">Create</MudButton>
-    <MudTable Items="_unit" Hover="true" SortLabel="Sort By" Elevation="0">
+    <MudTable Items="_units" Hover="true" SortLabel="Sort By" Elevation="0">
         <HeaderContent>
             <MudTh>
                 <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<UnitResponse, object>(x => x.Id)">#</MudTableSortLabel>
@@ -33,12 +34,12 @@ else
 
 @code {
 
-    private UnitResponse[]? _unit;
+    private IEnumerable<UnitResponse>? _units;
 
 
     protected override async Task OnInitializedAsync()
     {
-        _unit = await Http.GetFromJsonAsync<UnitResponse[]>("units");
+        _units = await UnitService.GetAllAsync();
     }
 
 }

@@ -12,7 +12,9 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5032") });
 builder.Services.AddScoped<CpfValidator>();
 builder.Services.AddScoped<ResidentFormValidator>();
+builder.Services.AddScoped<UnitFormValidator>();
 builder.Services.AddScoped<ResidentService>();
+builder.Services.AddScoped<UnitService>();
 builder.Services.AddMudServices();
 
 await builder.Build().RunAsync();
