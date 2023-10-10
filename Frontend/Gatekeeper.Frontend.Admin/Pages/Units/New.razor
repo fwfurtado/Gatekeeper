@@ -1,9 +1,12 @@
 @page "/units/new"
 @using Gatekeeper.Frontend.Admin.Dtos
+@using Gatekeeper.Frontend.Admin.Services
+@using Gatekeeper.Frontend.Admin.Validations
 
-@inject HttpClient Http
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
+@inject UnitFormValidator UnitFormValidator
+@inject UnitService UnitService
 
 
 <PageTitle>Unit</PageTitle>
@@ -11,24 +14,38 @@
 
 <MudText Typo="Typo.h2">New Unit</MudText>
 <MudPaper Class="pa-4">
-    <MudForm>
-        <MudTextField T="string" @bind-value="Identifier" Text="@Identifier" Label="Identifier" Required="true" RequiredError="Identifier is required!"/>
-        <MudButton Color="Color.Primary" OnClick="async () => await SaveUnit()">Save</MudButton>
+    <MudForm Model="@Form" @ref="@MudForm" Validation="@(UnitFormValidator.ValidateValue)" ValidationDelay="0">
+        <MudTextField 
+            T="string" 
+            @bind-value="Form.Identifier" 
+            Label="Identifier"
+            For="@(() => Form.Identifier)"
+            Required="true" 
+            RequiredError="Identifier is required!"/>
+       
+        <MudButton Color="Color.Primary" OnClick="@(async () => await SaveUnit())">Save</MudButton>
     </MudForm>
 </MudPaper>
 
 
 @code {
+    MudForm MudForm;
 
-
-    public string Identifier { get; set; } = string.Empty;
-
+    public UnitForm Form = new();
 
     private async Task SaveUnit()
     {
-        var response = await Http.PostAsJsonAsync("/units", new UnitRequest() { Identifier = Identifier });
+        await MudForm.Validate();
 
-        if (response.IsSuccessStatusCode)
+        if (!MudForm.IsValid)
+        {
+            Snackbar.Add("Form is invalid", Severity.Error);
+            return;
+        }
+        
+        var isSuccessful = await UnitService.SaveAsync(Form);
+
+        if (isSuccessful)
         {
             Snackbar.Add("Unit saved", Severity.Success);
             NavigationManager.NavigateTo("/units");

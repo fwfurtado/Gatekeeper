@@ -1,22 +1,23 @@
 ﻿@page "/residents/"
 @using Gatekeeper.Frontend.Admin.Dtos
 @using Gatekeeper.Frontend.Admin.Dialogs.Residents
+@using Gatekeeper.Frontend.Admin.Services
 @using MudBlazor.Extensions
 
-@inject HttpClient Http
+@inject ResidentService ResidentService
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 
 <PageTitle>Resident</PageTitle>
 
-@if (_resident == null)
+@if (_residents == null)
 {
     <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
 }
 else
 {
     <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mb-4" Link="true" Href="/residents/new">Create</MudButton>
-    <MudTable Items="_resident" Hover="true" SortLabel="Sort By" Elevation="0">
+    <MudTable Items="_residents" Hover="true" SortLabel="Sort By" Elevation="0">
         <HeaderContent>
             <MudTh>
                 <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<ResidentResponse, object>(x => x.Id)">#</MudTableSortLabel>
@@ -45,7 +46,7 @@ else
 
 @code {
 
-    private ResidentResponse[]? _resident;
+    private IEnumerable<ResidentResponse>? _residents;
 
     protected override async Task OnInitializedAsync()
     {
@@ -80,7 +81,7 @@ else
 
     private async Task LoadResidents()
     {
-        _resident = await Http.GetFromJsonAsync<ResidentResponse[]>("residents");
+        _residents = await ResidentService.GetAllAsync();
     }
 }
 
