@@ -31,6 +31,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gatekeeper.Frontend.Admin",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gatekeeper.Shared.Validations", "Shared\Gatekeeper.Shared.Validations\Gatekeeper.Shared.Validations.csproj", "{CE099C34-5C81-4434-A735-53253903CE16}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gatekeeper.Frontend.Admin.Test", "Frontend\Gatekeeper.Frontend.Admin.Test\Gatekeeper.Frontend.Admin.Test.csproj", "{5B859FD3-B3DB-4298-8E23-2268ADC3E9BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{CE099C34-5C81-4434-A735-53253903CE16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE099C34-5C81-4434-A735-53253903CE16}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE099C34-5C81-4434-A735-53253903CE16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B859FD3-B3DB-4298-8E23-2268ADC3E9BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B859FD3-B3DB-4298-8E23-2268ADC3E9BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B859FD3-B3DB-4298-8E23-2268ADC3E9BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B859FD3-B3DB-4298-8E23-2268ADC3E9BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,6 +93,7 @@ Global
 		{5AC26E56-D551-48CE-A686-024460B76920} = {64CCE1A2-66AD-4778-8801-06DF55D4528A}
 		{9A9C5325-1A13-4892-A8D9-E0A1563CA3A8} = {257785B1-1090-4B18-9AAE-BCC5133576C5}
 		{CE099C34-5C81-4434-A735-53253903CE16} = {64CCE1A2-66AD-4778-8801-06DF55D4528A}
+		{5B859FD3-B3DB-4298-8E23-2268ADC3E9BE} = {257785B1-1090-4B18-9AAE-BCC5133576C5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4082C190-E28C-4F73-806C-17E969859A39}

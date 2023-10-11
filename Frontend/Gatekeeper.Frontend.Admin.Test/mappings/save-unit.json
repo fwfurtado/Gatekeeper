@@ -1,0 +1,17 @@
+{
+  "Request": {
+    "Path": "/units",
+    "Methods": [
+      "post"
+    ],
+    "Body": {
+      "Matcher": {
+        "Name": "JsonPathMatcher",
+        "Pattern": "$.identifier"
+      }
+    }
+  },
+  "Response": {
+    "StatusCode": 201
+  }
+}
