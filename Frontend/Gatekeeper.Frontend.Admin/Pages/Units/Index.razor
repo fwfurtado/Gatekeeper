@@ -1,6 +1,9 @@
 @page "/units/"
 @using Gatekeeper.Frontend.Admin.Dtos
 @using Gatekeeper.Frontend.Admin.Services
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
 
 @inject UnitService UnitService
 

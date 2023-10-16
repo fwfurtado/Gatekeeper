@@ -8,8 +8,11 @@
     <MudToolBar>
         <MudButton Href="/" Variant="Variant.Outlined">Gatekeeper</MudButton>
         <MudSpacer/>
-        <MudButton Href="/units/" Variant="Variant.Outlined">Units</MudButton>
-        <MudButton Href="/residents/" Variant="Variant.Outlined">Residents</MudButton>
+        
+        <AuthorizeView>
+            Logged as: @context.User.Identity?.Name
+        </AuthorizeView>
+        
     </MudToolBar>
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
