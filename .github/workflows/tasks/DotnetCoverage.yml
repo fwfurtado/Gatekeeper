@@ -1,0 +1,11 @@
+version: '3'
+
+tasks:
+  run:
+    desc: "Run coverage"
+    requires:
+      vars:
+        - TEST_CMD
+        - TEST_OUTPUT
+    cmds:
+      - dotnet-coverage collect {{.TEST_CMD}} -f xml -o {{.TEST_OUTPUT}}

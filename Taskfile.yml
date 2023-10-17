@@ -4,6 +4,9 @@ includes:
   core: 
     taskfile: Core/Taskfile.yml
     dir: ./Core
+  rest:
+    taskfile: Rest/Taskfile.yml
+    dir: ./Rest 
   migration:
     taskfile: Database/Taskfile.yml
     dir: ./Database

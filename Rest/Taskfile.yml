@@ -11,30 +11,32 @@ tasks:
     cmds:
       - task: build:project
         vars:
-          PROJECT: "Gatekeeper.Core"
+          PROJECT: "Gatekeeper.Rest"
   
   build:test:
     cmds:
       - task: build:project
         vars:
-          PROJECT: "Gatekeeper.Core.Test"
+          PROJECT: "Gatekeeper.Rest.Test"
+
   test:
     deps:
       - build:test
     cmds:
-      - dotnet test Gatekeeper.Core.Test/
+      - dotnet test Gatekeeper.Rest.Test/
   
   test:coverage:
-    desc: "Run coverage for core"
+    desc: "Run coverage for rest"
     deps:
       - build:test
     cmds:
       - task: coverage:run
         vars:
-          TEST_CMD: "dotnet test Gatekeeper.Core.Test/"
-          TEST_OUTPUT: "coverage.core.xml"
-  
+          TEST_CMD: "dotnet test Gatekeeper.Rest.Test/"
+          TEST_OUTPUT: "coverage.rest.xml"          
+          
   build:project:
     internal: true
     cmds:
-      - dotnet build {{.PROJECT}}/    
+      - dotnet build {{.PROJECT}}/
+  
