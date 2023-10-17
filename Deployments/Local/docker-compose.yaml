@@ -11,6 +11,11 @@ services:
       - "5432:5432"
     volumes:
       - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5 
   
   keycloak:
     image: quay.io/keycloak/keycloak:22.0.3
@@ -21,7 +26,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./Deployments/Local/Keycloak/:/opt/keycloak/data/import
+      - ./Keycloak/:/opt/keycloak/data/import
 
 volumes:
   pg-data:

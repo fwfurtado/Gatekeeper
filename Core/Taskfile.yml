@@ -1,0 +1,19 @@
+version: '3'
+
+tasks:  
+  build:
+    cmds:
+      - task: build:project
+        vars:
+          PROJECT: "Gatekeeper.Core"
+  
+  build:test:
+    cmds:
+      - task: build:project
+        vars:
+          PROJECT: "Gatekeeper.Core.Test"
+  
+  build:project:
+    internal: true    
+    cmds:
+      - dotnet build {{.PROJECT}}/    

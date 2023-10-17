@@ -1,0 +1,28 @@
+version: '3'
+
+includes: 
+  core: 
+    taskfile: Core/Taskfile.yml
+    dir: ./Core
+  migration:
+    taskfile: Database/Taskfile.yml
+    dir: ./Database
+    internal: true
+  local: 
+    taskfile: ./Deployments/Local/Taskfile.yml
+    dir: ./Deployments/Local
+    internal: true
+
+tasks:
+  dev:up:
+    desc: "Starts the local backing services and run migrations"
+    cmds:
+      - task: local:up
+      - task: migration:run
+        vars: 
+          CONNECTION_STRING: "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=postgres"          
+        
+  dev:down:
+    desc: "Stops the local backing services"
+    cmds:
+      - task: local:down
