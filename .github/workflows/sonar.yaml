@@ -96,9 +96,11 @@ jobs:
       - name: Download rest test coverage report
         uses: actions/download-artifact@v3
         with:
-          name: code-coverage-report-rest          
+          name: code-coverage-report-rest   
+      - name: Install dotnet-coverage
+        run: dotnet tool install -g dotnet-coverage --version 17.9.1          
       - name: Marge coverage reports by Cake
-        run: dotnet-coverage  merge ./Core/coverage.core.xml ./Rest/coverage.rest.xml -o coverage.xml          
+        run: dotnet-coverage  merge coverage.core.xml coverage.rest.xml -o coverage.xml          
       - name: Publish analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
