@@ -98,9 +98,7 @@ jobs:
         with:
           name: code-coverage-report-rest          
       - name: Marge coverage reports by Cake
-        uses: cake-build/cake-action@v1.4.1
-        with:
-          target: Coverage/Merge          
+        run: dotnet-coverage  merge ./Core/coverage.core.xml ./Rest/coverage.rest.xml -o coverage.xml          
       - name: Publish analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
