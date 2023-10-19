@@ -2,6 +2,7 @@ using Gatekeeper.Frontend.Admin;
 using Gatekeeper.Frontend.Admin.Services;
 using Gatekeeper.Frontend.Admin.Validations;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
 
@@ -17,7 +18,20 @@ builder.Services.AddOidcAuthentication(options =>
     options.ProviderOptions.ResponseType = "code";
 });
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5032") });
+builder.Services.AddHttpClient("Gatekeeper.Rest.Api", client =>
+    {
+        client.BaseAddress = new Uri("http://localhost:5032");
+        // client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "");
+    })
+    .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
+
+builder.Services.AddScoped(sp =>
+{
+    var factory = sp.GetRequiredService<IHttpClientFactory>();
+
+    return factory.CreateClient("Gatekeeper.Rest.Api");
+});
+
 builder.Services.AddScoped<CpfValidator>();
 builder.Services.AddScoped<ResidentFormValidator>();
 builder.Services.AddScoped<UnitFormValidator>();
