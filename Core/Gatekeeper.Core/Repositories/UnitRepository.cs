@@ -1,6 +1,7 @@
 using System.Data;
 using Dapper;
 using Gatekeeper.Core.Entities;
+using Gatekeeper.Core.ValueObjects;
 using Gatekeeper.Shared.Database;
 
 namespace Gatekeeper.Core.Repositories;
@@ -13,7 +14,6 @@ public class UnitRepository : IUnitRepository
     public UnitRepository(IDbConnectionFactory connectionFactory)
     {
         _connectionFactory = connectionFactory;
-        
     }
 
     public async Task<long> SaveAsync(Unit unit, CancellationToken cancellationToken)
@@ -58,20 +58,20 @@ public class UnitRepository : IUnitRepository
     public async Task UpdateOccupationAsync(Unit unit, CancellationToken cancellationToken)
     {
         const string sql = "UPDATE units SET occupation_id = @occupationId WHERE id = @unitId;";
-        
+
         using var connection = _connectionFactory.CreateConnection();
 
         if (unit.Occupation is null)
         {
             throw new ArgumentException("Unit must have an occupation");
         }
-        
+
         var arguments = new
         {
             occupationId = unit.Occupation.Id,
             unitId = unit.Id
         };
-        
+
         await connection.ExecuteAsync(sql, arguments);
     }
 
@@ -86,14 +86,34 @@ public class UnitRepository : IUnitRepository
         return unit;
     }
 
-    public async Task<IEnumerable<Unit>> GetAll(CancellationToken cancellationToken)
+    public async Task<PagedList<Unit>> GetAll(PageRequest pageRequest, CancellationToken cancellationToken)
     {
-        const string sql = "SELECT id, identifier FROM units";
-        
+        const string sql = "SELECT id, identifier FROM units ORDER BY id LIMIT @size OFFSET @page;";
+
         using var dbConnection = _connectionFactory.CreateConnection();
-        
-        var units = await dbConnection.QueryAsync<Unit>(sql);
-        
-        return units;
+
+        var units = await dbConnection.QueryAsync<Unit>(sql, new
+        {
+            size = pageRequest.Size, 
+            page = pageRequest.Page
+        });
+        var total = await CountAsync(cancellationToken);
+
+        return new PagedList<Unit>
+        {
+            Total = total,
+            Data = units.ToList()
+        };
+    }
+
+    private async Task<int> CountAsync(CancellationToken cancellationToken)
+    {
+        const string sql = "SELECT COUNT(*) FROM units;";
+
+        using var dbConnection = _connectionFactory.CreateConnection();
+
+        var count = await dbConnection.ExecuteScalarAsync<int>(sql);
+
+        return count;
     }
 }

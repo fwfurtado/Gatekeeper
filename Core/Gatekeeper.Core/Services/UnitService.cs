@@ -4,6 +4,7 @@ using FluentValidation.Results;
 using Gatekeeper.Core.Commands;
 using Gatekeeper.Core.Entities;
 using Gatekeeper.Core.Repositories;
+using Gatekeeper.Core.ValueObjects;
 
 namespace Gatekeeper.Core.Services;
 
@@ -51,8 +52,8 @@ public class UnitService : IUnitService
         return _repository.GetByIdAsync(unitId, cancellationToken);
     }
 
-    public async Task<IEnumerable<Unit>> GetAllUnits(CancellationToken cancellationToken)
+    public async Task<PagedList<Unit>> GetAllUnits(PageRequest pageRequest, CancellationToken cancellationToken)
     {
-        return await _repository.GetAll(cancellationToken);
+        return await _repository.GetAll(pageRequest, cancellationToken);
     }
 }

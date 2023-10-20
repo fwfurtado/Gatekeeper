@@ -1,4 +1,6 @@
+using System.Net.Http.Headers;
 using Gatekeeper.Frontend.Admin;
+using Gatekeeper.Frontend.Admin.Auth;
 using Gatekeeper.Frontend.Admin.Services;
 using Gatekeeper.Frontend.Admin.Validations;
 using Microsoft.AspNetCore.Components.Web;
@@ -19,11 +21,11 @@ builder.Services.AddOidcAuthentication(options =>
 });
 
 builder.Services.AddHttpClient("Gatekeeper.Rest.Api", client =>
-    {
-        client.BaseAddress = new Uri("http://localhost:5032");
-        // client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "");
-    })
-    .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
+{
+    client.BaseAddress = new Uri("http://localhost:5032");
+    
+}).AddHttpMessageHandler<AuthHandler>();
+    
 
 builder.Services.AddScoped(sp =>
 {
@@ -32,6 +34,7 @@ builder.Services.AddScoped(sp =>
     return factory.CreateClient("Gatekeeper.Rest.Api");
 });
 
+builder.Services.AddSingleton<AuthHandler>();
 builder.Services.AddScoped<CpfValidator>();
 builder.Services.AddScoped<ResidentFormValidator>();
 builder.Services.AddScoped<UnitFormValidator>();

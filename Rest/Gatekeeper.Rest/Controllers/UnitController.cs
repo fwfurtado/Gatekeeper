@@ -1,6 +1,7 @@
 using AutoMapper;
 using Gatekeeper.Core.Commands;
 using Gatekeeper.Core.Services;
+using Gatekeeper.Core.ValueObjects;
 using Gatekeeper.Rest.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +10,7 @@ namespace Gatekeeper.Rest.Controllers;
 
 [ApiController]
 [Route("units")]
-// [Authorize] //TODO: Uncomment this line when authentication is implemented in Frontend.Gatekeeper.Admin
+[Authorize]
 public class UnitController : ControllerBase
 {
     private readonly IUnitService _service;
@@ -38,11 +39,16 @@ public class UnitController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<IActionResult> ListUnits(CancellationToken cancellationToken)
+    public async Task<IActionResult> ListUnits(
+        CancellationToken cancellationToken,
+        [FromQuery] PageRequest? pageRequest = null
+        )
     {
         _logger.LogInformation("Get all units");
-
-        var units = await _service.GetAllUnits(cancellationToken);
+        
+        var page = pageRequest ?? new PageRequest(0, 10);
+        
+        var units = await _service.GetAllUnits(page, cancellationToken);
 
         _logger.LogInformation("Units found");
 

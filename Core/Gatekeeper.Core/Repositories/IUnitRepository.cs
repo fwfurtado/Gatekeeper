@@ -1,5 +1,6 @@
 using System.Data;
 using Gatekeeper.Core.Entities;
+using Gatekeeper.Core.ValueObjects;
 
 namespace Gatekeeper.Core.Repositories;
 
@@ -11,5 +12,5 @@ public interface IUnitRepository
     
     Task UpdateOccupationAsync(Unit unit, CancellationToken cancellationToken);
     Task<Unit?> GetByIdentifier(string identifier, CancellationToken cancellationToken);
-    Task<IEnumerable<Unit>> GetAll(CancellationToken cancellationToken);
+    Task<PagedList<Unit>> GetAll(PageRequest pageRequest, CancellationToken cancellationToken);
 }
