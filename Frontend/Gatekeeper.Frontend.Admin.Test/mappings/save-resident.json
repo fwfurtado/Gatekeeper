@@ -1,0 +1,11 @@
+{
+    "Request": {
+        "Path": "/residents",
+        "Methods": [
+            "post"
+        ]
+    },
+    "Response": {
+        "StatusCode": 201
+    }
+}
