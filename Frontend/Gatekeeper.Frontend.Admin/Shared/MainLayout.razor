@@ -5,15 +5,42 @@
 <MudSnackbarProvider/>
 
 <MudLayout>
-    <MudToolBar>
-        <MudButton Href="/" Variant="Variant.Outlined">Gatekeeper</MudButton>
+    <MudAppBar Dense="false">
+        <MudIconButton Icon="fas fa-bars" Edge="Edge.Start" OnClick="@ToggleDrawer" Color="Color.Inherit"/>
         <MudSpacer/>
-        <MudButton Href="/units/" Variant="Variant.Outlined">Units</MudButton>
-        <MudButton Href="/residents/" Variant="Variant.Outlined">Residents</MudButton>
-    </MudToolBar>
+
+        <AuthorizeView>
+            Logged as: @context.User.Identity?.Name
+        </AuthorizeView>
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="@IsDrawerOpen" ClipMode="DrawerClipMode.Always" Variant="DrawerVariant.Persistent" OpenMiniOnHover="true">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">Gatekeeper</MudText>
+        </MudDrawerHeader>
+        <MudNavMenu>
+            <MudNavLink Match="NavLinkMatch.All" Icon="fas fa-chart-line" Href="/">Home</MudNavLink>
+            <MudNavLink Match="NavLinkMatch.All" Icon="fas fa-house" Href="/units">Units</MudNavLink>
+            <MudNavLink Match="NavLinkMatch.All" Icon="fas fa-house-user" Href="/residents">Residents</MudNavLink>
+            <MudNavLink Match="NavLinkMatch.All" Icon="fas fa-dolly" Href="/">Packages</MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
+
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
-            @Body
+        <MudContainer MaxWidth="MaxWidth.Medium" Class="my-16 pt-16">
+            <MudPaper Class="pa-16 ma-2">
+                @Body
+            </MudPaper>
         </MudContainer>
     </MudMainContent>
 </MudLayout>
+
+@code
+{
+    public bool IsDrawerOpen { get; set; }
+
+    public void ToggleDrawer()
+    {
+        IsDrawerOpen = !IsDrawerOpen;
+    }
+}

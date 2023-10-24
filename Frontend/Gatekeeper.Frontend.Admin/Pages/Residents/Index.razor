@@ -2,7 +2,10 @@
 @using Gatekeeper.Frontend.Admin.Dtos
 @using Gatekeeper.Frontend.Admin.Dialogs.Residents
 @using Gatekeeper.Frontend.Admin.Services
+@using Microsoft.AspNetCore.Authorization
 @using MudBlazor.Extensions
+
+@attribute [Authorize]
 
 @inject ResidentService ResidentService
 @inject ISnackbar Snackbar

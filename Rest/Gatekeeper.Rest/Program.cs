@@ -87,14 +87,17 @@ builder.Services.AddMediatR(cfg =>
 
 DapperConfiguration.Configure();
 
-const string corsPolicyName = "AllowAll";
+const string corsPolicyName = "CorsPolicy";
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(corsPolicyName, policy =>
-        policy.AllowAnyOrigin()
+        policy
+            .WithOrigins("http://localhost:5000", "https://localhost:5032")
             .AllowAnyMethod()
-            .AllowAnyHeader());
+            .AllowAnyHeader()
+            .AllowCredentials()
+    );
 });
 
 builder.Services.AddTransient<IDbConnectionFactory, DbConnectionFactory>();

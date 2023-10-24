@@ -1,0 +1,17 @@
+version: '3'
+
+tasks: 
+  build:
+    internal: true
+    cmds:
+      - cmd: dotnet build Gatekeeper.Migration/
+
+  run: 
+    desc: "Runs the migrations"
+    requires:
+      vars:
+        - CONNECTION_STRING
+    deps:
+      - build
+    cmds:      
+      - cmd: dotnet run --project Gatekeeper.Migration/ --no-build '{{.CONNECTION_STRING}}'

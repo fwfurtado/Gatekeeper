@@ -7,16 +7,20 @@
   },
   "Response": {
     "StatusCode": 200,
-    "BodyAsJson": [
-      {
-        "id": 1,
-        "identifier": "unit1"
-      },
-      {
-        "id": 2,
-        "identifier": "unit2"
-      }
-    ],
+    "BodyAsJson": {
+      "total": 2,
+      "count": 2,
+      "data": [
+        {
+          "id": 1,
+          "identifier": "unit1"
+        },
+        {
+          "id": 2,
+          "identifier": "unit2"
+        }
+      ]
+    },
     "Headers": {
       "Content-Type": "application/json"
     }

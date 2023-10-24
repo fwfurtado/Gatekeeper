@@ -20,11 +20,11 @@ public class UnitServiceTest: WireMockTestBase
     [Test]
     public async Task ShouldGetAllUnits()
     {
-        var unitsEnumerable = await _service.GetAllAsync();
-        var units = unitsEnumerable.ToList();
-
+        var units = await _service.GetAllAsync(new PageRequest(0, 10));
+        
+        
         Assert.That(units, Is.Not.Null);
-        Assert.That(units, Is.Not.Empty);
+        Assert.That(units.Data, Is.Not.Empty);
     }
 
     [Test]

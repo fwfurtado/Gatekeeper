@@ -1,0 +1,18 @@
+version: '3'
+
+tasks:
+  up:
+    desc: "Starts the local backing services"
+    cmds:
+      - docker-compose up -d --wait --wait-timeout 3000
+  down:
+    desc: "Stops the local backing services"
+    cmds:
+      - docker-compose down
+  ps:
+    cmds:
+      - docker-compose ps
+  shell:database:
+    interactive: true
+    cmds:
+      - docker-compose exec postgres bash

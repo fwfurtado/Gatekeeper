@@ -1,0 +1,42 @@
+version: '3'
+
+includes:
+  coverage:
+    taskfile: ../.github/workflows/tasks/DotnetCoverage.yml
+    dir: "{{.USER_WORKING_DIR}}"
+    internal: true
+
+tasks:
+  build:
+    cmds:
+      - task: build:project
+        vars:
+          PROJECT: "Gatekeeper.Rest"
+  
+  build:test:
+    cmds:
+      - task: build:project
+        vars:
+          PROJECT: "Gatekeeper.Rest.Test"
+
+  test:
+    deps:
+      - build:test
+    cmds:
+      - dotnet test Gatekeeper.Rest.Test/
+  
+  test:coverage:
+    desc: "Run coverage for rest"
+    deps:
+      - build:test
+    cmds:
+      - task: coverage:run
+        vars:
+          TEST_CMD: "dotnet test Gatekeeper.Rest.Test/"
+          TEST_OUTPUT: "coverage.rest.xml"          
+          
+  build:project:
+    internal: true
+    cmds:
+      - dotnet build {{.PROJECT}}/
+  

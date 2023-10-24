@@ -621,7 +621,8 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "http://localhost:5032/*"
+        "http://localhost:5032/*",
+        "http://localhost:5000/*"
       ],
       "webOrigins": [
         "+"

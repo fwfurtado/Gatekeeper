@@ -1,46 +1,50 @@
 @page "/units/"
 @using Gatekeeper.Frontend.Admin.Dtos
 @using Gatekeeper.Frontend.Admin.Services
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
 
 @inject UnitService UnitService
 
 <PageTitle>Unit</PageTitle>
 
-@if (_units == null)
-{
-    <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
-}
-else
-{
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mb-4" Link="true" Href="/units/new">Create</MudButton>
-    <MudTable Items="_units" Hover="true" SortLabel="Sort By" Elevation="0">
-        <HeaderContent>
-            <MudTh>
-                <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<UnitResponse, object>(x => x.Id)">#</MudTableSortLabel>
-            </MudTh>
-            <MudTh>
-                <MudTableSortLabel SortBy="new Func<UnitResponse, object>(x => x.Identifier)">Identifier</MudTableSortLabel>
-            </MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="Id">@context.Id</MudTd>
-            <MudTd DataLabel="Identifier">@context.Identifier</MudTd>
-        </RowTemplate>
-        <PagerContent>
-            <MudTablePager PageSizeOptions="new int[] { 10, 50 }"/>
-        </PagerContent>
-    </MudTable>
-}
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mb-4" Link="true" Href="/units/new">Create</MudButton>
+<MudTable Hover="true" SortLabel="Sort By" ServerData="@FetchData">
+    <HeaderContent>
+        <MudTh>
+            <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<UnitResponse, object>(x => x.Id)">#</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<UnitResponse, object>(x => x.Identifier)">Identifier</MudTableSortLabel>
+        </MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Identifier">@context.Identifier</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[] { 10, 20 }"/>
+    </PagerContent>
+</MudTable>
+
 
 @code {
 
-    private IEnumerable<UnitResponse>? _units;
-
-
-    protected override async Task OnInitializedAsync()
+    private async Task<TableData<UnitResponse>> FetchData(TableState state)
     {
-        _units = await UnitService.GetAllAsync();
+        var page = state.Page;
+        var pageSize = state.PageSize;
+
+
+        var paged = await UnitService.GetAllAsync(new PageRequest(page, pageSize));
+
+        return new TableData<UnitResponse>
+        {
+            TotalItems = paged.Total,
+            Items = paged.Data
+        };
     }
 
 }
-

@@ -2,6 +2,9 @@
 @using Gatekeeper.Frontend.Admin.Dtos
 @using Gatekeeper.Frontend.Admin.Services
 @using Gatekeeper.Frontend.Admin.Validations
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
 
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
