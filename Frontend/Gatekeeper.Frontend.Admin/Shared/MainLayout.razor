@@ -1,5 +1,9 @@
 ﻿@inherits LayoutComponentBase
 
+@* @inject IUnleash FeatureManager *@
+@* @inject ILogger<MainLayout> Logger *@
+
+
 <MudThemeProvider/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
@@ -43,4 +47,16 @@
     {
         IsDrawerOpen = !IsDrawerOpen;
     }
+    
+    
+    // public bool IsPackageEnabled()
+    // {
+    //     var variants = FeatureManager.GetVariant("backoffice:packages", Variant.DISABLED_VARIANT);
+    //     
+    //     Logger.LogInformation("Variant name: {VariantName}", variants?.Name);
+    //     Logger.LogInformation("Variant payload: {VariantPayload}", variants?.Payload);
+    //     Logger.LogInformation("Variant enabled: {VariantEnabled}", variants?.IsEnabled);
+    //     
+    //     return variants?.IsEnabled ?? false;
+    // }
 }

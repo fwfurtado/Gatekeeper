@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
+using Unleash;
+using Unleash.ClientFactory;
+using IHttpClientFactory = System.Net.Http.IHttpClientFactory;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -34,6 +37,20 @@ builder.Services.AddScoped(sp =>
     return factory.CreateClient("Gatekeeper.Rest.Api");
 });
 
+
+var settings = new UnleashSettings
+{
+    AppName = "dotnet-test",
+    UnleashApi = new Uri("http://localhost:4242/api/"),
+    CustomHttpHeaders = new ()
+    {
+        {"Authorization","default:development.unleash-insecure-api-token" }
+    }
+};
+
+
+builder.Services.AddSingleton<UnleashSettings>(_ => settings);
+builder.Services.AddScoped<IUnleash>(c => new UnleashClientFactory().CreateClient(c.GetRequiredService<UnleashSettings>()));
 builder.Services.AddSingleton<AuthHandler>();
 builder.Services.AddScoped<CpfValidator>();
 builder.Services.AddScoped<ResidentFormValidator>();
