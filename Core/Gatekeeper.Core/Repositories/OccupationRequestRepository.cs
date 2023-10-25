@@ -100,7 +100,7 @@ public class OccupationRequestRepository : IOccupationRequestRepository
         await dbConnection.ExecuteAsync(sql, arguments);
     }
 
-    public async Task SaveAsync(OccupationRequest request, CancellationToken cancellationToken)
+    public async Task<long> SaveAsync(OccupationRequest request, CancellationToken cancellationToken)
     {
         using var scoped = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
@@ -136,5 +136,6 @@ public class OccupationRequestRepository : IOccupationRequestRepository
         }
 
         scoped.Complete();
+        return id;
     }
 }
