@@ -29,9 +29,10 @@ internal class ImportCsvService : IImportCsvService
         {
             var (person, unit) = ParseLine(line);
 
-            if(_data.ContainsKey(unit))
+           var found = _data.TryGetValue(unit, out var data);
+
+            if(found)
             {
-                var data = _data[unit];
                 data.Add(person);
             }
             else
@@ -75,7 +76,7 @@ internal class ImportCsvService : IImportCsvService
     }
 
 
-    private (Person, Unit) ParseLine (string line)
+    private static (Person, Unit) ParseLine (string line)
     {
         var parts = line.Split(',');
         var person = new Person(parts[0], parts[1]);
