@@ -31,11 +31,13 @@ public class OccupationService : IOccupationService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task RequestOccupationAsync(NewOccupationCommand command, CancellationToken cancellationToken)
+    public async Task<long> RequestOccupationAsync(NewOccupationCommand command, CancellationToken cancellationToken)
     {
         var request = _mapper.Map<OccupationRequest>(command);
 
-        await _requestRepository.SaveAsync(request, cancellationToken);
+        var id = await _requestRepository.SaveAsync(request, cancellationToken);
+        
+        return id;
     }
 
 

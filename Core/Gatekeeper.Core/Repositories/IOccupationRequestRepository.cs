@@ -8,5 +8,5 @@ public interface IOccupationRequestRepository
     
     Task UpdateRequestStatusAsync(OccupationRequest request, CancellationToken cancellationToken);
 
-    Task SaveAsync(OccupationRequest request, CancellationToken cancellationToken);
+    Task<long> SaveAsync(OccupationRequest request, CancellationToken cancellationToken);
 }
