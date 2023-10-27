@@ -2,21 +2,23 @@
 using Gatekeeper.Core.Commands;
 using Gatekeeper.Core.Entities;
 using Gatekeeper.Core.Repositories;
-using Npgsql.Internal.TypeHandlers.GeometricHandlers;
 
 namespace Gatekeeper.Core.Services;
 
 internal class ImportCsvService : IImportCsvService
 {
-    record Person(string Name, string Document);
-    record Unit(string Identity);
+    private sealed record Person(string Name, string Document);
+
+    private sealed record Unit(string Identity);
+
     private readonly Dictionary<Unit, HashSet<Person>> _data = new();
     private readonly IUnitService _unitService;
     private readonly IOccupationService _occupationService;
     private readonly IUnitRepository _unitRepository;
 
 
-    public ImportCsvService(IUnitService unitService, IOccupationService occupationService, IUnitRepository unitRepository)
+    public ImportCsvService(IUnitService unitService, IOccupationService occupationService,
+        IUnitRepository unitRepository)
     {
         _unitService = unitService;
         _occupationService = occupationService;
@@ -25,38 +27,39 @@ internal class ImportCsvService : IImportCsvService
 
     public async Task ImportCsv(string filePath, CancellationToken cancellationToken)
     {
-        foreach(var line in File.ReadLines(filePath))
+        foreach (var line in File.ReadLines(filePath))
         {
             var (person, unit) = ParseLine(line);
+            
+            var found = _data.TryGetValue(unit, out var data);
+            
+            var people = data ?? new HashSet<Person>();
+            
+            people.Add(person);
 
-           var found = _data.TryGetValue(unit, out var data);
-
-            if(found)
+            if (!found)
             {
-                data.Add(person);
-            }
-            else
-            {
-                var data = new HashSet<Person> {person};
-                _data.Add(unit, data);
+                _data.Add(unit, people);
             }
         }
 
-        foreach(var (unit, people) in _data)
+        foreach (var (unit, people) in _data)
         {
             var unitCommand = new RegisterUnitCommand(unit.Identity);
             try
             {
                 await _unitService.RegisterUnitAsync(unitCommand, cancellationToken);
             }
-            catch (ValidationException ex) 
+            catch (ValidationException ex)
             {
-                var alreadyExist = ex.Errors.Any(e => e.PropertyName == "Identifier" && e.ErrorMessage == "Identifier already exists");
+                var alreadyExist = ex.Errors.Any(e =>
+                    e.PropertyName == "Identifier" && e.ErrorMessage == "Identifier already exists");
                 if (!alreadyExist) continue;
             }
+
             var dbUnit = await _unitRepository.GetByIdentifier(unit.Identity, cancellationToken);
-            var targetUnit = new TargetUnit 
-            { 
+            var targetUnit = new TargetUnit
+            {
                 Identifier = unit.Identity,
                 UnitId = dbUnit!.Id
             };
@@ -76,12 +79,12 @@ internal class ImportCsvService : IImportCsvService
     }
 
 
-    private static (Person, Unit) ParseLine (string line)
+    private static (Person, Unit) ParseLine(string line)
     {
         var parts = line.Split(',');
         var person = new Person(parts[0], parts[1]);
         var unit = new Unit(parts[2]);
         return (person, unit);
     }
-
+    
 }
