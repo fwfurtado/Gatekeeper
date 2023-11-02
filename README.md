@@ -44,7 +44,7 @@ Before running the application, make sure that you have the following those step
 
 1. Run the database using docker-compose
 ```bash
-dotnet cake docker.cake --target=up
+task dev:up
 ```
 
 4. Create a user at Keycloak IDP [see more](Docs/Create-Keycloak-User.md)
@@ -60,5 +60,5 @@ dotnet cake docker.cake --target=up
 
 6. Stop database
 ```bash
-dotnet cake docker.cake --target=down
+task dev:down
 ```
