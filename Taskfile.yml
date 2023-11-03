@@ -29,3 +29,8 @@ tasks:
     desc: "Stops the local backing services"
     cmds:
       - task: local:down
+ 
+  dev:ps:
+    desc: "Show the local backing services"
+    cmds:
+      - task: local:ps

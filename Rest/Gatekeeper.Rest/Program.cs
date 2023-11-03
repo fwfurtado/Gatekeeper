@@ -13,13 +13,19 @@ using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Authorization;
 using Keycloak.AuthServices.Sdk.Admin;
 using Microsoft.OpenApi.Models;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddMvc();
 
-builder.Services.AddControllers();
+builder.Services
+    .AddControllers()
+    .AddJsonOptions(option =>
+{
+    option.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -103,10 +109,13 @@ builder.Services.AddCors(options =>
 builder.Services.AddTransient<IDbConnectionFactory, DbConnectionFactory>();
 
 builder.Services.AddScoped<IUnitRepository, UnitRepository>();
+builder.Services.AddScoped<IPackageRepository, PackageRepository>();
 builder.Services.AddScoped<ICpfSpecification, CpfSpecification>();
 builder.Services.AddScoped<IValidator<RegisterUnitCommand>, RegisterUnitCommandValidator>();
 builder.Services.AddScoped<IValidator<RegisterResidentCommand>, RegisterResidentCommandValidator>();
+builder.Services.AddScoped<IValidator<RegisterPackageCommand>, RegisterPackageCommandValidator>();
 builder.Services.AddScoped<IUnitService, UnitService>();
+builder.Services.AddScoped<IPackageService, PackageService>();
 builder.Services.AddScoped<IResidentService, ResidentService>();
 builder.Services.AddScoped<IResidentRepository, ResidentRepository>();
 builder.Services.AddScoped<IOccupationRequestRepository, OccupationRequestRepository>();
