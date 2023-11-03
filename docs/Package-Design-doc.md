@@ -62,14 +62,7 @@
       - PATCH UpdateRejectedStatus
   - Atualizar program.cs
     - Atualizar arquivo com as relacoes de Package, Service e Command do Core
-      
-  ### Frontend
-  
-  - Criar Service Package
-  - Criar Dtos de request e response Package
-  - Criar Validation Package
-  - Page Package
-  - Atualizar program.cs
+    
 </details>
 
 <details>    
@@ -83,7 +76,15 @@
   - Criar Service para esta função
   - Criar Command para esta função (?)
 </details>
-
+ <details>
+<summary>Frontend</summary>
+  
+  - Criar Service Package
+  - Criar Dtos de request e response Package
+  - Criar Validation Package
+  - Page Package
+  - Atualizar program.cs
+</details>
 <details>
 <summary>3- Casos de Teste </summary>
   
