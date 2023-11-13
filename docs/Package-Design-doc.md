@@ -69,12 +69,25 @@
 <summary>2- Associar Encomenda a uma Unit</summary>
   
 ### CORE
-  - Criar Entity Package request
-  - Criar New package command
-  - Varificar como fazer a chamada de PackageAddition (paralelo: RequestOccupationAsync + ApproveRequestAsync)
+  - Criar Entity Package Association
+      - Atributos
+        - Id
+        - Unit
+        - Package
+          
+  - Criar New package Association command
+      
+  - Database
+      - Criar uma tabela que receba os IDs de Unit e Package de outras tabelas
+      
   - Criar Repository para esta função
+      - Salvar a associacao entre Package e Unit >> SavePackageAssociationAsync
+        
   - Criar Service para esta função
+      - Salvar a associacao entre Package e Unit (Verificar como fazer a chamada de PackageAddition (paralelo: RequestOccupationAsync + ApproveRequestAsync))
+      - 
   - Criar Command para esta função (?)
+    
 </details>
  <details>
 <summary>Frontend</summary>
