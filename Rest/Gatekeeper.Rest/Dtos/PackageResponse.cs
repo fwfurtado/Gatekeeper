@@ -11,6 +11,8 @@ public class PackageResponse
     [JsonPropertyName("description")] public string Description { get; set; } = null!;
 
     [JsonPropertyName("arrived_at")] public DateTime ArrivedAt { get; set; }
+
     [JsonPropertyName("delivered_at")] public DateTime DeliveredAt { get; set; }
     [JsonPropertyName("status")] public PackageStatus Status { get; set; }
+    [JsonPropertyName("unit_id")] public long UnitId { get; set; }
 }

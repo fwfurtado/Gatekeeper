@@ -15,5 +15,7 @@ public class RegisterPackageCommandValidator : AbstractValidator<RegisterPackage
         RuleFor(command => command.Description)
             .NotEmpty()
             .MaximumLength(300);
+        RuleFor(command => command.UnitId)
+            .NotEmpty();
     }
 }

@@ -28,7 +28,7 @@ public class PackageRepository : IPackageRepository
 
     public async Task<PagedList<Package>> GetAll(PageRequest pageRequest, CancellationToken cancellationToken)
     {
-        const string sql = "SELECT id, description, arrived_at, delivered_at, status FROM packages ORDER BY id LIMIT @size OFFSET @page;";
+        const string sql = "SELECT id, description, arrived_at, delivered_at, status, target_unit_id FROM packages ORDER BY id LIMIT @size OFFSET @page;";
 
         using var dbConnection = _connectionFactory.CreateConnection();
 
@@ -48,7 +48,7 @@ public class PackageRepository : IPackageRepository
 
     public async Task<Package?> GetByIdAsync(long packageId, CancellationToken cancellationToken)
     {
-        const string sql = "SELECT id, description, arrived_at, delivered_at, status FROM packages WHERE id = @packageId;";
+        const string sql = "SELECT id, description, arrived_at, delivered_at, status, target_unit_id FROM packages WHERE id = @packageId;";
 
         using var dbConnection = _connectionFactory.CreateConnection();
 
@@ -59,8 +59,8 @@ public class PackageRepository : IPackageRepository
 
     public async Task<long> SaveAsync(Package package, CancellationToken cancellationToken)
     {
-        const string sqlCommand = "INSERT INTO packages (description, delivered_at, arrived_at, status) " +
-            "VALUES (@description, @delivered_at, @arrived_at, @status) RETURNING id;";
+        const string sqlCommand = "INSERT INTO packages (description, delivered_at, arrived_at, status, target_unit_id) " +
+            "VALUES (@description, @delivered_at, @arrived_at, @status, @unit_id) RETURNING id;";
 
         using var dbConnection = _connectionFactory.CreateConnection();
 
@@ -69,7 +69,8 @@ public class PackageRepository : IPackageRepository
             description = package.Description,
             delivered_at = package.DeliveredAt,
             arrived_at = package.ArrivedAt,
-            status = Enum.GetName(package.Status)
+            status = Enum.GetName(package.Status),
+            unit_id = package.UnitId
         };
 
         var id = await dbConnection.ExecuteScalarAsync<long>(sqlCommand, arguments);

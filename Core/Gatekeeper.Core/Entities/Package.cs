@@ -7,8 +7,9 @@ public class Package
     public DateTime ArrivedAt { get; set; }
     public DateTime? DeliveredAt { get; set; }
     public PackageStatus Status { get; set; }
+    public long UnitId { get; set; }
 
-    public Package(string description)
+    public Package(string description, long unit_id)
     {
         if (string.IsNullOrEmpty(description))
         {
@@ -18,9 +19,10 @@ public class Package
         Description = description;
         ArrivedAt = DateTime.UtcNow;
         Status = PackageStatus.Pending;
+        UnitId = unit_id;
     }
 
-    public Package(long id, string description, DateTime arrived_at, DateTime delivered_at, string status) : this(description)
+    public Package(long id, string description, DateTime arrived_at, DateTime delivered_at, string status, long target_unit_id) : this(description, target_unit_id)
     {
         Id = id;
         ArrivedAt = arrived_at;

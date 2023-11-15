@@ -26,6 +26,7 @@ public class CoreMappingProfile : Profile
             .ForMember(p => p.ArrivedAt, opt => opt.Ignore())
             .ForMember(p => p.DeliveredAt, opt => opt.Ignore())
             .ForMember(p => p.Status, opt => opt.Ignore())
-            .ForCtorParam("description", opt => opt.MapFrom(c => c.Description));
+            .ForCtorParam("description", opt => opt.MapFrom(c => c.Description))
+            .ForCtorParam("unit_id", opt => opt.MapFrom(c => c.UnitId));
     }
 }

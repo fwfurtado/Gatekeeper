@@ -2,4 +2,4 @@
 
 namespace Gatekeeper.Core.Commands;
 
-public record RegisterPackageCommand(string Description);
+public record RegisterPackageCommand(string Description, long UnitId);
