@@ -1,0 +1,70 @@
+﻿@page "/packages/new"
+@using Gatekeeper.Frontend.Admin.Dtos
+@using Gatekeeper.Frontend.Admin.Services
+@using Gatekeeper.Frontend.Admin.Validations
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
+
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+@inject PackageFormValidator PackageFormValidator
+@inject PackageService PackageService
+
+
+<PageTitle>Package</PageTitle>
+
+
+<MudText Typo="Typo.h2">New Package</MudText>
+<MudPaper Class="pa-4">
+    <MudForm Model="@Form" @ref="@MudForm" Validation="@(PackageFormValidator.ValidateValue)" ValidationDelay="0">
+        <MudTextField
+            T="string"
+            Placeholder="Description"
+            @bind-value="Form.Description"
+                      Label="Description"
+                      For="@(() => Form.Description)"
+            Immediate="true"/>
+
+        <MudTextField
+            T="long"
+            Placeholder="UnitId"
+            @bind-value="Form.UnitId"
+                      Label="UnitId"
+                      For="@(() => Form.UnitId)"
+            Immediate="true"/>
+
+        <MudButton Color="Color.Primary" OnClick="@(async () => await SavePackage())">Save</MudButton>
+    </MudForm>
+</MudPaper>
+
+
+@code {
+    MudForm MudForm;
+    
+    public PackageForm Form = new();
+
+    private async Task SavePackage()
+    {
+        await MudForm.Validate();
+        
+        if (!MudForm.IsValid)
+        {
+            Snackbar.Add("Form is invalid", Severity.Error);
+            return;
+        }
+        
+        var isSuccessful = await PackageService.SaveAsync(Form);
+
+        if (isSuccessful)
+        {
+            Snackbar.Add("Package saved", Severity.Success);
+            NavigationManager.NavigateTo("/packages");
+        }
+        else
+        {
+            Snackbar.Add("Error saving package", Severity.Error);
+        }
+    }
+
+}

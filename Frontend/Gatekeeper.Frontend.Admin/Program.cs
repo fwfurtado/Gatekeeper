@@ -38,8 +38,10 @@ builder.Services.AddSingleton<AuthHandler>();
 builder.Services.AddScoped<CpfValidator>();
 builder.Services.AddScoped<ResidentFormValidator>();
 builder.Services.AddScoped<UnitFormValidator>();
+builder.Services.AddScoped<PackageFormValidator>();
 builder.Services.AddScoped<ResidentService>();
 builder.Services.AddScoped<UnitService>();
+builder.Services.AddScoped<PackageService>();
 builder.Services.AddMudServices();
 
 await builder.Build().RunAsync();

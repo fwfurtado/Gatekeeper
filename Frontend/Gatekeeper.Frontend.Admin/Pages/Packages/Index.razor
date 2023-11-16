@@ -1,0 +1,95 @@
+﻿@page "/packages/"
+@using Gatekeeper.Frontend.Admin.Dtos
+@using Gatekeeper.Frontend.Admin.Dialogs.Packages
+@using Gatekeeper.Frontend.Admin.Services
+@using Microsoft.AspNetCore.Authorization
+@using MudBlazor.Extensions
+
+@attribute [Authorize]
+
+@inject PackageService PackageService
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
+<PageTitle>Package</PageTitle>
+
+
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mb-4" Link="true" Href="/packages/new">Create</MudButton>
+    <MudTable Hover="true" SortLabel="Sort By" Elevation="0" ServerData="@FetchData">
+        <HeaderContent>
+            <MudTh>
+                <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<PackageResponse, object>(x => x.Id)">#</MudTableSortLabel>
+            </MudTh>
+            <MudTh>
+                <MudTableSortLabel SortBy="new Func<PackageResponse, object>(x => x.Description)">Description</MudTableSortLabel>
+            </MudTh>
+            <MudTh>
+                <MudTableSortLabel SortBy="new Func<PackageResponse, object>(x => x.UnitId)">Unit</MudTableSortLabel>
+            </MudTh>
+            <MudTh>
+                <MudTableSortLabel SortBy="new Func<PackageResponse, object>(x => x.Status)">Status</MudTableSortLabel>
+            </MudTh>
+            <MudTh>
+                <MudTableSortLabel SortBy="new Func<PackageResponse, object>(x => x.ArrivedAt)">Data de chegada</MudTableSortLabel>
+            </MudTh>
+            <MudTh>Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Id">@context.Id</MudTd>
+            <MudTd DataLabel="Description">@context.Description</MudTd>
+            <MudTd DataLabel="UnitId">@context.UnitId</MudTd>
+            <MudTd DataLabel="Status">@context.Status</MudTd>
+            <MudTd DataLabel="ArrivedAt">@context.ArrivedAt</MudTd>
+            <MudTd>
+                <MudIconButton OnClick="async () => await Delete(context)" Icon="@Icons.Material.Filled.Delete" aria-label="delete" Color="Color.Error"/>
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[] { 10, 50 }"/>
+        </PagerContent>
+    </MudTable>
+
+
+@code {
+
+    private async Task<TableData<PackageResponse>> FetchData(TableState state)
+    {
+        var page = state.Page;
+        var pageSize = state.PageSize;
+
+
+        var paged = await PackageService.GetAllAsync(new PageRequest(page, pageSize));
+
+        return new TableData<PackageResponse>
+            {
+                TotalItems = paged.Total,
+                Items = paged.Data
+            };
+    }
+
+    private async Task Delete(PackageResponse package)
+    {
+        
+        var parameters = new DialogParameters<DeleteDialog>();
+        parameters.Add("Package", package);
+
+        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete Server", parameters);
+        var result = await dialog.Result;
+        
+        if (!result.Canceled)
+        {
+            var isSuccessful = result.Data as bool? ?? false;
+            
+            if (isSuccessful)
+            {
+                Snackbar.Add($"Package {package.Description} deleted", Severity.Success);    
+                //await FetchData();
+            }
+            else
+            {
+                Snackbar.Add($"Error deleting package {package.Description}", Severity.Error);
+            }  
+        }
+    }
+}
+
