@@ -40,4 +40,33 @@ public class UnitService
 
         return response.IsSuccessStatusCode;
     }
+
+    public async Task<IEnumerable<UnitResponse>> GetAllListAsync()
+    {
+        var result = await _client.GetFromJsonAsync<IEnumerable<UnitResponse>>(BaseEndpoint);
+
+        return result ?? Enumerable.Empty<UnitResponse>();
+    }
+
+    public async Task<IEnumerable<UnitResponse>> FilterByIdentifierAsync(string text)
+    {
+        return new List<UnitResponse>()
+        {
+            new ()
+            {
+                Id = 1,
+                Identifier = "casa 1"
+            },
+            new ()
+            {
+                Id = 2,
+                Identifier = "casa 20"
+            },
+            new ()
+            {
+                Id = 3,
+                Identifier = "casa 30"
+            }
+        }.Where(u => u.Identifier.Contains(text));
+    }
 }

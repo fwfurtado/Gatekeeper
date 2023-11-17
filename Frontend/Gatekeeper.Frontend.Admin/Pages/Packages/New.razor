@@ -10,6 +10,7 @@
 @inject NavigationManager NavigationManager
 @inject PackageFormValidator PackageFormValidator
 @inject PackageService PackageService
+@inject UnitService UnitService
 
 
 <PageTitle>Package</PageTitle>
@@ -26,13 +27,7 @@
                       For="@(() => Form.Description)"
             Immediate="true"/>
 
-        <MudTextField
-            T="long"
-            Placeholder="UnitId"
-            @bind-value="Form.UnitId"
-                      Label="UnitId"
-                      For="@(() => Form.UnitId)"
-            Immediate="true"/>
+        <MudAutocomplete T="UnitResponse" Label="Unit" @bind-Value="_selectedUnit" SearchFunc="@SearchUnit" ToStringFunc="@(u => u.Identifier)" />
 
         <MudButton Color="Color.Primary" OnClick="@(async () => await SavePackage())">Save</MudButton>
     </MudForm>
@@ -41,19 +36,22 @@
 
 @code {
     MudForm MudForm;
-    
+
     public PackageForm Form = new();
+    private UnitResponse _selectedUnit;
 
     private async Task SavePackage()
     {
+        Form.UnitId = _selectedUnit.Id;
+
         await MudForm.Validate();
-        
+
         if (!MudForm.IsValid)
         {
             Snackbar.Add("Form is invalid", Severity.Error);
             return;
         }
-        
+
         var isSuccessful = await PackageService.SaveAsync(Form);
 
         if (isSuccessful)
@@ -65,6 +63,15 @@
         {
             Snackbar.Add("Error saving package", Severity.Error);
         }
+    }
+
+    private async Task<IEnumerable<UnitResponse>> SearchUnit(string text)
+    {
+        if(string.IsNullOrEmpty(text))
+        {
+            return new List<UnitResponse>();
+        }    
+        return await UnitService.FilterByIdentifierAsync(text);
     }
 
 }
