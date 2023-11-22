@@ -116,4 +116,26 @@ public class UnitRepository : IUnitRepository
 
         return count;
     }
+
+    public async Task<IEnumerable<Unit>> FilterByIdentifierAsync(string identifier, CancellationToken cancellationToken) 
+    {
+        const string sql = "SELECT id, identifier FROM units WHERE identifier ILIKE @identifier;";
+
+        using var dbConnection = _connectionFactory.CreateConnection();
+
+        var units = await dbConnection.QueryAsync<Unit>(sql, new { identifier = $"%{identifier}%"});
+
+        return units;
+    }
+
+    public async Task<IEnumerable<Unit>> GetTenFirstUnitsAsync(CancellationToken cancellationToken)
+    {
+        const string sql = "SELECT id, identifier FROM units ORDER BY id LIMIT 10;";
+
+        using var dbConnection = _connectionFactory.CreateConnection();
+
+        var units = await dbConnection.QueryAsync<Unit>(sql);
+
+        return units;
+    }
 }

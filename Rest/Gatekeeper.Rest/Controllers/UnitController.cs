@@ -1,5 +1,6 @@
 using AutoMapper;
 using Gatekeeper.Core.Commands;
+using Gatekeeper.Core.Entities;
 using Gatekeeper.Core.Services;
 using Gatekeeper.Core.ValueObjects;
 using Gatekeeper.Rest.Dtos;
@@ -76,5 +77,23 @@ public class UnitController : ControllerBase
 
         return Ok(response);
     }
-    
+
+    [HttpGet("filter")]
+    public async Task<IActionResult> FilterUnitByIdentifier(CancellationToken cancellationToken, [FromQuery] string? identifier = null)
+    {
+        IEnumerable<Unit> units;
+        
+        if (identifier is null) 
+        {
+            units = await _service.GetTenFirstUnitsAsync(cancellationToken);
+        }
+        else 
+        {
+            units = await _service.FilterByIdentifierAsync(identifier, cancellationToken);
+        }             
+
+        var response = units.Select(_mapper.Map<UnitResponse>);
+
+        return Ok(response);
+    }
 }

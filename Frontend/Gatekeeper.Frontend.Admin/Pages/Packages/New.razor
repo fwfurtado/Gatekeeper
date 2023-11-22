@@ -66,11 +66,7 @@
     }
 
     private async Task<IEnumerable<UnitResponse>> SearchUnit(string text)
-    {
-        if(string.IsNullOrEmpty(text))
-        {
-            return new List<UnitResponse>();
-        }    
+    { 
         return await UnitService.FilterByIdentifierAsync(text);
     }
 

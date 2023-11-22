@@ -63,11 +63,22 @@ public class PackageService : IPackageService
 
     public async Task UpdateStatusDeliveredAsync(long packageId, CancellationToken cancellationToken)
     {
-        await _repository.UpdateStatus(packageId, PackageStatus.Delivered, cancellationToken);      
+        var package = await _repository.GetByIdAsync(packageId, cancellationToken);
+        if(package is not null)
+        {
+            package.Deliver();
+            await _repository.UpdateStatus(package.Id, PackageStatus.Delivered, cancellationToken);
+        }
+        
     }
 
     public async Task UpdateStatusRejectedAsync(long packageId, CancellationToken cancellationToken)
     {
-        await _repository.UpdateStatus(packageId, PackageStatus.Rejected, cancellationToken);
+        var package = await _repository.GetByIdAsync(packageId, cancellationToken);
+        if (package is not null)
+        {
+            package.Reject();
+            await _repository.UpdateStatus(package.Id, PackageStatus.Rejected, cancellationToken);
+        }
     }
 }

@@ -50,23 +50,15 @@ public class UnitService
 
     public async Task<IEnumerable<UnitResponse>> FilterByIdentifierAsync(string text)
     {
-        return new List<UnitResponse>()
+        var url = $"{BaseEndpoint}/filter?identifier={text}";
+
+        if (string.IsNullOrEmpty(text))
         {
-            new ()
-            {
-                Id = 1,
-                Identifier = "casa 1"
-            },
-            new ()
-            {
-                Id = 2,
-                Identifier = "casa 20"
-            },
-            new ()
-            {
-                Id = 3,
-                Identifier = "casa 30"
-            }
-        }.Where(u => u.Identifier.Contains(text));
+            url = $"{BaseEndpoint}/filter";
+        }
+
+        var result = await _client.GetFromJsonAsync<IEnumerable<UnitResponse>>(url);
+
+        return result ?? Enumerable.Empty<UnitResponse>();
     }
 }
