@@ -1,0 +1,46 @@
+@using Gatekeeper.Frontend.Admin.Dtos
+
+@inject HttpClient Http
+
+<MudDialog>
+    <DialogContent>
+        Delivering Package @Package.Description
+        
+        @if(IsLoading)
+        {
+            <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+        }
+        else
+        {
+            <MudText Typo="Typo.body2">Are you sure you want to deliver this package?</MudText>
+        }
+        
+    </DialogContent>
+    <DialogActions>
+        <MudButton Disabled="IsLoading" OnClick="Cancel">Cancel</MudButton>
+        <MudButton Disabled="IsLoading" Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    public bool IsLoading { get; set; } = false;
+    
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public PackageResponse Package { get; set; } = new();
+    
+
+    async Task Submit()
+    {
+        IsLoading = true;
+
+        var response = await Http.PatchAsync($"packages/{Package.Id}/delivered",null);
+        
+        IsLoading = false;
+        
+        MudDialog.Close(DialogResult.Ok(response.IsSuccessStatusCode));
+    }
+
+    void Cancel() => MudDialog.Cancel();
+}

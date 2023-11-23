@@ -32,7 +32,7 @@
             <MudTh>
                 <MudTableSortLabel SortBy="new Func<PackageResponse, object>(x => x.ArrivedAt)">Data de chegada</MudTableSortLabel>
             </MudTh>
-            <MudTh>Actions</MudTh>
+            <MudTh Class="header-centered">Actions</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="Id">@context.Id</MudTd>
@@ -41,6 +41,8 @@
             <MudTd DataLabel="Status">@context.Status</MudTd>
             <MudTd DataLabel="ArrivedAt">@context.ArrivedAt</MudTd>
             <MudTd>
+                <MudIconButton OnClick="async () => await Deliver(context)" Icon="@Icons.Material.Filled.Check" aria-label="deliver" Color="Color.Success"/>
+                <MudIconButton OnClick="async () => await Reject(context)" Icon="@Icons.Material.Filled.Cancel" aria-label="reject" Color="Color.Warning"/>
                 <MudIconButton OnClick="async () => await Delete(context)" Icon="@Icons.Material.Filled.Delete" aria-label="delete" Color="Color.Error"/>
             </MudTd>
         </RowTemplate>
@@ -89,6 +91,56 @@
             {
                 Snackbar.Add($"Error deleting package {package.Description}", Severity.Error);
             }  
+        }
+    }
+
+    private async Task Reject(PackageResponse package)
+    {
+
+        var parameters = new DialogParameters<RejectDialog>();
+        parameters.Add("Package", package);
+
+        var dialog = await DialogService.ShowAsync<RejectDialog>("Reject Server", parameters);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            var isSuccessful = result.Data as bool? ?? false;
+
+            if (isSuccessful)
+            {
+                Snackbar.Add($"Package {package.Description} rejected", Severity.Success);
+                //await FetchData();
+            }
+            else
+            {
+                Snackbar.Add($"Error rejecting package {package.Description}", Severity.Error);
+            }
+        }
+    }
+
+    private async Task Deliver(PackageResponse package)
+    {
+
+        var parameters = new DialogParameters<DeliverDialog>();
+        parameters.Add("Package", package);
+
+        var dialog = await DialogService.ShowAsync<DeliverDialog>("Deliver Server", parameters);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            var isSuccessful = result.Data as bool? ?? false;
+
+            if (isSuccessful)
+            {
+                Snackbar.Add($"Package {package.Description} delivered", Severity.Success);
+                //await FetchData();
+            }
+            else
+            {
+                Snackbar.Add($"Error delivering package {package.Description}", Severity.Error);
+            }
         }
     }
 }

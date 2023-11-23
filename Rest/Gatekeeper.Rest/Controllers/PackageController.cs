@@ -78,7 +78,7 @@ public class PackageController : ControllerBase
     }
 
     [HttpDelete("{packageId:long}")]
-    public async Task<IActionResult> DeleteResident(long packageId, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeletePackage(long packageId, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Delete package with id {PackageId}", packageId);
 
