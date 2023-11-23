@@ -15,7 +15,7 @@
 
 
     <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mb-4" Link="true" Href="/packages/new">Create</MudButton>
-    <MudTable Hover="true" SortLabel="Sort By" Elevation="0" ServerData="@FetchData">
+    <MudTable Hover="true" SortLabel="Sort By" Elevation="0" ServerData="@FetchData" @ref="Table">
         <HeaderContent>
             <MudTh>
                 <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<PackageResponse, object>(x => x.Id)">#</MudTableSortLabel>
@@ -41,8 +41,14 @@
             <MudTd DataLabel="Status">@context.Status</MudTd>
             <MudTd DataLabel="ArrivedAt">@context.ArrivedAt</MudTd>
             <MudTd>
-                <MudIconButton OnClick="async () => await Deliver(context)" Icon="@Icons.Material.Filled.Check" aria-label="deliver" Color="Color.Success"/>
-                <MudIconButton OnClick="async () => await Reject(context)" Icon="@Icons.Material.Filled.Cancel" aria-label="reject" Color="Color.Warning"/>
+            @if (@context.CanDeliver)
+            {
+                <MudIconButton OnClick="async () => await Deliver(context)" Icon="@Icons.Material.Filled.Check" aria-label="deliver" Color="Color.Success" />
+            }
+            @if (@context.CanReject)
+            {
+                <MudIconButton OnClick="async () => await Reject(context)" Icon="@Icons.Material.Filled.Cancel" aria-label="reject" Color="Color.Warning" />
+            }    
                 <MudIconButton OnClick="async () => await Delete(context)" Icon="@Icons.Material.Filled.Delete" aria-label="delete" Color="Color.Error"/>
             </MudTd>
         </RowTemplate>
@@ -53,6 +59,9 @@
 
 
 @code {
+
+
+    private MudTable<PackageResponse> Table;
 
     private async Task<TableData<PackageResponse>> FetchData(TableState state)
     {
@@ -71,21 +80,21 @@
 
     private async Task Delete(PackageResponse package)
     {
-        
+
         var parameters = new DialogParameters<DeleteDialog>();
         parameters.Add("Package", package);
 
         var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete Server", parameters);
         var result = await dialog.Result;
-        
+
         if (!result.Canceled)
         {
             var isSuccessful = result.Data as bool? ?? false;
-            
+
             if (isSuccessful)
             {
-                Snackbar.Add($"Package {package.Description} deleted", Severity.Success);    
-                //await FetchData();
+                Snackbar.Add($"Package {package.Description} deleted", Severity.Success);
+                await Table.ReloadServerData();
             }
             else
             {
@@ -110,7 +119,7 @@
             if (isSuccessful)
             {
                 Snackbar.Add($"Package {package.Description} rejected", Severity.Success);
-                //await FetchData();
+                await Table.ReloadServerData();
             }
             else
             {
@@ -135,7 +144,7 @@
             if (isSuccessful)
             {
                 Snackbar.Add($"Package {package.Description} delivered", Severity.Success);
-                //await FetchData();
+                await Table.ReloadServerData();
             }
             else
             {
