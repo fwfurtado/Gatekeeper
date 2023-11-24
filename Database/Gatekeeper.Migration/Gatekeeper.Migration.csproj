@@ -13,7 +13,7 @@
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
         </Content>
         
-      <PackageReference Include="dbup-postgresql" Version="5.0.8" />
+      <PackageReference Include="dbup-postgresql" Version="5.0.37" />
     </ItemGroup>
 
 
