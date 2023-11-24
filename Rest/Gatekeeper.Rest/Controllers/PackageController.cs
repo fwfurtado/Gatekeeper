@@ -23,20 +23,7 @@ public class PackageController : ControllerBase
         _mapper = mapper;
         _logger = logger;
     }
-
-
-    [HttpPost]
-    public async Task<IActionResult> CreatePackage([FromBody] RegisterPackageCommand command,
-        CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Register a new package with params {Params}", command);
-
-        var package = await _service.RegisterPackageAsync(command, cancellationToken);
-
-        _logger.LogInformation("Package registered with success");
-
-        return CreatedAtAction(nameof(ShowPackage), new { packageId = package.Id }, null);
-    }
+    
     
     [HttpGet]
     public async Task<IActionResult> ListPackages(

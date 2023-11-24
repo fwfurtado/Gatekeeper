@@ -1,0 +1,34 @@
+using System.Data;
+using Dapper;
+
+namespace Gatekeeper.Rest.Extensions;
+
+public static class DapperExtensions
+{
+    public static Task<T?> ExecuteScalarAsync<T>(
+        this IDbConnection cnn,
+        string sql,
+        object param,
+        CancellationToken cancellationToken = default,
+        IDbTransaction? transaction = null
+    )
+    {
+
+        var sqlCommand = new CommandDefinition(sql, param, cancellationToken: cancellationToken, transaction: transaction);
+        
+        return cnn.ExecuteScalarAsync<T>(sqlCommand);
+    }
+    
+    public static Task<T?> ExecuteScalarAsync<T>(
+        this IDbConnection cnn,
+        string sql,
+        CancellationToken cancellationToken = default,
+        IDbTransaction? transaction = null
+    )
+    {
+
+        var sqlCommand = new CommandDefinition(sql, cancellationToken: cancellationToken, transaction: transaction);
+        
+        return cnn.ExecuteScalarAsync<T>(sqlCommand);
+    }
+}

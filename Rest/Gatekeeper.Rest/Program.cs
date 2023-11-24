@@ -14,6 +14,8 @@ using Keycloak.AuthServices.Authorization;
 using Keycloak.AuthServices.Sdk.Admin;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
+using Carter;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -111,9 +113,9 @@ builder.Services.AddTransient<IDbConnectionFactory, DbConnectionFactory>();
 builder.Services.AddScoped<IUnitRepository, UnitRepository>();
 builder.Services.AddScoped<IPackageRepository, PackageRepository>();
 builder.Services.AddScoped<ICpfSpecification, CpfSpecification>();
-builder.Services.AddScoped<IValidator<RegisterUnitCommand>, RegisterUnitCommandValidator>();
-builder.Services.AddScoped<IValidator<RegisterResidentCommand>, RegisterResidentCommandValidator>();
-builder.Services.AddScoped<IValidator<RegisterPackageCommand>, RegisterPackageCommandValidator>();
+// builder.Services.AddScoped<IValidator<RegisterUnitCommand>, RegisterUnitCommandValidator>();
+// builder.Services.AddScoped<IValidator<RegisterResidentCommand>, RegisterResidentCommandValidator>();
+// builder.Services.AddScoped<IValidator<RegisterPackageCommand>, RegisterPackageCommandValidator>();
 builder.Services.AddScoped<IUnitService, UnitService>();
 builder.Services.AddScoped<IPackageService, PackageService>();
 builder.Services.AddScoped<IResidentService, ResidentService>();
@@ -124,6 +126,8 @@ builder.Services.AddScoped<IOccupationRequestEffectiveUnitOfWork, OccupationRequ
 builder.Services.AddScoped<IOccupationService, OccupationService>();
 builder.Services.AddScoped<NewOccupationCommandFactory>();
 
+
+builder.Services.AddCarter();
 
 var app = builder.Build();
 
@@ -148,6 +152,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseCors(corsPolicyName);
+
+app.MapCarter();
 
 app.Run();
 
