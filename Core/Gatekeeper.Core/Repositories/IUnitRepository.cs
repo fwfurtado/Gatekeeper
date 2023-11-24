@@ -13,4 +13,6 @@ public interface IUnitRepository
     Task UpdateOccupationAsync(Unit unit, CancellationToken cancellationToken);
     Task<Unit?> GetByIdentifier(string identifier, CancellationToken cancellationToken);
     Task<PagedList<Unit>> GetAll(PageRequest pageRequest, CancellationToken cancellationToken);
+    Task<IEnumerable<Unit>> FilterByIdentifierAsync(string identifier, CancellationToken cancellationToken);
+    Task<IEnumerable<Unit>> GetTenFirstUnitsAsync(CancellationToken cancellationToken);
 }

@@ -56,4 +56,14 @@ public class UnitService : IUnitService
     {
         return await _repository.GetAll(pageRequest, cancellationToken);
     }
+
+    public async Task<IEnumerable<Unit>> FilterByIdentifierAsync(string identifier, CancellationToken cancellationToken)
+    {
+        return await _repository.FilterByIdentifierAsync(identifier, cancellationToken);
+    }
+
+    public async Task<IEnumerable<Unit>> GetTenFirstUnitsAsync(CancellationToken cancellationToken)
+    {
+        return await _repository.GetTenFirstUnitsAsync(cancellationToken);
+    }
 }

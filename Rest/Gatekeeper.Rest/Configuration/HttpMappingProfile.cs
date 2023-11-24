@@ -22,5 +22,6 @@ public class HttpMappingProfile : Profile
         });
         CreateMap<RegisterResidentRequest, RegisterResidentCommand>();
         CreateMap<PersonInfoRequest, PersonalInfo>();
+        CreateMap<Package, PackageResponse>();
     }
 }

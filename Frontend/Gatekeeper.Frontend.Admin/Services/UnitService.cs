@@ -40,4 +40,25 @@ public class UnitService
 
         return response.IsSuccessStatusCode;
     }
+
+    public async Task<IEnumerable<UnitResponse>> GetAllListAsync()
+    {
+        var result = await _client.GetFromJsonAsync<IEnumerable<UnitResponse>>(BaseEndpoint);
+
+        return result ?? Enumerable.Empty<UnitResponse>();
+    }
+
+    public async Task<IEnumerable<UnitResponse>> FilterByIdentifierAsync(string text)
+    {
+        var url = $"{BaseEndpoint}/filter?identifier={text}";
+
+        if (string.IsNullOrEmpty(text))
+        {
+            url = $"{BaseEndpoint}/filter";
+        }
+
+        var result = await _client.GetFromJsonAsync<IEnumerable<UnitResponse>>(url);
+
+        return result ?? Enumerable.Empty<UnitResponse>();
+    }
 }

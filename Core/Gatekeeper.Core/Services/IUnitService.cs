@@ -10,4 +10,6 @@ public interface IUnitService
     
     Task<Unit?> GetUnitByIdAsync(long unitId, CancellationToken cancellationToken);
     Task<PagedList<Unit>> GetAllUnits(PageRequest pageRequest, CancellationToken cancellationToken);
+    Task<IEnumerable<Unit>> FilterByIdentifierAsync(string identifier, CancellationToken cancellationToken);
+    Task<IEnumerable<Unit>> GetTenFirstUnitsAsync(CancellationToken cancellationToken);
 }
