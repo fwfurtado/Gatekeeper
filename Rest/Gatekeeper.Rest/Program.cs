@@ -13,6 +13,7 @@ using Gatekeeper.Rest.Configuration;
 using Gatekeeper.Rest.Factories;
 using Gatekeeper.Rest.Features.Package.List;
 using Gatekeeper.Rest.Features.Package.Receive;
+using Gatekeeper.Rest.Features.Package.Reject;
 using Gatekeeper.Rest.Features.Package.Remove;
 using Gatekeeper.Rest.Features.Package.Show;
 using Gatekeeper.Shared.Database;
@@ -20,7 +21,9 @@ using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Authorization;
 using Keycloak.AuthServices.Sdk.Admin;
 using Microsoft.AspNetCore.Http.Json;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +35,14 @@ builder.Services.Configure<JsonOptions>(option =>
     option.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     option.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
 });
+
+
+builder.Services.AddTransient<ISerializerDataContractResolver>(p =>
+{
+    var jsonOptions = p.GetRequiredService<IOptions<JsonOptions>>().Value.SerializerOptions;
+    return new JsonSerializerDataContractResolver(jsonOptions);
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -60,6 +71,7 @@ builder.Services.AddKeycloakAdminHttpClient(adminClientOptions);
 
 builder.Services.AddSwaggerGen(options =>
 {
+    
     options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
     {
         Type = SecuritySchemeType.OpenIdConnect,
@@ -115,13 +127,13 @@ builder.Services.AddCors(options =>
 builder.Services.AddTransient<IDbConnectionFactory, DbConnectionFactory>();
 
 builder.Services.AddScoped<IUnitRepository, UnitRepository>();
-builder.Services.AddScoped<IPackageRepository, PackageRepository>();
+
 builder.Services.AddScoped<ICpfSpecification, CpfSpecification>();
 builder.Services.AddScoped<IValidator<RegisterUnitCommand>, RegisterUnitCommandValidator>();
 builder.Services.AddScoped<IValidator<RegisterResidentCommand>, RegisterResidentCommandValidator>();
 builder.Services.AddScoped<IValidator<RegisterPackageCommand>, RegisterPackageCommandValidator>();
 builder.Services.AddScoped<IUnitService, UnitService>();
-builder.Services.AddScoped<IPackageService, PackageService>();
+
 builder.Services.AddScoped<IResidentService, ResidentService>();
 builder.Services.AddScoped<IResidentRepository, ResidentRepository>();
 builder.Services.AddScoped<IOccupationRequestRepository, OccupationRequestRepository>();
@@ -135,6 +147,7 @@ builder.Services.AddScoped<IPackageSaver, Gatekeeper.Rest.DataLayer.PackageRepos
 builder.Services.AddScoped<IPackageFetcherByDescription, Gatekeeper.Rest.DataLayer.PackageRepository>();
 builder.Services.AddScoped<IPackageListFetcher, Gatekeeper.Rest.DataLayer.PackageRepository>();
 builder.Services.AddScoped<IPackageFetcherById, Gatekeeper.Rest.DataLayer.PackageRepository>();
+builder.Services.AddScoped<IPackageSyncStatus, Gatekeeper.Rest.DataLayer.PackageRepository>();
 builder.Services.AddScoped<IPackageRemover, Gatekeeper.Rest.DataLayer.PackageRepository>();
 builder.Services.AddScoped<IValidator<ReceivePackageCommand>, ReceivePackageCommandValidator>();
 

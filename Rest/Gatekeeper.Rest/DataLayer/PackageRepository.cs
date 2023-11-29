@@ -1,12 +1,16 @@
 using System.Transactions;
 using Gatekeeper.Core.ValueObjects;
 using Gatekeeper.Rest.Domain;
+using Gatekeeper.Rest.Domain.Aggregate;
+using Gatekeeper.Rest.Domain.Package;
 using Gatekeeper.Rest.Extensions;
 using Gatekeeper.Rest.Features.Package.List;
 using Gatekeeper.Rest.Features.Package.Receive;
+using Gatekeeper.Rest.Features.Package.Reject;
 using Gatekeeper.Rest.Features.Package.Remove;
 using Gatekeeper.Rest.Features.Package.Show;
 using Gatekeeper.Shared.Database;
+using InvalidOperationException = System.InvalidOperationException;
 
 namespace Gatekeeper.Rest.DataLayer;
 
@@ -15,7 +19,8 @@ public class PackageRepository(IDbConnectionFactory connectionFactory) :
     IPackageFetcherByDescription,
     IPackageListFetcher,
     IPackageFetcherById,
-    IPackageRemover
+    IPackageRemover,
+    IPackageSyncStatus
 {
     public async Task<bool> ExistsDescriptionAsync(string description, CancellationToken cancellationToken)
     {
@@ -113,6 +118,36 @@ public class PackageRepository(IDbConnectionFactory connectionFactory) :
         if (affect != 1)
         {
             throw new InvalidOperationException($"Expected to remove 1 package, but removed {affect} packages.");
+        }
+
+        tx.Complete();
+    }
+
+    public async Task SyncStatus(Package package, CancellationToken cancellationToken)
+    {
+        const string sql = """
+                           UPDATE packages
+                           SET status = @status
+                           WHERE id = @id;
+                           """;
+
+
+        using var conn = connectionFactory.CreateConnection();
+
+        using var tx = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
+        var arguments = new
+        {
+            status = Enum.GetName(package.Status),
+            id = package.Id
+        };
+
+        var affect = await conn.ExecuteAsync(sql, arguments, cancellationToken);
+
+
+        if (affect != 1)
+        {
+            throw new InvalidOperationException($"Expected to update 1 package status, but updated {affect} packages.");
         }
 
         tx.Complete();

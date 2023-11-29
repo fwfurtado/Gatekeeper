@@ -5,5 +5,5 @@ namespace Gatekeeper.Rest.Features.Package.List;
 
 public interface IPackageListFetcher
 {
-    Task<PagedList<Domain.Package>> FetchAsync(Pagination pagination, CancellationToken cancellationToken);
+    Task<PagedList<Domain.Package.Package>> FetchAsync(Pagination pagination, CancellationToken cancellationToken);
 }

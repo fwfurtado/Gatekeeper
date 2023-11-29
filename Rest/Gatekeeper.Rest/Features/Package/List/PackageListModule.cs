@@ -14,7 +14,7 @@ public class PackageListModule : ICarterModule
             .WithTags("Packages");
     }
 
-    private static async Task<PagedList<Domain.Package>> RequestHandler(
+    private static async Task<PagedList<Domain.Package.Package>> RequestHandler(
         ISender sender,
         CancellationToken cancellationToken,
         [FromQuery] int? page,

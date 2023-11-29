@@ -1,6 +1,7 @@
 ﻿using Gatekeeper.Core.Entities;
 using System;
 using System.Text.Json.Serialization;
+using Gatekeeper.Rest.Domain.Aggregate;
 
 namespace Gatekeeper.Rest.Dtos;
 

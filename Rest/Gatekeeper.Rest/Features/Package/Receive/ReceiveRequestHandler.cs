@@ -23,7 +23,7 @@ public class ReceivePackageService(
             throw new ValidationException(new[] { failure });
         }
 
-        var package = command.Adapt<Domain.Package>();
+        var package = command.Adapt<Domain.Package.Package>();
 
         cancellationToken.ThrowIfCancellationRequested();
 
