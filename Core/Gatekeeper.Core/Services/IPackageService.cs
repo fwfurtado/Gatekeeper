@@ -6,7 +6,6 @@ namespace Gatekeeper.Core.Services;
 
 public interface IPackageService
 {
-    Task<Package> RegisterPackageAsync(RegisterPackageCommand command, CancellationToken cancellationToken);
     Task<Package?> GetPackageByIdAsync(long packageId, CancellationToken cancellationToken);
     Task<PagedList<Package>> GetAllPackages(PageRequest pageRequest, CancellationToken cancellationToken);
     Task DeletePackage(long packageId, CancellationToken cancellationToken);

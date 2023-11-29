@@ -24,28 +24,7 @@ public class PackageService : IPackageService
         _registerPackageValidator = registerPackageValidator;
         _mapper = mapper;
     }
-
-    public async Task<Package> RegisterPackageAsync(RegisterPackageCommand command, CancellationToken cancellationToken)
-    {
-        await _registerPackageValidator.ValidateAndThrowAsync(command, cancellationToken);
-
-        if (await _repository.ExistsDescriptionAsync(command.Description, cancellationToken))
-        {
-            var failure = new ValidationFailure("Description", "Description already exists");
-            throw new ValidationException(new[] { failure });
-        }
-
-        var package = _mapper.Map<Package>(command);
-
-        cancellationToken.ThrowIfCancellationRequested();
-
-        var id = await _repository.SaveAsync(package, cancellationToken);
-
-        package.Id = id;
-
-        return package;
-    }
-
+    
     public async Task DeletePackage(long packageId, CancellationToken cancellationToken)
     {
         await _repository.DeleteByIdAsync(packageId, cancellationToken);

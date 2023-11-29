@@ -2,9 +2,9 @@ using FluentValidation;
 
 namespace Gatekeeper.Rest.Features.Package.Receive;
 
-public class ReceivePackageRequestValidator : AbstractValidator<ReceivePackageRequest>
+public class ReceivePackageCommandValidator : AbstractValidator<ReceivePackageCommand>
 {
-    public ReceivePackageRequestValidator()
+    public ReceivePackageCommandValidator()
     {
         RuleFor(x => x.Description)
             .NotEmpty()

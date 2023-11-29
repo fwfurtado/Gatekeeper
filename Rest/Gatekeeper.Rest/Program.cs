@@ -17,7 +17,10 @@ using System.Text.Json.Serialization;
 using Carter;
 using FluentValidation.AspNetCore;
 using Gatekeeper.Rest.DataLayer;
+using Gatekeeper.Rest.Features.Package.List;
 using Gatekeeper.Rest.Features.Package.Receive;
+using Gatekeeper.Rest.Features.Package.Remove;
+using Gatekeeper.Rest.Features.Package.Show;
 using PackageRepository = Gatekeeper.Rest.DataLayer.PackageRepository;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,10 +30,7 @@ builder.Services.AddMvc();
 
 builder.Services
     .AddControllers()
-    .AddJsonOptions(option =>
-{
-    option.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-});
+    .AddJsonOptions(option => { option.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -128,8 +128,14 @@ builder.Services.AddScoped<IOccupationRepository, OccupationRepository>();
 builder.Services.AddScoped<IOccupationRequestEffectiveUnitOfWork, OccupationRequestEffectiveUnitOfWork>();
 builder.Services.AddScoped<IOccupationService, OccupationService>();
 builder.Services.AddScoped<NewOccupationCommandFactory>();
-builder.Services.AddScoped<IReceiveRepository, PackageRepository>();
-builder.Services.AddScoped<IValidator<ReceivePackageRequest>, ReceivePackageRequestValidator>();
+
+
+builder.Services.AddScoped<IPackageSaver, PackageRepository>();
+builder.Services.AddScoped<IPackageFetcherByDescription, PackageRepository>();
+builder.Services.AddScoped<IPackageListFetcher, PackageRepository>();
+builder.Services.AddScoped<IPackageFetcherById, PackageRepository>();
+builder.Services.AddScoped<IPackageRemover, PackageRepository>();
+builder.Services.AddScoped<IValidator<ReceivePackageCommand>, ReceivePackageCommandValidator>();
 
 
 builder.Services.AddCarter();
