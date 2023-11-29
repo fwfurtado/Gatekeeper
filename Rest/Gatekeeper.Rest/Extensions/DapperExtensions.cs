@@ -9,7 +9,7 @@ public static class DapperExtensions
         this IDbConnection cnn,
         string sql,
         object param,
-        CancellationToken cancellationToken = default,
+        CancellationToken cancellationToken,
         IDbTransaction? transaction = null
     )
     {
@@ -22,7 +22,7 @@ public static class DapperExtensions
     public static Task<T?> ExecuteScalarAsync<T>(
         this IDbConnection cnn,
         string sql,
-        CancellationToken cancellationToken = default,
+        CancellationToken cancellationToken,
         IDbTransaction? transaction = null
     )
     {

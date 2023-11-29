@@ -1,15 +1,11 @@
-using Dapper;
+using Gatekeeper.Rest.Domain;
+using Gatekeeper.Rest.Extensions;
+using Gatekeeper.Rest.Features.Package.Receive;
 using Gatekeeper.Shared.Database;
 
-namespace Gatekeeper.Rest.Features.Package.Receive;
+namespace Gatekeeper.Rest.DataLayer;
 
-public interface IReceiveRepository
-{
-    Task<bool> ExistsDescriptionAsync(string description, CancellationToken cancellationToken);
-    Task<long> SaveAsync(ReceivedPackage package, CancellationToken cancellationToken);
-}
-
-public class ReceiveRepository(IDbConnectionFactory connectionFactory) : IReceiveRepository
+public class PackageRepository(IDbConnectionFactory connectionFactory) : IReceiveRepository
 {
     public async Task<bool> ExistsDescriptionAsync(string description, CancellationToken cancellationToken)
     {
@@ -17,12 +13,12 @@ public class ReceiveRepository(IDbConnectionFactory connectionFactory) : IReceiv
 
         using var dbConnection = connectionFactory.CreateConnection();
 
-        var exists = await dbConnection.QuerySingleAsync<bool>(sql, new { description });
+        var exists = await dbConnection.ExecuteScalarAsync<bool>(sql, new { description }, cancellationToken);
 
         return exists;
     }
 
-    public async Task<long> SaveAsync(ReceivedPackage package, CancellationToken cancellationToken)
+    public async Task<long> SaveAsync(Package package, CancellationToken cancellationToken)
     {
         const string sql = """
                                   INSERT INTO packages (description,arrived_at, status, target_unit_id)
@@ -35,13 +31,11 @@ public class ReceiveRepository(IDbConnectionFactory connectionFactory) : IReceiv
         {
             package.Description,
             package.ArrivedAt,
-            Status = Enum.GetName(ReceivedPackage.Status),
+            Status = Enum.GetName(package.Status),
             package.UnitId
         };
-
-        var sqlCommand = new CommandDefinition(sql, arguments, cancellationToken: cancellationToken);
-
-        var id = await dbConnection.ExecuteScalarAsync<long>(sqlCommand);
+        
+        var id = await dbConnection.ExecuteScalarAsync<long>(sql, arguments, cancellationToken);
 
         return id;
     }

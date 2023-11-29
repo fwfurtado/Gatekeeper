@@ -1,10 +1,11 @@
 using Carter;
+using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gatekeeper.Rest.Features.Package.Receive;
 
-public record ReceivePackageCommand(long UnitId, string Description) : IRequest<long>;
+public record ReceivePackageRequest(long UnitId, string Description) : IRequest<long>;
 
 public class ReceiveModule : ICarterModule
 {
@@ -14,16 +15,18 @@ public class ReceiveModule : ICarterModule
             ISender sender,
             ILogger<ReceiveModule> logger,
             CancellationToken cancellationToken,
-            [FromBody] ReceivePackageCommand command
+            [FromBody] ReceivePackageRequest request
         ) =>
         {
-            logger.LogInformation("Register a new package with params {Params}", command);
+            logger.LogInformation("Register a new package with params {Params}", request);
+
+            var command = request.Adapt<ReceivePackageCommand>();
 
             var packageId = await sender.Send(command, cancellationToken);
 
             logger.LogInformation("Package registered with success");
 
-            return  new { packageId };
+            return new { packageId };
         });
     }
 }

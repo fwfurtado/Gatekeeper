@@ -1,11 +1,13 @@
-using AutoMapper;
 using FluentValidation;
 using FluentValidation.Results;
+using Mapster;
 using MediatR;
 
 namespace Gatekeeper.Rest.Features.Package.Receive;
 
-public class ReceivePackageService(IMapper mapper, IReceiveRepository repository, IValidator<ReceivePackageCommand> validator) : IRequestHandler<ReceivePackageCommand, long>
+
+public record ReceivePackageCommand(long UnitId, string Description) : IRequest<long>;
+public class ReceivePackageService(IReceiveRepository repository, IValidator<ReceivePackageCommand> validator) : IRequestHandler<ReceivePackageCommand, long>
 {
     public async Task<long> Handle(ReceivePackageCommand command, CancellationToken cancellationToken)
     {
@@ -16,8 +18,8 @@ public class ReceivePackageService(IMapper mapper, IReceiveRepository repository
             var failure = new ValidationFailure("Description", "Description already exists");
             throw new ValidationException(new[] { failure });
         }
-
-        var package = mapper.Map<ReceivedPackage>(command);
+        
+        var package = command.Adapt<Domain.Package>();
 
         cancellationToken.ThrowIfCancellationRequested();
 

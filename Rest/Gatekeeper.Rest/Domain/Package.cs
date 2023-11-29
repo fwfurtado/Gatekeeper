@@ -1,12 +1,14 @@
 using Gatekeeper.Core.Entities;
 
-namespace Gatekeeper.Rest.Features.Package.Receive;
+namespace Gatekeeper.Rest.Domain;
 
-public class ReceivedPackage
+public class Package
 {
     public required string Description { get; init; }
+
     public DateTime ArrivedAt { get; } = DateTime.UtcNow;
+
     public required long UnitId { get; init; }
 
-    public static PackageStatus Status => PackageStatus.Pending;
+    public PackageStatus Status  => PackageStatus.Pending;
 }

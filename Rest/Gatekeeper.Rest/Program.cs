@@ -16,7 +16,9 @@ using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
 using Carter;
 using FluentValidation.AspNetCore;
+using Gatekeeper.Rest.DataLayer;
 using Gatekeeper.Rest.Features.Package.Receive;
+using PackageRepository = Gatekeeper.Rest.DataLayer.PackageRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -112,7 +114,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddTransient<IDbConnectionFactory, DbConnectionFactory>();
 
 builder.Services.AddScoped<IUnitRepository, UnitRepository>();
-builder.Services.AddScoped<IPackageRepository, PackageRepository>();
+builder.Services.AddScoped<IPackageRepository, Gatekeeper.Core.Repositories.PackageRepository>();
 builder.Services.AddScoped<ICpfSpecification, CpfSpecification>();
 builder.Services.AddScoped<IValidator<RegisterUnitCommand>, RegisterUnitCommandValidator>();
 builder.Services.AddScoped<IValidator<RegisterResidentCommand>, RegisterResidentCommandValidator>();
@@ -126,8 +128,8 @@ builder.Services.AddScoped<IOccupationRepository, OccupationRepository>();
 builder.Services.AddScoped<IOccupationRequestEffectiveUnitOfWork, OccupationRequestEffectiveUnitOfWork>();
 builder.Services.AddScoped<IOccupationService, OccupationService>();
 builder.Services.AddScoped<NewOccupationCommandFactory>();
-builder.Services.AddScoped<IReceiveRepository, ReceiveRepository>();
-builder.Services.AddScoped<IValidator<ReceivePackageCommand>, ReceivePackageRequestValidator>();
+builder.Services.AddScoped<IReceiveRepository, PackageRepository>();
+builder.Services.AddScoped<IValidator<ReceivePackageRequest>, ReceivePackageRequestValidator>();
 
 
 builder.Services.AddCarter();

@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Gatekeeper.Rest.Features.Package.Receive;
 
-public class ReceivePackageRequestValidator : AbstractValidator<ReceivePackageCommand>
+public class ReceivePackageRequestValidator : AbstractValidator<ReceivePackageRequest>
 {
     public ReceivePackageRequestValidator()
     {
