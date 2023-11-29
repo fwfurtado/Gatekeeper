@@ -53,7 +53,7 @@ public class PackageRepository(IDbConnectionFactory connectionFactory) :
     public async Task<PagedList<Package>> FetchAsync(Pagination pagination, CancellationToken cancellationToken)
     {
         const string sql = """
-                           SELECT id, description, arrived_at, status, target_unit_id
+                           SELECT id Id, description Description, arrived_at ArrivedAt, status Status, target_unit_id UnitId
                            FROM packages
                            ORDER BY id
                            OFFSET @Offset
@@ -87,7 +87,7 @@ public class PackageRepository(IDbConnectionFactory connectionFactory) :
     public async Task<Package?> FetchAsync(long id, CancellationToken cancellationToken)
     {
         const string sql = """
-                           SELECT id, description, arrived_at, status, target_unit_id
+                           SELECT id Id, description Description, arrived_at ArrivedAt, status Status, target_unit_id UnitId
                            FROM packages
                            WHERE id = @id;
                            """;

@@ -1,3 +1,6 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Carter;
 using FluentValidation;
 using Gatekeeper.Core.Commands;
 using Gatekeeper.Core.Configurations;
@@ -8,29 +11,27 @@ using Gatekeeper.Core.Specifications;
 using Gatekeeper.Core.Validations;
 using Gatekeeper.Rest.Configuration;
 using Gatekeeper.Rest.Factories;
-using Gatekeeper.Shared.Database;
-using Keycloak.AuthServices.Authentication;
-using Keycloak.AuthServices.Authorization;
-using Keycloak.AuthServices.Sdk.Admin;
-using Microsoft.OpenApi.Models;
-using System.Text.Json.Serialization;
-using Carter;
-using FluentValidation.AspNetCore;
-using Gatekeeper.Rest.DataLayer;
 using Gatekeeper.Rest.Features.Package.List;
 using Gatekeeper.Rest.Features.Package.Receive;
 using Gatekeeper.Rest.Features.Package.Remove;
 using Gatekeeper.Rest.Features.Package.Show;
-using PackageRepository = Gatekeeper.Rest.DataLayer.PackageRepository;
+using Gatekeeper.Shared.Database;
+using Keycloak.AuthServices.Authentication;
+using Keycloak.AuthServices.Authorization;
+using Keycloak.AuthServices.Sdk.Admin;
+using Microsoft.AspNetCore.Http.Json;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddMvc();
-
-builder.Services
-    .AddControllers()
-    .AddJsonOptions(option => { option.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
+builder.Services.AddControllers();
+builder.Services.Configure<JsonOptions>(option =>
+{
+    option.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    option.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    option.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -114,7 +115,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddTransient<IDbConnectionFactory, DbConnectionFactory>();
 
 builder.Services.AddScoped<IUnitRepository, UnitRepository>();
-builder.Services.AddScoped<IPackageRepository, Gatekeeper.Core.Repositories.PackageRepository>();
+builder.Services.AddScoped<IPackageRepository, PackageRepository>();
 builder.Services.AddScoped<ICpfSpecification, CpfSpecification>();
 builder.Services.AddScoped<IValidator<RegisterUnitCommand>, RegisterUnitCommandValidator>();
 builder.Services.AddScoped<IValidator<RegisterResidentCommand>, RegisterResidentCommandValidator>();
@@ -130,11 +131,11 @@ builder.Services.AddScoped<IOccupationService, OccupationService>();
 builder.Services.AddScoped<NewOccupationCommandFactory>();
 
 
-builder.Services.AddScoped<IPackageSaver, PackageRepository>();
-builder.Services.AddScoped<IPackageFetcherByDescription, PackageRepository>();
-builder.Services.AddScoped<IPackageListFetcher, PackageRepository>();
-builder.Services.AddScoped<IPackageFetcherById, PackageRepository>();
-builder.Services.AddScoped<IPackageRemover, PackageRepository>();
+builder.Services.AddScoped<IPackageSaver, Gatekeeper.Rest.DataLayer.PackageRepository>();
+builder.Services.AddScoped<IPackageFetcherByDescription, Gatekeeper.Rest.DataLayer.PackageRepository>();
+builder.Services.AddScoped<IPackageListFetcher, Gatekeeper.Rest.DataLayer.PackageRepository>();
+builder.Services.AddScoped<IPackageFetcherById, Gatekeeper.Rest.DataLayer.PackageRepository>();
+builder.Services.AddScoped<IPackageRemover, Gatekeeper.Rest.DataLayer.PackageRepository>();
 builder.Services.AddScoped<IValidator<ReceivePackageCommand>, ReceivePackageCommandValidator>();
 
 
