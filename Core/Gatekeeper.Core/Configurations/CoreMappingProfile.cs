@@ -21,12 +21,5 @@ public class CoreMappingProfile : Profile
         CreateMap<NewOccupationCommand, OccupationRequest>()
             .ForMember(t => t.Id, opt => opt.Ignore())
             .ForMember(t => t.Status, opt => opt.Ignore());
-        CreateMap<RegisterPackageCommand, Package>()
-            .ForMember(p => p.Id, opt => opt.Ignore())
-            .ForMember(p => p.ArrivedAt, opt => opt.Ignore())
-            .ForMember(p => p.DeliveredAt, opt => opt.Ignore())
-            .ForMember(p => p.Status, opt => opt.Ignore())
-            .ForCtorParam("description", opt => opt.MapFrom(c => c.Description))
-            .ForCtorParam("unit_id", opt => opt.MapFrom(c => c.UnitId));
     }
 }

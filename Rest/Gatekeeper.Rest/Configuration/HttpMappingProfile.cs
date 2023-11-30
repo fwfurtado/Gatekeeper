@@ -5,6 +5,7 @@ using Gatekeeper.Rest.Controllers;
 using Gatekeeper.Rest.Dtos;
 using Keycloak.AuthServices.Sdk.Admin.Models;
 using System.Reflection;
+using Gatekeeper.Rest.Features.Package.Receive;
 
 namespace Gatekeeper.Rest.Configuration;
 
@@ -22,6 +23,5 @@ public class HttpMappingProfile : Profile
         });
         CreateMap<RegisterResidentRequest, RegisterResidentCommand>();
         CreateMap<PersonInfoRequest, PersonalInfo>();
-        CreateMap<Package, PackageResponse>();
     }
 }
