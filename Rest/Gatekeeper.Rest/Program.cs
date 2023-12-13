@@ -10,6 +10,8 @@ using Gatekeeper.Core.Services;
 using Gatekeeper.Core.Specifications;
 using Gatekeeper.Core.Validations;
 using Gatekeeper.Rest.Configuration;
+using Gatekeeper.Rest.DataLayer;
+using Gatekeeper.Rest.EventHandlers;
 using Gatekeeper.Rest.Factories;
 using Gatekeeper.Rest.Features.Package.List;
 using Gatekeeper.Rest.Features.Package.Receive;
@@ -150,7 +152,8 @@ builder.Services.AddScoped<IPackageFetcherById, Gatekeeper.Rest.DataLayer.Packag
 builder.Services.AddScoped<IPackageSyncStatus, Gatekeeper.Rest.DataLayer.PackageRepository>();
 builder.Services.AddScoped<IPackageRemover, Gatekeeper.Rest.DataLayer.PackageRepository>();
 builder.Services.AddScoped<IValidator<ReceivePackageCommand>, ReceivePackageCommandValidator>();
-
+builder.Services.AddScoped<IPackageEventSaver, PackageEventRepository>();
+builder.Services.AddSingleton<IJsonSerializer, DefaultJsonSerializer>();
 
 builder.Services.AddCarter();
 

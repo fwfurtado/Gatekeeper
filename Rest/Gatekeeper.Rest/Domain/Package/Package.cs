@@ -7,11 +7,10 @@ namespace Gatekeeper.Rest.Domain.Package;
 public class Package
 {
     public long? Id { get; init; } = null;
-    public required string Description { get; init; }
+    public string Description { get; set; }
+    public long UnitId { get; set; }
 
     public DateTime ArrivedAt { get; } = DateTime.UtcNow;
-
-    public required long UnitId { get; init; }
 
     public PackageStatus Status { get; private set; } = PackageStatus.Pending;
 
@@ -20,12 +19,59 @@ public class Package
 
     public IImmutableList<IPackageEvent> Events => _events.Values.ToImmutableList();
 
+
+    public static Package Factory(string description, long unitId)
+    {
+        var package = new Package
+        {
+            Description = description,
+            UnitId = unitId
+        };
+
+        return package;
+    }
+
+    internal Package()
+    {
+    }
+
+    public Package(IEnumerable<IPackageEvent> events) : this(events.ToArray())
+    {
+    }
+
+    public Package(params IPackageEvent[] events) : this()
+    {
+        foreach (var @event in events)
+        {
+            AppendEvent(@event);
+        }
+
+        foreach (var (_, @event) in _events)
+        {
+            HandleEvent(@event);
+        }
+    }
+
     public void AddEvent<T>(T packageEvent) where T : IPackageEvent
+    {
+        AppendEvent(packageEvent);
+        HandleEvent(packageEvent);
+    }
+
+    private void AppendEvent<T>(T packageEvent) where T : IPackageEvent
+    {
+        _events.Add(packageEvent.OccurredAt, packageEvent);
+    }
+
+    private void HandleEvent(IPackageEvent packageEvent)
     {
         var stateMachine = new PackageStateMachine(this, SetStatus);
 
         switch (packageEvent)
         {
+            case PackageReceived packageReceived:
+                Apply(packageReceived);
+                break;
             case PackageDelivered:
                 stateMachine.Deliver();
                 break;
@@ -33,8 +79,12 @@ public class Package
                 stateMachine.Reject();
                 break;
         }
+    }
 
-        _events.Add(packageEvent.OccurredAt, packageEvent);
+    private void Apply(PackageReceived packageReceived)
+    {
+        Description = packageReceived.Description;
+        UnitId = packageReceived.UnitId;
     }
 
     private void SetStatus(PackageStatus status)

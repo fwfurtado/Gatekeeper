@@ -1,6 +1,5 @@
 using Gatekeeper.Rest.Domain.Package;
 using Gatekeeper.Rest.Features.Package.Show;
-using Mapster;
 using MediatR;
 
 namespace Gatekeeper.Rest.Features.Package.Reject;
@@ -8,6 +7,7 @@ namespace Gatekeeper.Rest.Features.Package.Reject;
 public record PackageRejectCommand(long PackageId, string Reason) : IRequest<PackageRejected?>;
 
 public class PackageRejectRequestHandler(
+    IPublisher publisher,
     IPackageFetcherById packageFetcherById,
     IPackageSyncStatus packageSyncStatus
 ) : IRequestHandler<PackageRejectCommand, PackageRejected?>
@@ -21,11 +21,13 @@ public class PackageRejectRequestHandler(
             return null;
         }
 
-        var rejectEvent = new PackageRejected(command.PackageId, command.Reason);
+        var rejectEvent = new PackageRejected(command.PackageId, package.Status, command.Reason);
 
         package.AddEvent(rejectEvent);
 
         await packageSyncStatus.SyncStatus(package, cancellationToken);
+
+        await publisher.Publish(rejectEvent, cancellationToken);
 
         return rejectEvent;
     }

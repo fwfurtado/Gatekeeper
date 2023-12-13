@@ -54,6 +54,7 @@ public class PackageModule : ICarterModule
 
     private static async Task<PagedList<Domain.Package.Package>> ListHandle(
         ISender sender,
+        IPublisher publisher,
         CancellationToken cancellationToken,
         [FromQuery] int? page,
         [FromQuery] int? size
