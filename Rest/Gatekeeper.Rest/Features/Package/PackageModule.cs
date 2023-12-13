@@ -52,24 +52,24 @@ public class PackageModule : ICarterModule
         return Results.CreatedAtRoute("GetPackageById", new { id = packageId }, null);
     }
 
-    private static async Task<PagedList<Domain.Package.Package>> ListHandle(
+    private static Task<PagedList<Domain.Package.Package>> ListHandle(
         ISender sender,
         IPublisher publisher,
-        CancellationToken cancellationToken,
         [FromQuery] int? page,
-        [FromQuery] int? size
+        [FromQuery] int? size,
+        CancellationToken cancellationToken
     )
     {
         var pagination = new PageRequest(page ?? 0, size ?? 10);
 
         var query = pagination.Adapt<PackageListQuery>();
-        return await sender.Send(query, cancellationToken);
+        return sender.Send(query, cancellationToken);
     }
 
     private static async Task<IResult> ShowHandle(
         ISender sender,
-        CancellationToken cancellationToken,
-        [FromRoute] long id
+        [FromRoute] long id,
+        CancellationToken cancellationToken
     )
     {
         var query = new PackageShowQuery(id);
@@ -80,37 +80,37 @@ public class PackageModule : ICarterModule
 
     private static async Task<IResult> RejectHandle(
         ISender sender,
-        CancellationToken cancellationToken,
-        long id,
-        RejectPackageRequest request
+        [FromRoute] long id,
+        [FromBody] RejectPackageRequest request,
+        CancellationToken cancellationToken
     )
     {
         var command = new PackageRejectCommand(id, request.Reason);
 
         var rejected = await sender.Send(command, cancellationToken);
 
-        return rejected is null ? Results.NotFound() : Results.Ok(rejected);
+        return rejected is null ? Results.NotFound() : Results.Accepted();
     }
 
 
     private static async Task<IResult> DeliverHandle(
         ISender sender,
-        CancellationToken cancellationToken,
-        [FromRoute] long id
+        [FromRoute] long id,
+        CancellationToken cancellationToken
     )
     {
         var command = new PackageDeliverCommand(id);
 
-        var delivered = await sender.Send(command, cancellationToken);
+        var package = await sender.Send(command, cancellationToken);
 
-        return delivered is null ? Results.NotFound() : Results.Ok(delivered);
+        return package is null ? Results.NotFound() : Results.Accepted();
     }
 
 
     private static async Task<IResult> DeleteHandle(
         ISender sender,
-        CancellationToken cancellationToken,
-        [FromRoute] long id
+        [FromRoute] long id,
+        CancellationToken cancellationToken
     )
     {
         var command = new PackageRemoveCommand(id);

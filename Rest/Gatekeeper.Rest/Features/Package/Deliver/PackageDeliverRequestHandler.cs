@@ -1,19 +1,22 @@
+using System.Transactions;
 using Gatekeeper.Rest.Domain.Package;
 using Gatekeeper.Rest.Features.Package.Reject;
 using Gatekeeper.Rest.Features.Package.Show;
+using Gatekeeper.Rest.Infra;
 using MediatR;
 
 namespace Gatekeeper.Rest.Features.Package.Deliver;
 
-public record PackageDeliverCommand(long PackageId) : IRequest<PackageDelivered?>;
+public record PackageDeliverCommand(long PackageId) : IRequest<Domain.Package.Package?>;
 
 public class PackageDeliverRequestHandler(
-    IPublisher publisher,
+    IPackageStateMachineFactory packageStateMachineFactory,
     IPackageFetcherById packageFetcherById,
     IPackageSyncStatus packageSyncStatus
-) : IRequestHandler<PackageDeliverCommand, PackageDelivered?>
+) : IRequestHandler<PackageDeliverCommand, Domain.Package.Package?>
 {
-    public async Task<PackageDelivered?> Handle(PackageDeliverCommand command, CancellationToken cancellationToken)
+    public async Task<Domain.Package.Package?> Handle(PackageDeliverCommand command,
+        CancellationToken cancellationToken)
     {
         var package = await packageFetcherById.FetchAsync(command.PackageId, cancellationToken);
 
@@ -22,14 +25,16 @@ public class PackageDeliverRequestHandler(
             return null;
         }
 
-        var delivered = new PackageDelivered(command.PackageId, package.Status);
+        using var tx = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
-        package.AddEvent(delivered);
+        var stateMachine = packageStateMachineFactory.Factory(package.Status);
+
+        await stateMachine.DeliverAsync(package, cancellationToken);
 
         await packageSyncStatus.SyncStatus(package, cancellationToken);
+        
+        tx.Complete();
 
-        await publisher.Publish(delivered, cancellationToken);
-
-        return delivered;
+        return package;
     }
 }

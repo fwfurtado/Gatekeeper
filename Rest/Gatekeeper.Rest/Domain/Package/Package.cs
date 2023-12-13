@@ -6,7 +6,7 @@ namespace Gatekeeper.Rest.Domain.Package;
 
 public class Package
 {
-    public long? Id { get; init; } = null;
+    public long Id { get; private set; }
     public string Description { get; set; }
     public long UnitId { get; set; }
 
@@ -65,31 +65,34 @@ public class Package
 
     private void HandleEvent(IPackageEvent packageEvent)
     {
-        var stateMachine = new PackageStateMachine(this, SetStatus);
-
         switch (packageEvent)
         {
             case PackageReceived packageReceived:
                 Apply(packageReceived);
                 break;
-            case PackageDelivered:
-                stateMachine.Deliver();
+            case PackageDelivered packageDelivered:
+                Apply(packageDelivered);
                 break;
-            case PackageRejected:
-                stateMachine.Reject();
+            case PackageRejected packageRejected:
+                Apply(packageRejected);
                 break;
         }
+    }
+
+    private void Apply(PackageRejected packageRejected)
+    {
+        Status = packageRejected.To;
+    }
+
+    private void Apply(PackageDelivered packageDelivered)
+    {
+        Status = packageDelivered.To;
     }
 
     private void Apply(PackageReceived packageReceived)
     {
         Description = packageReceived.Description;
         UnitId = packageReceived.UnitId;
-    }
-
-    private void SetStatus(PackageStatus status)
-    {
-        Status = status;
     }
 }
 

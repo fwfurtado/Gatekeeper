@@ -1,18 +1,20 @@
+using System.Transactions;
 using Gatekeeper.Rest.Domain.Package;
 using Gatekeeper.Rest.Features.Package.Show;
+using Gatekeeper.Rest.Infra;
 using MediatR;
 
 namespace Gatekeeper.Rest.Features.Package.Reject;
 
-public record PackageRejectCommand(long PackageId, string Reason) : IRequest<PackageRejected?>;
+public record PackageRejectCommand(long PackageId, string Reason) : IRequest<Domain.Package.Package?>;
 
 public class PackageRejectRequestHandler(
-    IPublisher publisher,
+    IPackageStateMachineFactory packageStateMachineFactory,
     IPackageFetcherById packageFetcherById,
     IPackageSyncStatus packageSyncStatus
-) : IRequestHandler<PackageRejectCommand, PackageRejected?>
+) : IRequestHandler<PackageRejectCommand, Domain.Package.Package?>
 {
-    public async Task<PackageRejected?> Handle(PackageRejectCommand command, CancellationToken cancellationToken)
+    public async Task<Domain.Package.Package?> Handle(PackageRejectCommand command, CancellationToken cancellationToken)
     {
         var package = await packageFetcherById.FetchAsync(command.PackageId, cancellationToken);
 
@@ -21,14 +23,16 @@ public class PackageRejectRequestHandler(
             return null;
         }
 
-        var rejectEvent = new PackageRejected(command.PackageId, package.Status, command.Reason);
+        using var tx = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
-        package.AddEvent(rejectEvent);
+        var stateMachine = packageStateMachineFactory.Factory(package.Status);
+
+        await stateMachine.RejectAsync(package, command.Reason, cancellationToken);
 
         await packageSyncStatus.SyncStatus(package, cancellationToken);
 
-        await publisher.Publish(rejectEvent, cancellationToken);
+        tx.Complete();
 
-        return rejectEvent;
+        return package;
     }
 }

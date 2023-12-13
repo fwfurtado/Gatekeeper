@@ -9,16 +9,14 @@ public interface IPackageEvent : INotification
     DateTime OccurredAt { get; }
 }
 
-public record PackageRejected(long PackageId, PackageStatus From, string Reason) : IPackageEvent
+public record PackageRejected(long PackageId, DateTime OccurredAt, PackageStatus From, string Reason) : IPackageEvent
 {
     public PackageStatus To => PackageStatus.Rejected;
-    public DateTime OccurredAt { get; } = DateTime.UtcNow;
 }
 
-public record PackageDelivered(long PackageId, PackageStatus From) : IPackageEvent
+public record PackageDelivered(long PackageId, DateTime OccurredAt, PackageStatus From) : IPackageEvent
 {
     public PackageStatus To => PackageStatus.Delivered;
-    public DateTime OccurredAt { get; } = DateTime.UtcNow;
 }
 
 public record PackageReceived(long PackageId, long UnitId, string Description) : IPackageEvent
