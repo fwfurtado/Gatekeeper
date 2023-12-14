@@ -16,6 +16,10 @@ using Gatekeeper.Rest.Features.Package.Receive;
 using Gatekeeper.Rest.Features.Package.Reject;
 using Gatekeeper.Rest.Features.Package.Remove;
 using Gatekeeper.Rest.Features.Package.Show;
+using Gatekeeper.Rest.Features.Unit.Filter;
+using Gatekeeper.Rest.Features.Unit.List;
+using Gatekeeper.Rest.Features.Unit.Register;
+using Gatekeeper.Rest.Features.Unit.Show;
 using Gatekeeper.Shared.Database;
 using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Authorization;
@@ -151,6 +155,11 @@ builder.Services.AddScoped<IPackageSyncStatus, Gatekeeper.Rest.DataLayer.Package
 builder.Services.AddScoped<IPackageRemover, Gatekeeper.Rest.DataLayer.PackageRepository>();
 builder.Services.AddScoped<IValidator<ReceivePackageCommand>, ReceivePackageCommandValidator>();
 
+builder.Services.AddScoped<IUnitSaver, Gatekeeper.Rest.DataLayer.UnitRepository>();
+builder.Services.AddScoped<IUnitFetcherById, Gatekeeper.Rest.DataLayer.UnitRepository>();
+builder.Services.AddScoped<IUnitListFetcher, Gatekeeper.Rest.DataLayer.UnitRepository>();
+builder.Services.AddScoped<IUnitFilter, Gatekeeper.Rest.DataLayer.UnitRepository>();
+builder.Services.AddScoped<IValidator<ReceiveUnitCommand>, ReceiveUnitCommandValidator>();
 
 builder.Services.AddCarter();
 
