@@ -20,7 +20,8 @@ public class PackageModule : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/packages").WithTags("Packages");
+        var group = app.MapGroup("/packages").WithTags("Packages")
+            .RequireAuthorization();
 
 
         group.MapPost("/", CreateHandler);

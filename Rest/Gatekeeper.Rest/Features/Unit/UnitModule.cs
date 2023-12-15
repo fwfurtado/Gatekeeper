@@ -16,8 +16,8 @@ public class UnitModule : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/units").WithTags("Units");
-
+        var group = app.MapGroup("/units").WithTags("Units")
+            .RequireAuthorization();
 
         group.MapPost("/", CreateHandler);
         group.MapGet("/", ListHandle);
