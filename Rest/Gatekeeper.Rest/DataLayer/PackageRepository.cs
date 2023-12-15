@@ -1,7 +1,5 @@
 using System.Transactions;
 using Gatekeeper.Core.ValueObjects;
-using Gatekeeper.Rest.Domain;
-using Gatekeeper.Rest.Domain.Aggregate;
 using Gatekeeper.Rest.Domain.Package;
 using Gatekeeper.Rest.Extensions;
 using Gatekeeper.Rest.Features.Package.List;
