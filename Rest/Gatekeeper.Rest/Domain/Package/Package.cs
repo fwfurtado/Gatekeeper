@@ -6,12 +6,11 @@ namespace Gatekeeper.Rest.Domain.Package;
 
 public class Package
 {
-    public long? Id { get; init; } = null;
-    public required string Description { get; init; }
+    public long Id { get; private set; }
+    public string Description { get; set; }
+    public long UnitId { get; set; }
 
     public DateTime ArrivedAt { get; } = DateTime.UtcNow;
-
-    public required long UnitId { get; init; }
 
     public PackageStatus Status { get; private set; } = PackageStatus.Pending;
 
@@ -20,26 +19,80 @@ public class Package
 
     public IImmutableList<IPackageEvent> Events => _events.Values.ToImmutableList();
 
-    public void AddEvent<T>(T packageEvent) where T : IPackageEvent
-    {
-        var stateMachine = new PackageStateMachine(this, SetStatus);
 
-        switch (packageEvent)
+    public static Package Factory(string description, long unitId)
+    {
+        var package = new Package
         {
-            case PackageDelivered:
-                stateMachine.Deliver();
-                break;
-            case PackageRejected:
-                stateMachine.Reject();
-                break;
+            Description = description,
+            UnitId = unitId
+        };
+
+        return package;
+    }
+
+    internal Package()
+    {
+    }
+
+    public Package(IEnumerable<IPackageEvent> events) : this(events.ToArray())
+    {
+    }
+
+    public Package(params IPackageEvent[] events) : this()
+    {
+        foreach (var @event in events)
+        {
+            AppendEvent(@event);
         }
 
+        foreach (var (_, @event) in _events)
+        {
+            HandleEvent(@event);
+        }
+    }
+
+    public void AddEvent<T>(T packageEvent) where T : IPackageEvent
+    {
+        AppendEvent(packageEvent);
+        HandleEvent(packageEvent);
+    }
+
+    private void AppendEvent<T>(T packageEvent) where T : IPackageEvent
+    {
         _events.Add(packageEvent.OccurredAt, packageEvent);
     }
 
-    private void SetStatus(PackageStatus status)
+    private void HandleEvent(IPackageEvent packageEvent)
     {
-        Status = status;
+        switch (packageEvent)
+        {
+            case PackageReceived packageReceived:
+                Apply(packageReceived);
+                break;
+            case PackageDelivered packageDelivered:
+                Apply(packageDelivered);
+                break;
+            case PackageRejected packageRejected:
+                Apply(packageRejected);
+                break;
+        }
+    }
+
+    private void Apply(PackageRejected packageRejected)
+    {
+        Status = packageRejected.To;
+    }
+
+    private void Apply(PackageDelivered packageDelivered)
+    {
+        Status = packageDelivered.To;
+    }
+
+    private void Apply(PackageReceived packageReceived)
+    {
+        Description = packageReceived.Description;
+        UnitId = packageReceived.UnitId;
     }
 }
 

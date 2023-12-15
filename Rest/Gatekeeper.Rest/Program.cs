@@ -10,6 +10,8 @@ using Gatekeeper.Core.Services;
 using Gatekeeper.Core.Specifications;
 using Gatekeeper.Core.Validations;
 using Gatekeeper.Rest.Configuration;
+using Gatekeeper.Rest.DataLayer;
+using Gatekeeper.Rest.EventHandlers;
 using Gatekeeper.Rest.Factories;
 using Gatekeeper.Rest.Features.Package.List;
 using Gatekeeper.Rest.Features.Package.Receive;
@@ -20,6 +22,7 @@ using Gatekeeper.Rest.Features.Unit.Filter;
 using Gatekeeper.Rest.Features.Unit.List;
 using Gatekeeper.Rest.Features.Unit.Register;
 using Gatekeeper.Rest.Features.Unit.Show;
+using Gatekeeper.Rest.Infra;
 using Gatekeeper.Shared.Database;
 using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Authorization;
@@ -75,7 +78,6 @@ builder.Services.AddKeycloakAdminHttpClient(adminClientOptions);
 
 builder.Services.AddSwaggerGen(options =>
 {
-    
     options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
     {
         Type = SecuritySchemeType.OpenIdConnect,
@@ -154,12 +156,16 @@ builder.Services.AddScoped<IPackageFetcherById, Gatekeeper.Rest.DataLayer.Packag
 builder.Services.AddScoped<IPackageSyncStatus, Gatekeeper.Rest.DataLayer.PackageRepository>();
 builder.Services.AddScoped<IPackageRemover, Gatekeeper.Rest.DataLayer.PackageRepository>();
 builder.Services.AddScoped<IValidator<ReceivePackageCommand>, ReceivePackageCommandValidator>();
+builder.Services.AddScoped<IPackageEventSaver, PackageEventRepository>();
+builder.Services.AddScoped<IPackageStateMachineFactory, PackageStateMachineFactory>();
 
 builder.Services.AddScoped<IUnitSaver, Gatekeeper.Rest.DataLayer.UnitRepository>();
 builder.Services.AddScoped<IUnitFetcherById, Gatekeeper.Rest.DataLayer.UnitRepository>();
 builder.Services.AddScoped<IUnitListFetcher, Gatekeeper.Rest.DataLayer.UnitRepository>();
 builder.Services.AddScoped<IUnitFilter, Gatekeeper.Rest.DataLayer.UnitRepository>();
 builder.Services.AddScoped<IValidator<ReceiveUnitCommand>, ReceiveUnitCommandValidator>();
+builder.Services.AddSingleton<IJsonSerializer, DefaultJsonSerializer>();
+builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
 builder.Services.AddCarter();
 
