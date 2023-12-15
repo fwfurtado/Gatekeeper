@@ -1,6 +1,6 @@
+using System.Transactions;
 using FluentValidation;
 using FluentValidation.Results;
-using Mapster;
 using MediatR;
 
 namespace Gatekeeper.Rest.Features.Package.Receive;
@@ -8,6 +8,7 @@ namespace Gatekeeper.Rest.Features.Package.Receive;
 public record ReceivePackageCommand(long UnitId, string Description) : IRequest<long>;
 
 public class ReceivePackageService(
+    IPublisher publisher,
     IPackageFetcherByDescription fetcherByDescription,
     IPackageSaver packageSaver,
     IValidator<ReceivePackageCommand> validator
@@ -23,12 +24,20 @@ public class ReceivePackageService(
             throw new ValidationException(new[] { failure });
         }
 
-        var package = command.Adapt<Domain.Package.Package>();
+        var (unitId, description) = command;
+
+        var package = Domain.Package.Package.Factory(description, unitId);
 
         cancellationToken.ThrowIfCancellationRequested();
 
-        var id = await packageSaver.SaveAsync(package, cancellationToken);
+        using var tx = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
-        return id;
+        var receivedEvent = await packageSaver.SaveAsync(package, cancellationToken);
+
+        await publisher.Publish(receivedEvent, cancellationToken);
+
+        tx.Complete();
+
+        return receivedEvent.PackageId;
     }
 }

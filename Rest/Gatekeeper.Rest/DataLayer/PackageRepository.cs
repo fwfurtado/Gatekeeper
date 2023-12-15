@@ -31,7 +31,7 @@ public class PackageRepository(IDbConnectionFactory connectionFactory) :
         return exists;
     }
 
-    public async Task<long> SaveAsync(Package package, CancellationToken cancellationToken)
+    public async Task<PackageReceived> SaveAsync(Package package, CancellationToken cancellationToken)
     {
         const string sql = """
                            INSERT INTO packages (description,arrived_at, status, target_unit_id)
@@ -50,7 +50,9 @@ public class PackageRepository(IDbConnectionFactory connectionFactory) :
 
         var id = await dbConnection.ExecuteScalarAsync<long>(sql, arguments, cancellationToken);
 
-        return id;
+        var receivedEvent = new PackageReceived(id, package.UnitId, package.Description);
+
+        return receivedEvent;
     }
 
     public async Task<PagedList<Package>> FetchAsync(Pagination pagination, CancellationToken cancellationToken)
