@@ -1,0 +1,15 @@
+encryptionsalt: v1:Dtxm7v0csr4=:v1:dKG4YJ6/d6319Z9L:VpNYaB5udtr0BGXlTCjn8ezUwYwEqg==
+config:
+  aws:accessKey: test
+  aws:secretKey: test
+  aws:region: 'us-east-1'
+  aws:endpoints:
+    - s3: http://localhost:4566
+      s3control: http://localhost:4566
+      s3outposts: http://localhost:4566
+      dynamodb: http://localhost:4566
+      sns: http://localhost:4566
+      sqs: http://localhost:4566
+  aws:s3UsePathStyle: 'true'
+  aws:skipCredentialsValidation: 'true'
+  aws:skipRequestingAccountId: 'true'
