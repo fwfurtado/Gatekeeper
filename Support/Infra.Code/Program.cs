@@ -6,10 +6,12 @@ return await Deployment.RunAsync(() =>
 {
     // Create an AWS resource (S3 Bucket)
     var bucket = new Bucket("my-bucket");
+    var bucket2 = new Bucket("second-bucket");
 
     // Export the name of the bucket
     return new Dictionary<string, object?>
     {
-        ["bucketName"] = bucket.Id
+        ["bucketName"] = bucket.Id,
+            ["secondBucketName"] = bucket2.Id
     };
 });
