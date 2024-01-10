@@ -48,8 +48,6 @@ jobs:
         with:
           dotnet-version: '8.0.x'      
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Install dotnet-coverage
         run: dotnet tool install -g dotnet-coverage --version 17.9.1
       - name: Install Task
@@ -57,7 +55,7 @@ jobs:
         with:
           version: 3.x
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Run Rest tests by Cake
+      - name: Start Infra
         run: task dev:up          
       - name: Run Rest tests
         run: task rest:test:coverage
