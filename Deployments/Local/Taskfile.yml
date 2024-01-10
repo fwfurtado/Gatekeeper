@@ -4,7 +4,7 @@ tasks:
   up:
     desc: "Starts the local backing services"
     cmds:
-      - docker-compose up -d --wait --wait-timeout 3000
+      - docker compose up -d --wait --wait-timeout 3000
       - task: pulumi
         
   pulumi:
