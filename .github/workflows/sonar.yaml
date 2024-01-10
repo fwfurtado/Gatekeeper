@@ -58,6 +58,8 @@ jobs:
           version: 3.x
           repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run Rest tests by Cake
+        run: task dev:up          
+      - name: Run Rest tests
         run: task rest:test:coverage
       - name: Upload code coverage results
         uses: actions/upload-artifact@v3
