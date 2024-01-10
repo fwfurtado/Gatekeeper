@@ -16,7 +16,7 @@ includes:
     dir: ./Deployments/Local
     internal: true
 
-tasks:
+tasks:  
   dev:up:
     desc: "Starts the local backing services and run migrations"
     cmds:
