@@ -7,6 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AWSSDK.Core" Version="3.7.301.2" />
+        <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.300.32" />
+        <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.300.32" />
+        <PackageReference Include="AWSSDK.SQS" Version="3.7.300.32" />
         <PackageReference Include="Carter" Version="7.2.0" />
         <PackageReference Include="IdentityModel.AspNetCore" Version="4.3.0" />
         <PackageReference Include="Keycloak.AuthServices.Authentication" Version="1.5.2" />
