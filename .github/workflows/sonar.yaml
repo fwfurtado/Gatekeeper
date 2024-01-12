@@ -51,6 +51,8 @@ jobs:
       - name: Install dotnet-coverage
         run: dotnet tool install -g dotnet-coverage --version 17.9.1
       - uses: pulumi/actions@v3
+        with:
+          command: version
       - name: Install Task
         uses: arduino/setup-task@v1
         with:
