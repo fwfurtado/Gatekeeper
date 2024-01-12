@@ -15,6 +15,7 @@ tasks:
       PULUMI_CONFIG_PASSPHRASE: "1234567"
     cmds:
       - pulumi login -l
+      - pulumi stack select dev || pulumi stack init dev
       - pulumi up --yes --skip-preview
   down:
     desc: "Stops the local backing services"
