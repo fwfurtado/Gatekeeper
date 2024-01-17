@@ -2,7 +2,7 @@ namespace Gatekeeper.Rest.Domain.Notification;
 
 public class Notification
 {
-    public NotificationId Id { get; set; }
+    public required long Id { get; init; }
 
     public NotificationType Type { get; set; }
 

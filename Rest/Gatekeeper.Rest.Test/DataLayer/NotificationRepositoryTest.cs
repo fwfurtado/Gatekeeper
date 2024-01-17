@@ -1,9 +1,13 @@
-using Amazon;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.Internal;
 using Amazon.DynamoDBv2.Model;
+using Amazon.Runtime;
+using Gatekeeper.Rest.Configuration;
 using Gatekeeper.Rest.DataLayer;
 using Gatekeeper.Rest.Domain.Notification;
+using Microsoft.AspNetCore.Http.Json;
+using Microsoft.Extensions.Options;
 
 namespace Gatekeeper.Rest.Test.DataLayer;
 
@@ -17,11 +21,26 @@ public class NotificationRepositoryTest : IDisposable
     {
         var config = new AmazonDynamoDBConfig
         {
-            ServiceURL = "http://localhost:4566"
+            ServiceURL = "http://localhost:4566",
+            AuthenticationRegion = "us-east-1"
         };
-        _dynamoDbClient = new AmazonDynamoDBClient(config);
 
-        _repository = new NotificationRepository(_dynamoDbClient);
+        var credentials = new BasicAWSCredentials("test", "test");
+
+        _dynamoDbClient = new AmazonDynamoDBClient(credentials, config);
+
+        var jsonOptions = new JsonOptions()
+        {
+            SerializerOptions =
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                Converters = { new JsonStringEnumConverter() }
+            }
+        };
+        var serializer = new DefaultJsonSerializer(Options.Create(jsonOptions));
+
+        _repository = new NotificationRepository(_dynamoDbClient, serializer);
     }
 
     [Test]
@@ -33,26 +52,25 @@ public class NotificationRepositoryTest : IDisposable
             Type = NotificationType.Global,
             Payload = new Dictionary<string, object>
             {
-                {"message", "Hello World"},
-                {"timestamp", DateTime.UtcNow}
+                { "message", "Hello World" },
+                { "timestamp", DateTime.UtcNow }
             }
         };
-        
+
         await _repository.SendAsync(notification, CancellationToken.None);
-        
+
         var request = new GetItemRequest
         {
             TableName = "notifications",
             Key = new Dictionary<string, AttributeValue>
             {
-                {"id", new AttributeValue {N = notification.Id.ToString()}}
+                { "id", new AttributeValue { N = notification.Id.ToString() } }
             }
         };
-        
+
         var response = await _dynamoDbClient.GetItemAsync(request, CancellationToken.None);
-        
+
         Assert.That(response, Is.Not.Null);
-        
     }
 
     public void Dispose()
