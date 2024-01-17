@@ -11,9 +11,9 @@ using Microsoft.Extensions.Options;
 
 namespace Gatekeeper.Rest.Test.DataLayer;
 
-public class NotificationRepositoryTest : IDisposable
+public class SendNotificationRepositoryTest : IDisposable
 {
-    private NotificationRepository _repository = null!;
+    private SendNotificationRepository _repository = null!;
     private AmazonDynamoDBClient _dynamoDbClient = null!;
 
     [SetUp]
@@ -40,7 +40,7 @@ public class NotificationRepositoryTest : IDisposable
         };
         var serializer = new DefaultJsonSerializer(Options.Create(jsonOptions));
 
-        _repository = new NotificationRepository(_dynamoDbClient, serializer);
+        _repository = new SendNotificationRepository(_dynamoDbClient, serializer);
     }
 
     [Test]

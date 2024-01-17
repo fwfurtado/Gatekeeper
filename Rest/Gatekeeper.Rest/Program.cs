@@ -13,6 +13,7 @@ using Gatekeeper.Rest.Configuration;
 using Gatekeeper.Rest.DataLayer;
 using Gatekeeper.Rest.EventHandlers;
 using Gatekeeper.Rest.Factories;
+using Gatekeeper.Rest.Features.Notification.Create;
 using Gatekeeper.Rest.Features.Package.List;
 using Gatekeeper.Rest.Features.Package.Receive;
 using Gatekeeper.Rest.Features.Package.Reject;
@@ -145,15 +146,17 @@ builder.Services.AddScoped<IOccupationService, OccupationService>();
 builder.Services.AddScoped<NewOccupationCommandFactory>();
 
 
-builder.Services.AddScoped<IPackageSaver, Gatekeeper.Rest.DataLayer.PackageRepository>();
-builder.Services.AddScoped<IPackageFetcherByDescription, Gatekeeper.Rest.DataLayer.PackageRepository>();
-builder.Services.AddScoped<IPackageListFetcher, Gatekeeper.Rest.DataLayer.PackageRepository>();
-builder.Services.AddScoped<IPackageFetcherById, Gatekeeper.Rest.DataLayer.PackageRepository>();
-builder.Services.AddScoped<IPackageSyncStatus, Gatekeeper.Rest.DataLayer.PackageRepository>();
-builder.Services.AddScoped<IPackageRemover, Gatekeeper.Rest.DataLayer.PackageRepository>();
+builder.Services.AddScoped<IPackageSaver, PackageRepository>();
+builder.Services.AddScoped<IPackageFetcherByDescription, PackageRepository>();
+builder.Services.AddScoped<IPackageListFetcher, PackageRepository>();
+builder.Services.AddScoped<IPackageFetcherById, PackageRepository>();
+builder.Services.AddScoped<IPackageSyncStatus, PackageRepository>();
+builder.Services.AddScoped<IPackageRemover, PackageRepository>();
 builder.Services.AddScoped<IValidator<ReceivePackageCommand>, ReceivePackageCommandValidator>();
 builder.Services.AddScoped<IPackageEventSaver, PackageEventRepository>();
 builder.Services.AddScoped<IPackageStateMachineFactory, PackageStateMachineFactory>();
+
+builder.Services.AddScoped<INotificationSaver, NotificationRepository>();
 
 builder.Services.AddSingleton<IJsonSerializer, DefaultJsonSerializer>();
 builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();

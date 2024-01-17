@@ -1,31 +1,35 @@
-﻿using Pulumi;
-using Pulumi.Aws.DynamoDB;
-using System.Collections.Generic;
-using Pulumi.Aws.DynamoDB.Inputs;
+﻿using System.Collections.Generic;
+using Infra.Code.Resources;
+using Pulumi;
 
 return await Deployment.RunAsync(() =>
 {
+    var notificationsDynamoDbTable = new NotificationTable();
+    var notificationsQueue = new NotificationQueue();
+    var notificationsQueueDlq = new NotificationQueueDlqFactory(notificationsQueue).Factory();
 
-    const string tableName = "notifications";
-    var notifications = new Table(tableName, new TableArgs
-    {
-        Name = tableName,
-        HashKey = "id",
-        Attributes =
-        {
-            new TableAttributeArgs
-            {
-                Name = "id",
-                Type = "N",
-            }
-        },
-        BillingMode = "PAY_PER_REQUEST",
-    });
-
-    // Export the name of the bucket
     return new Dictionary<string, object?>
     {
-        ["tableName"] = notifications.Name,
-        ["primaryKey"] = notifications.HashKey,
+        ["notification"] = new Dictionary<string, object>
+        {
+            ["dynamoDb"] = new Dictionary<string, object>
+            {
+                ["tableName"] = notificationsDynamoDbTable.Name,
+                ["primaryKey"] = notificationsDynamoDbTable.HashKey,
+            },
+            ["queue"] = new Dictionary<string, object>
+            {
+                ["arn"] = notificationsQueue.Arn,
+                ["name"] = notificationsQueue.Name,
+                ["url"] = notificationsQueue.Url,
+
+                ["dlq"] = new Dictionary<string, object>
+                {
+                    ["arn"] = notificationsQueueDlq.Arn,
+                    ["name"] = notificationsQueueDlq.Name,
+                    ["url"] = notificationsQueueDlq.Url,
+                },
+            },
+        },
     };
 });

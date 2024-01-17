@@ -1,12 +1,12 @@
 namespace Gatekeeper.Rest.Domain.Notification;
 
-public class Notification
+public record Notification
 {
-    public required long Id { get; init; }
+    public long? Id { get; init; }
 
-    public NotificationType Type { get; set; }
+    public NotificationType Type { get; init; }
 
-    public Dictionary<string, object> Payload { get; set; } = new();
+    public Dictionary<string, object> Payload { get; init; } = new();
 
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; init; }
 }
