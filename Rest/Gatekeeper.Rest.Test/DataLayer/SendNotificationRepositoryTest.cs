@@ -6,6 +6,7 @@ using Amazon.Runtime;
 using Gatekeeper.Rest.Configuration;
 using Gatekeeper.Rest.DataLayer;
 using Gatekeeper.Rest.Domain.Notification;
+using Gatekeeper.Rest.Infra;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.Options;
 
@@ -40,7 +41,8 @@ public class SendNotificationRepositoryTest : IDisposable
         };
         var serializer = new DefaultJsonSerializer(Options.Create(jsonOptions));
 
-        _repository = new SendNotificationRepository(_dynamoDbClient, serializer);
+        var provider = new DateTimeProvider();
+        _repository = new SendNotificationRepository(provider, _dynamoDbClient, serializer);
     }
 
     [Test]
@@ -57,7 +59,7 @@ public class SendNotificationRepositoryTest : IDisposable
             }
         };
 
-        await _repository.SendAsync(notification, CancellationToken.None);
+        await _repository.SendAsync(1, notification, CancellationToken.None);
 
         var request = new GetItemRequest
         {

@@ -10,20 +10,24 @@ using Gatekeeper.Core.Services;
 using Gatekeeper.Core.Specifications;
 using Gatekeeper.Core.Validations;
 using Gatekeeper.Rest.Configuration;
+using Gatekeeper.Rest.Consumers;
 using Gatekeeper.Rest.DataLayer;
 using Gatekeeper.Rest.EventHandlers;
 using Gatekeeper.Rest.Factories;
 using Gatekeeper.Rest.Features.Notification.Create;
+using Gatekeeper.Rest.Features.Notification.Send;
 using Gatekeeper.Rest.Features.Package.List;
 using Gatekeeper.Rest.Features.Package.Receive;
 using Gatekeeper.Rest.Features.Package.Reject;
 using Gatekeeper.Rest.Features.Package.Remove;
 using Gatekeeper.Rest.Features.Package.Show;
 using Gatekeeper.Rest.Infra;
+using Gatekeeper.Rest.Infra.Aws;
 using Gatekeeper.Shared.Database;
 using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Authorization;
 using Keycloak.AuthServices.Sdk.Admin;
+using MassTransit;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
@@ -127,6 +131,23 @@ builder.Services.AddCors(options =>
     );
 });
 
+
+builder.Services.AddMassTransit(m =>
+{
+    m.AddConsumer<PushNotificationConsumer>();
+
+    m.UsingAmazonSqs((context, configurator) =>
+    {
+        configurator.Host("us-east-1", host =>
+        {
+            host.AccessKey("test");
+            host.SecretKey("test");
+        });
+
+        configurator.ConfigureEndpoints(context);
+    });
+});
+
 builder.Services.AddTransient<IDbConnectionFactory, DbConnectionFactory>();
 
 builder.Services.AddScoped<IUnitRepository, UnitRepository>();
@@ -157,11 +178,16 @@ builder.Services.AddScoped<IPackageEventSaver, PackageEventRepository>();
 builder.Services.AddScoped<IPackageStateMachineFactory, PackageStateMachineFactory>();
 
 builder.Services.AddScoped<INotificationSaver, NotificationRepository>();
+builder.Services.AddScoped<INotificationFetcher, NotificationRepository>();
+builder.Services.AddScoped<ISendNotificationRepository, SendNotificationRepository>();
+
+builder.Services.AddScoped<IValidator<CreateNotificationCommand>, CreateNotificationValidator>();
 
 builder.Services.AddSingleton<IJsonSerializer, DefaultJsonSerializer>();
 builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
 builder.Services.AddCarter();
+builder.Services.AddAws();
 
 var app = builder.Build();
 

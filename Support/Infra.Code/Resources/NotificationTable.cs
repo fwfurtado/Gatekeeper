@@ -18,6 +18,11 @@ public class NotificationTable() : Table(TableName, Args)
                 Type = "N",
             }
         },
+        Ttl = new TableTtlArgs
+        {
+          Enabled  = true,
+          AttributeName = "ttl"
+        },
         BillingMode = "PAY_PER_REQUEST",
     };
 }

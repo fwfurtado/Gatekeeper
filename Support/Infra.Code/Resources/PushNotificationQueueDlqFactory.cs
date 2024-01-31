@@ -4,9 +4,9 @@ using Pulumi.Aws.Sqs;
 
 namespace Infra.Code.Resources;
 
-public class NotificationQueueDlqFactory(NotificationQueue source)
+public class PushNotificationQueueDlqFactory(Queue source)
 {
-    private readonly string _queueName =  $"{NotificationQueue.QueueName}-dlq";
+    private const string QueueName = $"{PushNotificationQueue.QueueName}-dlq";
 
     private readonly QueueArgs _args = new()
     {
@@ -22,6 +22,6 @@ public class NotificationQueueDlqFactory(NotificationQueue source)
 
     public Queue Factory()
     {
-        return new Queue(_queueName, _args);
+        return new Queue(QueueName, _args);
     }
 }

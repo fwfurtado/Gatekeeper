@@ -5,8 +5,12 @@ using Pulumi;
 return await Deployment.RunAsync(() =>
 {
     var notificationsDynamoDbTable = new NotificationTable();
-    var notificationsQueue = new NotificationQueue();
-    var notificationsQueueDlq = new NotificationQueueDlqFactory(notificationsQueue).Factory();
+    var pushNotificationsQueue = new PushNotificationQueue();
+    var pushNotificationsQueueDlq = new PushNotificationQueueDlqFactory(pushNotificationsQueue).Factory();
+
+    var notificationTopic = new NotificationTopic();
+    var subscription = pushNotificationsQueue.SubscribeTo(notificationTopic);
+
 
     return new Dictionary<string, object?>
     {
@@ -19,17 +23,29 @@ return await Deployment.RunAsync(() =>
             },
             ["queue"] = new Dictionary<string, object>
             {
-                ["arn"] = notificationsQueue.Arn,
-                ["name"] = notificationsQueue.Name,
-                ["url"] = notificationsQueue.Url,
+                ["arn"] = pushNotificationsQueue.Arn,
+                ["name"] = pushNotificationsQueue.Name,
+                ["url"] = pushNotificationsQueue.Url,
 
                 ["dlq"] = new Dictionary<string, object>
                 {
-                    ["arn"] = notificationsQueueDlq.Arn,
-                    ["name"] = notificationsQueueDlq.Name,
-                    ["url"] = notificationsQueueDlq.Url,
+                    ["arn"] = pushNotificationsQueueDlq.Arn,
+                    ["name"] = pushNotificationsQueueDlq.Name,
+                    ["url"] = pushNotificationsQueueDlq.Url,
                 },
             },
+            ["topics"] = new Dictionary<string, object>
+            {
+                ["name"] = notificationTopic.Name,
+                ["arn"] = notificationTopic.Arn,
+                ["subscriptions"] = new Dictionary<string, object>
+                {
+                    ["topic"] = subscription.Topic,
+                    ["protocol"] = subscription.Protocol,
+                    ["endpoint"] = subscription.Endpoint,
+                    ["arn"] = subscription.Arn,
+                },
+            }
         },
     };
 });
