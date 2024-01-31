@@ -138,6 +138,17 @@ builder.Services.AddMassTransit(m =>
 
     m.UsingAmazonSqs((context, configurator) =>
     {
+
+        configurator.Message<NotificationSent>( t => {
+            t.SetEntityName("notifications");
+        });
+
+
+        configurator.ReceiveEndpoint("push-notifications", endpoint =>
+        {
+            endpoint.ConfigureConsumer<PushNotificationConsumer>(context);
+        });
+
         configurator.Host("us-east-1", host =>
         {
             host.AccessKey("test");
@@ -187,7 +198,7 @@ builder.Services.AddSingleton<IJsonSerializer, DefaultJsonSerializer>();
 builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
 builder.Services.AddCarter();
-builder.Services.AddAws();
+builder.Services.AddAws(builder.Environment);
 
 var app = builder.Build();
 
