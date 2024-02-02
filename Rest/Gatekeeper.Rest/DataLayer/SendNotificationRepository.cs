@@ -31,7 +31,7 @@ public class SendNotificationRepository(
 
         var document = Document.FromJson(item);
 
-        var settings = configuration.GetSection("Notifications").Get<NotificationSettings>()!;
+        var settings = configuration.GetSection(NotificationSettings.SectionName).Get<NotificationSettings>()!;
 
         var table = Table.LoadTable(dynamoDbClient, settings.TableName);
 

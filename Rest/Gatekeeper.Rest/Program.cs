@@ -147,7 +147,7 @@ builder.Services.AddMassTransit(m =>
 
     m.UsingAmazonSqs((context, configurator) =>
     {
-        var notificationSetting = builder.Configuration.GetSection("Notification").Get<NotificationSettings>();
+        var notificationSetting = builder.Configuration.GetSection(NotificationSettings.SectionName).Get<NotificationSettings>();
 
         if (notificationSetting is null)
         {
