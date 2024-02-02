@@ -6,7 +6,7 @@ tasks:
     cmds:
       - docker compose up -d --wait --wait-timeout 3000
       - task: pulumi
-        
+
   pulumi:
     desc: "Runs pulumi"
     dir: ../../Support/Infra.Code
@@ -17,9 +17,20 @@ tasks:
       - pulumi login -l
       - pulumi stack select dev || pulumi stack init dev
       - pulumi up --yes --skip-preview
+  pulumi:down:
+    desc: "Runs pulumi"
+    dir: ../../Support/Infra.Code
+    internal: true
+    env:
+      PULUMI_CONFIG_PASSPHRASE: "1234567"
+    cmds:
+      - pulumi login -l
+      - pulumi stack select dev || pulumi stack init dev
+      - pulumi destroy --yes --skip-preview
   down:
     desc: "Stops the local backing services"
     cmds:
+      - task: pulumi:down
       - docker-compose down -v
   ps:
     cmds:

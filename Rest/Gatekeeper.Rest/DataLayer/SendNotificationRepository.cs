@@ -11,10 +11,11 @@ namespace Gatekeeper.Rest.DataLayer;
 public class SendNotificationRepository(
     IDateTimeProvider dateTimeProvider,
     IAmazonDynamoDB dynamoDbClient,
-    IJsonSerializer jsonSerializer
+    IJsonSerializer jsonSerializer,
+    IConfiguration configuration
 ) : ISendNotificationRepository
 {
-    private const string TableName = "notifications";
+
 
     public async Task SendAsync(long userId, Notification notification, CancellationToken cancellationToken)
     {
@@ -30,7 +31,9 @@ public class SendNotificationRepository(
 
         var document = Document.FromJson(item);
 
-        var table = Table.LoadTable(dynamoDbClient, TableName);
+        var settings = configuration.GetSection("Notifications").Get<NotificationSettings>()!;
+
+        var table = Table.LoadTable(dynamoDbClient, settings.TableName);
 
         await table.PutItemAsync(document, cancellationToken);
     }

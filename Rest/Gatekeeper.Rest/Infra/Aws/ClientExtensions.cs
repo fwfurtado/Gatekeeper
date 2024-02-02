@@ -7,7 +7,6 @@ public static class ClientExtensions
 {
 
     private static readonly AWSCredentials LocalStackCredentials = new BasicAWSCredentials("test", "test");
-    private static readonly AWSCredentials AwsCredentials = new EnvironmentVariablesAWSCredentials();
 
     private static readonly Action<dynamic> EnableLocalStackFor = config =>
     {
@@ -15,7 +14,7 @@ public static class ClientExtensions
         config.AuthenticationRegion = "us-east-1";
     };
 
-    private static readonly Func<IHostEnvironment, AWSCredentials> GetCredentialsFor = environment => environment.IsDevelopment() ? LocalStackCredentials : AwsCredentials;
+    private static readonly Func<IHostEnvironment, AWSCredentials> GetCredentialsFor = environment => environment.IsDevelopment() ? LocalStackCredentials : new EnvironmentVariablesAWSCredentials();
 
 
     public static IServiceCollection AddAws(this IServiceCollection service, IHostEnvironment environment)

@@ -9,6 +9,7 @@ public class NotificationTable() : Table(TableName, Args)
 
     private static readonly TableArgs Args = new()
     {
+        Name = TableName,
         HashKey = "id",
         Attributes =
         {

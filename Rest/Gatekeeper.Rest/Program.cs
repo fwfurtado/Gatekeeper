@@ -1,6 +1,10 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Amazon.SimpleNotificationService;
+using Amazon.SimpleNotificationService.Model;
+using Amazon.SQS;
 using Carter;
+using Dapper;
 using FluentValidation;
 using Gatekeeper.Core.Commands;
 using Gatekeeper.Core.Configurations;
@@ -9,6 +13,7 @@ using Gatekeeper.Core.Repositories;
 using Gatekeeper.Core.Services;
 using Gatekeeper.Core.Specifications;
 using Gatekeeper.Core.Validations;
+using Gatekeeper.Rest;
 using Gatekeeper.Rest.Configuration;
 using Gatekeeper.Rest.Consumers;
 using Gatekeeper.Rest.DataLayer;
@@ -23,6 +28,7 @@ using Gatekeeper.Rest.Features.Package.Remove;
 using Gatekeeper.Rest.Features.Package.Show;
 using Gatekeeper.Rest.Infra;
 using Gatekeeper.Rest.Infra.Aws;
+using Gatekeeper.Rest.Infra.Dapper;
 using Gatekeeper.Shared.Database;
 using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Authorization;
@@ -132,28 +138,39 @@ builder.Services.AddCors(options =>
 });
 
 
+
+
+
 builder.Services.AddMassTransit(m =>
 {
     m.AddConsumer<PushNotificationConsumer>();
 
     m.UsingAmazonSqs((context, configurator) =>
     {
+        var notificationSetting = builder.Configuration.GetSection("Notification").Get<NotificationSettings>();
+
+        if (notificationSetting is null)
+        {
+            throw new InvalidStateException("Notification settings not found in configuration");
+        }
+
+        if (builder.Environment.IsDevelopment())
+        {
+            configurator.LocalstackHost();
+        }
 
         configurator.Message<NotificationSent>( t => {
-            t.SetEntityName("notifications");
+            t.SetEntityName(notificationSetting.TopicName);
         });
 
 
-        configurator.ReceiveEndpoint("push-notifications", endpoint =>
+        configurator.ReceiveEndpoint(notificationSetting.Push.QueueName, endpoint =>
         {
-            endpoint.ConfigureConsumer<PushNotificationConsumer>(context);
+            endpoint.ConfigureConsumeTopology = false;
+
+            endpoint.Subscribe(notificationSetting.TopicName);
         });
 
-        configurator.Host("us-east-1", host =>
-        {
-            host.AccessKey("test");
-            host.SecretKey("test");
-        });
 
         configurator.ConfigureEndpoints(context);
     });
@@ -201,6 +218,9 @@ builder.Services.AddCarter();
 builder.Services.AddAws(builder.Environment);
 
 var app = builder.Build();
+
+
+SqlMapper.AddTypeHandler(new JsonTypeHandler<Dictionary<string, object>>(app.Services.GetRequiredService<IJsonSerializer>()));
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -10,6 +10,7 @@ public class PushNotificationQueueDlqFactory(Queue source)
 
     private readonly QueueArgs _args = new()
     {
+        Name = QueueName,
         RedriveAllowPolicy = JsonSerializer.Serialize(new Dictionary<string, object?>
         {
             ["redrivePermission"] = "byQueue",

@@ -8,6 +8,7 @@ using Gatekeeper.Rest.DataLayer;
 using Gatekeeper.Rest.Domain.Notification;
 using Gatekeeper.Rest.Infra;
 using Microsoft.AspNetCore.Http.Json;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace Gatekeeper.Rest.Test.DataLayer;
@@ -41,8 +42,20 @@ public class SendNotificationRepositoryTest : IDisposable
         };
         var serializer = new DefaultJsonSerializer(Options.Create(jsonOptions));
 
+
+        var inMemoryConfig = new Dictionary<string, string>
+        {
+            {"Notifications:TopicName", "notifications"},
+            {"Notifications:TableName", "notifications"},
+            {"Notifications:Push:QueueName", "push-notification"}
+        };
+
+       var configs = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemoryConfig!)
+            .Build();
+
         var provider = new DateTimeProvider();
-        _repository = new SendNotificationRepository(provider, _dynamoDbClient, serializer);
+        _repository = new SendNotificationRepository(provider, _dynamoDbClient, serializer, configs);
     }
 
     [Test]

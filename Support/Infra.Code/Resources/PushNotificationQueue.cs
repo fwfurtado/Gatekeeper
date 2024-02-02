@@ -7,7 +7,10 @@ public class PushNotificationQueue() : Queue(QueueName, Args)
 {
     public const string QueueName = "push-notification";
 
-    private static readonly QueueArgs Args = new();
+    private static readonly QueueArgs Args = new()
+    {
+        Name = QueueName
+    };
 
 
     public TopicSubscription SubscribeTo(Topic topic)
