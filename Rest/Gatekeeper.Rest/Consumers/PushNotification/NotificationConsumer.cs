@@ -1,7 +1,7 @@
 using Gatekeeper.Rest.Domain.Notification;
 using MassTransit;
 
-namespace Gatekeeper.Rest.Consumers;
+namespace Gatekeeper.Rest.Consumers.PushNotification;
 
 public record NotificationSent(
     long Id,
@@ -15,9 +15,9 @@ public interface ISendNotificationRepository
     Task SendAsync(long userId, Notification notification, CancellationToken cancellationToken);
 }
 
-public class PushNotificationConsumer(
+public class NotificationConsumer(
     ISendNotificationRepository repository,
-    ILogger<PushNotificationConsumer> logger
+    ILogger<NotificationConsumer> logger
 ) : IConsumer<NotificationSent>
 {
     public async Task Consume(ConsumeContext<NotificationSent> context)

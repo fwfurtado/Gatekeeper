@@ -16,6 +16,7 @@ using Gatekeeper.Core.Validations;
 using Gatekeeper.Rest;
 using Gatekeeper.Rest.Configuration;
 using Gatekeeper.Rest.Consumers;
+using Gatekeeper.Rest.Consumers.PushNotification;
 using Gatekeeper.Rest.DataLayer;
 using Gatekeeper.Rest.EventHandlers;
 using Gatekeeper.Rest.Factories;
@@ -143,7 +144,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddMassTransit(m =>
 {
-    m.AddConsumer<PushNotificationConsumer>();
+    m.AddConsumer<NotificationConsumer>();
 
     m.UsingAmazonSqs((context, configurator) =>
     {

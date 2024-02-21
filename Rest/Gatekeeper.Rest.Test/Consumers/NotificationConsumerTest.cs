@@ -1,4 +1,5 @@
 using Gatekeeper.Rest.Consumers;
+using Gatekeeper.Rest.Consumers.PushNotification;
 using Gatekeeper.Rest.Domain.Notification;
 using Gatekeeper.Rest.Test.Configurations;
 using MassTransit.Testing;
@@ -6,7 +7,7 @@ using MassTransit.Testing;
 namespace Gatekeeper.Rest.Test.Consumers;
 
 [TestFixture]
-public class PushNotificationConsumerTest : AcceptanceTest
+public class NotificationConsumerTest : AcceptanceTest
 {
     private ITestHarness _harness = null!;
 
@@ -35,7 +36,7 @@ public class PushNotificationConsumerTest : AcceptanceTest
 
         await _harness.Bus.Publish(sent);
 
-        var consumer = _harness.GetConsumerHarness<PushNotificationConsumer>();
+        var consumer = _harness.GetConsumerHarness<NotificationConsumer>();
 
         Assert.That(await consumer.Consumed.Any<NotificationSent>(n => n.Context.Message.Id == sent.Id));
     }

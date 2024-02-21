@@ -2,6 +2,7 @@ using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DocumentModel;
 using Gatekeeper.Rest.Configuration;
 using Gatekeeper.Rest.Consumers;
+using Gatekeeper.Rest.Consumers.PushNotification;
 using Gatekeeper.Rest.Domain.Notification;
 using Gatekeeper.Rest.Infra;
 using IdentityModel;
