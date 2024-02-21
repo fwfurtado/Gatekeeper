@@ -1,3 +1,4 @@
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -6,7 +7,7 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace Gatekeeper.Rest.Test.Configurations;
 
-public class AcceptanceTestFactory: WebApplicationFactory<Program> 
+public class AcceptanceTestFactory: WebApplicationFactory<Program>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -14,6 +15,8 @@ public class AcceptanceTestFactory: WebApplicationFactory<Program>
 
         builder.ConfigureServices(service =>
         {
+            service.AddMassTransitTestHarness();
+
             service.Configure<JwtBearerOptions>(
                 JwtBearerDefaults.AuthenticationScheme,
                 options =>

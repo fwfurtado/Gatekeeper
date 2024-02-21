@@ -1,6 +1,10 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Amazon.SimpleNotificationService;
+using Amazon.SimpleNotificationService.Model;
+using Amazon.SQS;
 using Carter;
+using Dapper;
 using FluentValidation;
 using Gatekeeper.Core.Commands;
 using Gatekeeper.Core.Configurations;
@@ -9,20 +13,28 @@ using Gatekeeper.Core.Repositories;
 using Gatekeeper.Core.Services;
 using Gatekeeper.Core.Specifications;
 using Gatekeeper.Core.Validations;
+using Gatekeeper.Rest;
 using Gatekeeper.Rest.Configuration;
+using Gatekeeper.Rest.Consumers;
+using Gatekeeper.Rest.Consumers.PushNotification;
 using Gatekeeper.Rest.DataLayer;
 using Gatekeeper.Rest.EventHandlers;
 using Gatekeeper.Rest.Factories;
+using Gatekeeper.Rest.Features.Notification.Create;
+using Gatekeeper.Rest.Features.Notification.Send;
 using Gatekeeper.Rest.Features.Package.List;
 using Gatekeeper.Rest.Features.Package.Receive;
 using Gatekeeper.Rest.Features.Package.Reject;
 using Gatekeeper.Rest.Features.Package.Remove;
 using Gatekeeper.Rest.Features.Package.Show;
 using Gatekeeper.Rest.Infra;
+using Gatekeeper.Rest.Infra.Aws;
+using Gatekeeper.Rest.Infra.Dapper;
 using Gatekeeper.Shared.Database;
 using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Authorization;
 using Keycloak.AuthServices.Sdk.Admin;
+using MassTransit;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
@@ -126,6 +138,45 @@ builder.Services.AddCors(options =>
     );
 });
 
+
+
+
+
+builder.Services.AddMassTransit(m =>
+{
+    m.AddConsumer<NotificationConsumer>();
+
+    m.UsingAmazonSqs((context, configurator) =>
+    {
+        var notificationSetting = builder.Configuration.GetSection(NotificationSettings.SectionName).Get<NotificationSettings>();
+
+        if (notificationSetting is null)
+        {
+            throw new InvalidStateException("Notification settings not found in configuration");
+        }
+
+        if (builder.Environment.IsDevelopment())
+        {
+            configurator.LocalstackHost();
+        }
+
+        configurator.Message<NotificationSent>( t => {
+            t.SetEntityName(notificationSetting.TopicName);
+        });
+
+
+        configurator.ReceiveEndpoint(notificationSetting.Push.QueueName, endpoint =>
+        {
+            endpoint.ConfigureConsumeTopology = false;
+
+            endpoint.Subscribe(notificationSetting.TopicName);
+        });
+
+
+        configurator.ConfigureEndpoints(context);
+    });
+});
+
 builder.Services.AddTransient<IDbConnectionFactory, DbConnectionFactory>();
 
 builder.Services.AddScoped<IUnitRepository, UnitRepository>();
@@ -145,22 +196,32 @@ builder.Services.AddScoped<IOccupationService, OccupationService>();
 builder.Services.AddScoped<NewOccupationCommandFactory>();
 
 
-builder.Services.AddScoped<IPackageSaver, Gatekeeper.Rest.DataLayer.PackageRepository>();
-builder.Services.AddScoped<IPackageFetcherByDescription, Gatekeeper.Rest.DataLayer.PackageRepository>();
-builder.Services.AddScoped<IPackageListFetcher, Gatekeeper.Rest.DataLayer.PackageRepository>();
-builder.Services.AddScoped<IPackageFetcherById, Gatekeeper.Rest.DataLayer.PackageRepository>();
-builder.Services.AddScoped<IPackageSyncStatus, Gatekeeper.Rest.DataLayer.PackageRepository>();
-builder.Services.AddScoped<IPackageRemover, Gatekeeper.Rest.DataLayer.PackageRepository>();
+builder.Services.AddScoped<IPackageSaver, PackageRepository>();
+builder.Services.AddScoped<IPackageFetcherByDescription, PackageRepository>();
+builder.Services.AddScoped<IPackageListFetcher, PackageRepository>();
+builder.Services.AddScoped<IPackageFetcherById, PackageRepository>();
+builder.Services.AddScoped<IPackageSyncStatus, PackageRepository>();
+builder.Services.AddScoped<IPackageRemover, PackageRepository>();
 builder.Services.AddScoped<IValidator<ReceivePackageCommand>, ReceivePackageCommandValidator>();
 builder.Services.AddScoped<IPackageEventSaver, PackageEventRepository>();
 builder.Services.AddScoped<IPackageStateMachineFactory, PackageStateMachineFactory>();
+
+builder.Services.AddScoped<INotificationSaver, NotificationRepository>();
+builder.Services.AddScoped<INotificationFetcher, NotificationRepository>();
+builder.Services.AddScoped<ISendNotificationRepository, SendNotificationRepository>();
+
+builder.Services.AddScoped<IValidator<CreateNotificationCommand>, CreateNotificationValidator>();
 
 builder.Services.AddSingleton<IJsonSerializer, DefaultJsonSerializer>();
 builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
 builder.Services.AddCarter();
+builder.Services.AddAws(builder.Environment);
 
 var app = builder.Build();
+
+
+SqlMapper.AddTypeHandler(new JsonTypeHandler<Dictionary<string, object>>(app.Services.GetRequiredService<IJsonSerializer>()));
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

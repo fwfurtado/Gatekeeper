@@ -1,0 +1,3 @@
+name: Infra.Code
+runtime: dotnet
+description: A minimal AWS C# Pulumi program
